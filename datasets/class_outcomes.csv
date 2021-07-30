@@ -1,0 +1,147 @@
+Categorized.class,Outcome.variable
+Antimicrobial resistance,Livestock-associated nasal MRSA carriage
+Antimicrobial resistance,nasal MRSA carriage
+Eye or Ear,Burning eyes
+Eye or Ear,Difficulty hearing
+Eye or Ear,Eye irritation
+Eye or Ear,Itching eyes
+Eye or Ear,Self-reported symptoms - Eyes irritated
+Gastrointestinal diseases,Diarrhea
+Gastrointestinal diseases,Nausea
+Gastrointestinal diseases,Poor appetite
+Gastrointestinal diseases,Self-reported symptoms - Nausea
+Lower Respiratory,Allergic asthma
+Lower Respiratory,Asthma
+Lower Respiratory,Asthma medication use in past year  all children
+Lower Respiratory,Asthma medication use in past year  no self-reported allergies
+Lower Respiratory,Asthma medication use in past year  self-reported allergies
+Lower Respiratory,Asthma-related physician visit  emergency visit  and/or hospitalization in past year  all children
+Lower Respiratory,Asthma-related physician visit  emergency visit  and/or hospitalization in past year  no self-reported allergies
+Lower Respiratory,Asthma-related physician visit  emergency visit  and\n/or hospitalization in past year  all children
+Lower Respiratory,Asthma-related physician visit  emergency visit  and\n/or hospitalization in past year  no self-reported allergies
+Lower Respiratory,Asthma-related physician visit  emergency visit and/or hospitalization in the past year  self-reported allergies
+Lower Respiratory,Asthma-related physician visit  emergency visit and\n/or hospitalization in the past year  self-reported allergies
+Lower Respiratory,Asthmatic Pathology
+Lower Respiratory,Bronchial Hyperresponsiveness to Methacholine
+Lower Respiratory,Chest tightness
+Lower Respiratory,Chronic obstructive pulmonary disease (COPD)
+Lower Respiratory,Cough
+Lower Respiratory,Current wheeze children with Self-Reported Allergies
+Lower Respiratory,Current wheeze children without  Self-Reported Allergies
+Lower Respiratory,Current wheeze in all children
+Lower Respiratory,Current wheeze without physician diagnosis in all children
+Lower Respiratory,Current wheeze without physician diagnosis in children with no  self-reported allergies
+Lower Respiratory,Current wheeze without physician diagnosis in children with self-reported allergies
+Lower Respiratory,Difficulty breathing
+Lower Respiratory,FEV1 (% of predicted)
+Lower Respiratory,FEV1% Predicted
+Lower Respiratory,Forced expiratory volume in the first second (FEV1)
+Lower Respiratory,Frequent severe wheeze in all children
+Lower Respiratory,Frequent severe wheeze in chidlren with no self reported allergies
+Lower Respiratory,Frequent severe wheeze in children wth self reported allergies
+Lower Respiratory,Missed school in past year as a result of asthma symptoms
+Lower Respiratory,Mucus or phlegm
+Lower Respiratory,Non-allergic asthma
+Lower Respiratory,Peak expiratory flow rate (PEF)
+Lower Respiratory,Percent change FEF 25-75%
+Lower Respiratory,Percent change FEV1
+Lower Respiratory,Percent change FVC
+Lower Respiratory,Physician diagnoses asthma in all children
+Lower Respiratory,Physician diagnosied Asthma  in children with no  self reported allergies
+Lower Respiratory,Physician diagnosied Asthma  in children with self reported allergies
+Lower Respiratory,Physician-Diagnosed Asthma
+Lower Respiratory,Pneumonia
+Lower Respiratory,Respiratory rate
+Lower Respiratory,Severe Wheeze in all children
+Lower Respiratory,Severe wheeze in children with no self reported allergies
+Lower Respiratory,Severe wheeze in children with self reported allergies
+Lower Respiratory,Tiffenau Index median deviation
+Lower Respiratory,Tiffeneau index (% of predicted)
+Lower Respiratory,Wheezing
+Lower Respiratory,Wheezing without a cold
+Lower Respiratory,Wheezing without cold
+Mental Health,Anger based on POM score
+Mental Health,Angry  grouchy  or bad-tempered
+Mental Health,Angry grouchy or bad-tempered
+Mental Health,Blood pressure ratio (systolic to diastolic)
+Mental Health,Confusion based on POM score
+Mental Health,DBP for Age <= 53.7 years
+Mental Health,DBP for Age > 53.7 years
+Mental Health,DBP for Any BP meds
+Mental Health,DBP for Butanol threshold > 40 ppm
+Mental Health,DBP for Butanol threshold<= 40 ppm
+Mental Health,DBP for JHAC score <= 52
+Mental Health,DBP for JHAC score > 52
+Mental Health,DBP for men
+Mental Health,DBP for No meds
+Mental Health,DBP for women
+Mental Health,Depression based on POM score
+Mental Health,Diastolic blood pressure
+Mental Health,Diastolic blood pressure (DBP)
+Mental Health,Digit span score
+Mental Health,Fatigue based on POM score
+Mental Health,Gloomy  blue  or unhappy
+Mental Health,Gloomy blue or unhappy
+Mental Health,Heart rate
+Mental Health,log sIgA concentration (ug/ml)
+Mental Health,log sIgA secretion rate (ug/min)
+Mental Health,Mood scores (POMS) - Anger
+Mental Health,Mood scores (POMS) - Anxiety
+Mental Health,Mood scores (POMS) - Confusion
+Mental Health,Mood scores (POMS) - Depression
+Mental Health,Mood scores (POMS) - Fatigue
+Mental Health,Mood scores (POMS) - Total mood
+Mental Health,Mood scores (POMS) - Vigor
+Mental Health,Nervous or anxious
+Mental Health,Psychological Distress
+Mental Health,Salivary IgA (ug/mL)
+Mental Health,SBP for Any BP meds
+Mental Health,SBP for JHAC score <= 52
+Mental Health,SBP for JHAC score > 52
+Mental Health,SBP for No BP meds
+Mental Health,SBP in Age <= 53.7 years
+Mental Health,SBP in Age > 53.7 years
+Mental Health,SBP in Butanol threshold <= 40 ppm
+Mental Health,SBP in Butanol threshold > 40 ppm
+Mental Health,SBP in men
+Mental Health,SBP in women
+Mental Health,Stressed or annoyed
+Mental Health,Systolic blood pressure
+Mental Health,Systolic blood pressure (SBP)
+Mental Health,Tension
+Mental Health,TMD (total mood disturance score)
+Mental Health,Vigor based on POM score
+Neurologic,Confused or unable to concentrate
+Neurologic,Dizziness
+Neurologic,Headache
+Neurologic,Self-reported symptoms - Headache
+Other,Aching joints
+Other,Activity limitations in past year as a result of asthma symptoms
+Other,Backache
+Other,Fever
+Other,Other infectious disease
+Other,Temperature
+Skin,Skin irritation
+Upper Respiratory,Allergic rhinitis
+Upper Respiratory,IgE
+Upper Respiratory,Nasal irritation
+Upper Respiratory,Nasal lavage - Absolute epithelial cells
+Upper Respiratory,Nasal lavage - Absolute lymphocytic cells
+Upper Respiratory,Nasal lavage - Absolute PMNs
+Upper Respiratory,Nasal lavage - Cell counts
+Upper Respiratory,Nasal lavage - IL-1e(pg/mL)
+Upper Respiratory,Nasal lavage - IL-8 (pg/mL)
+Upper Respiratory,Nasal lavage - Percent epithelial cells
+Upper Respiratory,Nasal lavage - Percent lymphocytic cells
+Upper Respiratory,Nasal lavage - Percent PMNs
+Upper Respiratory,Runny nose
+Upper Respiratory,Self-reported - Itchy throat
+Upper Respiratory,Self-reported symptoms - Cough
+Upper Respiratory,Self-reported symptoms - Nasal congestion
+Upper Respiratory,Self-reported symptoms - Nasal irritation
+Upper Respiratory,Self-reported symptoms - Nasal secretion
+Upper Respiratory,Self-reported symptoms - sore throat
+Upper Respiratory,Sensitization against ubiquitous allergens
+Upper Respiratory,Sore throat
+Upper Respiratory,Specific IgE to Common Allergens >0.35IU/mL
+Upper Respiratory,Throat irritation

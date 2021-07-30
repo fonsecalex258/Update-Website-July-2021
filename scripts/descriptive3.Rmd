@@ -1,0 +1,6 @@
+---
+output: html_document
+---
+## Effect Measure
+
+The following table shows the number of reported outcomes (i.e lower and upper respiratory tracts, MRSA etc) and the type of measure of effect for each of the 16 studies. 

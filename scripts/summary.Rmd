@@ -1,0 +1,25 @@
+---
+title: "Summary"
+output: html_document
+---
+
+# Conclusions
+
+This review revealed that there is sufficient evidence to
+conclude that communities living in proximity to goat
+production are at increased risk of Q fever. The association
+between MRSA colonization and proximity is unclear,
+mainly due to a lack of replication. The conclusions
+about associations with other outcomes, especially those
+related to upper and lower respiratory disease, are unchanged
+from the prior review: “There was inconsistent
+evidence of a weak association between self-reported disease
+in people with allergies or familial history of allergies.
+No consistent dose response relationship between exposure
+and disease was observable.” If questions about the
+health effects of living near animal production continue to
+be of interest, then large, long-term prospective studies
+will be required, especially if non-specific clinical symptoms
+are the outcomes of interest.
+
+
