@@ -51,108 +51,116 @@ rob <- readxl::read_xlsx("datasets/cafo.xlsx", sheet = "Risk of bias")
 forest <- read_excel("datasets/forest.xlsx")
 ######### cration of a new dataset based on newest distiller form
 forest_cross <- read_excel("datasets/distiller_cross.xlsx")
+forest_cross1 <- read_excel("datasets/distiller_cross.xlsx")
 forest_cohort <- read_excel("datasets/distiller_cohort.xlsx")
 forest_case <- read_excel("datasets/distiller_casecontrol.xlsx")
 ###with this work only for cross
 forest_sabado <- read_excel("datasets/distiller_cross.xlsx")
 ################
-forest_cross_event <- forest_cross %>% filter(event_state == "Event")
-forest_cross_state <- forest_cross %>% filter(event_state == "State")
-##########
-rty <-(c("subcategory1","subcategory2", "subcategory3","subcategory4","subcategory5", "subcategory6") %in% names(forest_cross_event))
-forest_cross_event <-  forest_cross_event%>% mutate(IDD = c(1:nrow(forest_cross_event)))
-forest_cross_event <- forest_cross_event %>% mutate( IDD_2 = paste(forest_cross_event$IDD, "Cross-sectional" ))
+#forest_cross_event <- forest_cross %>% filter(event_state == "Event")
+#forest_cross_state <- forest_cross %>% filter(event_state == "State")
+forest_cross <- forest_cross %>% filter(rare_outcome == "Yes" | health_event=="Yes")
+forest_cross1 <- forest_cross1 %>% filter(is.na(Differential_information_bias)& is.na(Differential_information_bias_1_V2))
+
+########## fOR all cross-sectional
+
+
+rty <-(c("subcategory1","subcategory2", "subcategory3","subcategory4","subcategory5", "subcategory6") %in% names(forest_cross))
+forest_cross <-  forest_cross %>% mutate(IDD = c(1:nrow(forest_cross)))
+forest_cross <- forest_cross %>% mutate( IDD_2 = paste(forest_cross$IDD, "Cross-sectional" ))
 
 
 
 if (sum(rty)==6 ) {
-  yis0 <- forest_cross_event[c(9,13,17,21,25,29)]
-  yis <- forest_cross_event[c(10,14,18,22,26,30)]
-  yis1 <- forest_cross_event[c(11,15,19,23,27,31)]
-  yis2 <- forest_cross_event[c(12,16,20,24,28,32)]
+  yis0 <- forest_cross[c(9,13,17,21,25,29)]
+  yis <- forest_cross[c(10,14,18,22,26,30)]
+  yis1 <- forest_cross[c(11,15,19,23,27,31)]
+  yis2 <- forest_cross[c(12,16,20,24,28,32)]
   tinto0 <- data.frame(Subcategory=c(t((yis0))))
   tinto <- data.frame(yi=c(t((yis))))
   tinto1 <- data.frame(upperci=c(t((yis1))))
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
-  Outcome.variable <- rep(forest_cross_event$outcome, each = 6)
-  mm <- rep(forest_cross_event$effect_measure, each = 6)
-  Exposure.measure <- rep(forest_cross_event$exposure, each = 6)
-  Categorized.class <- rep(forest_cross_event$category, each = 6)
-  IDD <- rep(forest_cross_event$IDD, each = 6)
-  IDD_2 <- rep(forest_cross_event$IDD_2, each = 6)
+  Outcome.variable <- rep(forest_cross$outcome, each = 6)
+  mm <- rep(forest_cross$effect_measure, each = 6)
+  Exposure.measure <- rep(forest_cross$exposure, each = 6)
+  Categorized.class <- rep(forest_cross$category, each = 6)
+  IDD <- rep(forest_cross$IDD, each = 6)
+  IDD_2 <- rep(forest_cross$IDD_2, each = 6)
   
   up_forest_melo <- data.frame(
     IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }else if (sum(rty)==5){
-  yis0 <- forest_cross_event[c(9,13,17,21,25)]
-  yis <- forest_cross_event[c(10,14,18,22,26)]
-  yis1 <- forest_cross_event[c(11,15,19,23,27)]
-  yis2 <- forest_cross_event[c(12,16,20,24,28)]
+  yis0 <- forest_cross[c(9,13,17,21,25)]
+  yis <- forest_cross[c(10,14,18,22,26)]
+  yis1 <- forest_cross[c(11,15,19,23,27)]
+  yis2 <- forest_cross[c(12,16,20,24,28)]
   tinto0 <- data.frame(Subcategory=c(t((yis0))))
   tinto <- data.frame(yi=c(t((yis))))
   tinto1 <- data.frame(upperci=c(t((yis1))))
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
-  Outcome.variable <- rep(forest_cross_event$outcome, each = 5)
-  mm <- rep(forest_cross_event$effect_measure, each = 5)
-  Exposure.measure <- rep(forest_cross_event$exposure, each = 5)
-  Categorized.class <- rep(forest_cross_event$category, each = 5)
-  IDD <- rep(forest_cross_event$IDD, each = 5)
-  IDD_2 <- rep(forest_cross_event$IDD_2, each = 5)
+  Outcome.variable <- rep(forest_cross$outcome, each = 5)
+  mm <- rep(forest_cross$effect_measure, each = 5)
+  Exposure.measure <- rep(forest_cross$exposure, each = 5)
+  Categorized.class <- rep(forest_cross$category, each = 5)
+  IDD <- rep(forest_cross$IDD, each = 5)
+  IDD_2 <- rep(forest_cross$IDD_2, each = 5)
   
   up_forest_melo <- data.frame(
     IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }else if (sum(rty)==4){
-  yis0 <- forest_cross_event[c(9,13,17,21)]
-  yis <- forest_cross_event[c(10,14,18,22)]
-  yis1 <- forest_cross_event[c(11,15,19,23)]
-  yis2 <- forest_cross_event[c(12,16,20,24)]
+  yis0 <- forest_cross[c(9,13,17,21)]
+  yis <- forest_cross[c(10,14,18,22)]
+  yis1 <- forest_cross[c(11,15,19,23)]
+  yis2 <- forest_cross[c(12,16,20,24)]
   tinto0 <- data.frame(Subcategory=c(t((yis0))))
   tinto <- data.frame(yi=c(t((yis))))
   tinto1 <- data.frame(upperci=c(t((yis1))))
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
-  Outcome.variable <- rep(forest_cross_event$outcome, each = 4)
-  mm <- rep(forest_cross_event$effect_measure, each = 4)
-  Exposure.measure <- rep(forest_cross_event$exposure, each = 4)
-  Categorized.class <- rep(forest_cross_event$category, each = 4)
-  IDD <- rep(forest_cross_event$IDD, each = 4)
-  IDD_2 <- rep(forest_cross_event$IDD_2, each = 4)
+  Outcome.variable <- rep(forest_cross$outcome, each = 4)
+  mm <- rep(forest_cross$effect_measure, each = 4)
+  Exposure.measure <- rep(forest_cross$exposure, each = 4)
+  Categorized.class <- rep(forest_cross$category, each = 4)
+  IDD <- rep(forest_cross$IDD, each = 4)
+  IDD_2 <- rep(forest_cross$IDD_2, each = 4)
   
   up_forest_melo <- data.frame(
     IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }else if (sum(rty)==3){
-  yis0 <- forest_cross_event[c(9,13,17)]
-  yis <- forest_cross_event[c(10,14,18)]
-  yis1 <- forest_cross_event[c(11,15,19)]
-  yis2 <- forest_cross_event[c(12,16,20)]
+  yis0 <- forest_cross[c(9,13,17)]
+  yis <- forest_cross[c(10,14,18)]
+  yis1 <- forest_cross[c(11,15,19)]
+  yis2 <- forest_cross[c(12,16,20)]
   tinto0 <- data.frame(Subcategory=c(t((yis0))))
   tinto <- data.frame(yi=c(t((yis))))
   tinto1 <- data.frame(upperci=c(t((yis1))))
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
-  Outcome.variable <- rep(forest_cross_event$outcome, each = 3)
-  mm <- rep(forest_cross_event$effect_measure, each = 3)
-  Exposure.measure <- rep(forest_cross_event$exposure, each = 3)
-  Categorized.class <- rep(forest_cross_event$category, each = 3)
-  IDD <- rep(forest_cross_event$IDD, each = 3)
-  IDD_2 <- rep(forest_cross_event$IDD_2, each = 3)
+  Outcome.variable <- rep(forest_cross$outcome, each = 3)
+  mm <- rep(forest_cross$effect_measure, each = 3)
+  Exposure.measure <- rep(forest_cross$exposure, each = 3)
+  Categorized.class <- rep(forest_cross$category, each = 3)
+  IDD <- rep(forest_cross$IDD, each = 3)
+  IDD_2 <- rep(forest_cross$IDD_2, each = 3)
   
   up_forest_melo <- data.frame(
     IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }
+
+##########
 ##############
 ###### For Health States
 ##########
+forest_cross_state <- forest_cross1
 rty3 <-(c("subcategory1","subcategory2", "subcategory3","subcategory4","subcategory5", "subcategory6") %in% names(forest_cross_state))
 forest_cross_state <-  forest_cross_state %>% mutate(IDD = c(1:nrow(forest_cross_state)))
-forest_cross_state <- forest_cross_state %>% mutate( IDD_2 = paste(forest_cross_state$IDD, "Cross-sectional" ))
-
+forest_cross_state <- forest_cross_state %>% mutate(IDD_2 = paste(forest_cross_state$IDD, "Cross-sectional" ))
 
 
 if (sum(rty3)==6 ) {
@@ -236,6 +244,7 @@ if (sum(rty3)==6 ) {
     IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
   up_forest_state1 <- up_forest_state[complete.cases(up_forest_state),]
 }
+
 
 
 ############for case-control
@@ -422,7 +431,7 @@ forest_joint <-  bind_rows(up_forest_cohort1,up_forest_case1, up_forest_melo1)
 forest_joint[,8]=as.numeric(forest_joint[,8])
 forest_joint[,9]=as.numeric(forest_joint[,9])
 forest_joint[,10]=as.numeric(forest_joint[,10])
-#####for state
+#####for state 
 up_forest_state1[,8]=as.numeric(up_forest_state1[,8])
 up_forest_state1[,9]=as.numeric(up_forest_state1[,9])
 up_forest_state1[,10]=as.numeric(up_forest_state1[,10])
@@ -452,8 +461,9 @@ up_forest_state1 <- up_forest_state1 %>% mutate(inter_95 = ifelse(is.na(lowerci)
 
 
 ###### a dataset to ROB
-ROB_1 <-  forest_cross_event %>% filter(health_event== "Yes") %>% select(description_1_V2, description_2_V2, description_3_V2, description_4_V2, description_5_V2,overall_bias_V2,IDD,IDD_2)
-ROB_2 <-  forest_cross_event %>% filter(rare_outcome== "Yes") %>% select(description_1, description_2,description_3, description_4, description_5, overall_bias, IDD, IDD_2)
+ROB_1 <-  forest_cross %>% filter(health_event== "Yes") %>% select(description_1_V2, description_2_V2, description_3_V2, description_4_V2, description_5_V2,overall_bias_V2,IDD,IDD_2)
+ROB_2 <-  forest_cross %>% filter(rare_outcome== "Yes") %>% select(description_1, description_2,description_3, description_4, description_5, overall_bias, IDD, IDD_2)
+#ROB_3 <-  forest_cross_event %>% filter(event_state== "State") %>% select(description_1, description_2,description_3, description_4, description_5, overall_bias, IDD, IDD_2)
 colnames(ROB_1) <- c("Differential information", "Differential information 2", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
 colnames(ROB_2) <- c("Differential information", "Differential information 2", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
 
@@ -461,23 +471,54 @@ ROB_Cohort <-  forest_cohort %>% select(description_1, description_2,description
 ROB_Case <-  forest_case %>% select(description_1, description_2,description_3, description_4, description_5, overall_bias, IDD, IDD_2)
 colnames(ROB_Case) <- c("Differential information", "Differential information 2", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
 colnames(ROB_Cohort) <- c("Selection bias", "Differential information", "Differential information 2","Confounding","Differential information 3", "Differential information 4", "Selection bias 2", "Overall bias","IDD", "IDD_2")
-ROB_joint <-  bind_rows(ROB_1,ROB_2, ROB_Cohort, ROB_Case)
+ROB_joint <-  bind_rows(ROB_1, ROB_2, ROB_Cohort, ROB_Case)
 
 ###### a dataset to ROB for traffic light graphic
-ROB_1_event <-  forest_cross_event %>% filter(health_event== "Yes") %>% select(Differential_information_bias_1_V2, Differential_information_bias2_V2, selection_bias_1_V2, selection_bias_2_V2, confounding_V2,overall_bias_V2,IDD,IDD_2)
-ROB_2_event <-  forest_cross_event %>% filter(rare_outcome== "Yes") %>% select(Differential_information_bias, Differential_information_bias2,selection_bias_1, selection_bias_2, confounding, overall_bias, IDD, IDD_2)
-colnames(ROB_1_event) <- c("Differential information", "Differential information 2", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
-colnames(ROB_2_event) <- c("Differential information", "Differential information 2", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
+ROB_1_event <-  forest_cross %>% filter(health_event== "Yes") %>% select(Differential_information_bias_1_V2, Differential_information_bias2_V2, selection_bias_1_V2, selection_bias_2_V2, confounding_V2,overall_bias_V2,IDD,IDD_2)
+ROB_2_event <-  forest_cross %>% filter(rare_outcome== "Yes") %>% select(Differential_information_bias, Differential_information_bias2,selection_bias_1, selection_bias_2, confounding, overall_bias, IDD, IDD_2)
+colnames(ROB_1_event) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
+colnames(ROB_2_event) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
 
 ROB_Cohort_tl <-  forest_cohort %>% select(selection_bias, information_bias,information_bias_2, confounding, information_bias_3,information_bias_4, selection_bias_2,overall_bias,IDD, IDD_2)
 ROB_Case_tl <-  forest_case %>% select(Differential_information_bias, Differential_information_bias2,selection_bias_1, selection_bias_2, confounding, overall_bias, IDD, IDD_2)
-colnames(ROB_Case_tl) <- c("Differential information", "Differential information 2", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
-colnames(ROB_Cohort_tl) <- c("Selection bias", "Differential information", "Differential information 2","Confounding","Differential information 3", "Differential information 4", "Selection_bias 2", "Overall bias","IDD", "IDD_2")
+colnames(ROB_Case_tl) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
+colnames(ROB_Cohort_tl) <- c("Selection bias", "Misclassification of exposure", "Misclassification of outcome","Confounding","Differential information 3", "Differential information 4", "Selection_bias 2", "Overall bias","IDD", "IDD_2")
 ROB_joint_tl <-  bind_rows(ROB_1_event,ROB_2_event, ROB_Cohort_tl, ROB_Case_tl)
 
 
+ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Definitely yes (low risk of bias)'] <- 'Low'
 
+ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Probably yes'] <- 'Likely Low'
 
+ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Probably no'] <- 'Likely High'
+
+ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Definitely no (high risk of bias)'] <- 'High'
+
+#ROB_joint_tl3 <-  select("Selection bias", "Differential information", "Differential information 2","Confounding","Differential information 3", "Differential information 4", "Selection_bias 2", "Overall bias", "IDD_2")
 ##########
 
 #g <- nrow(up_forest_melo)
@@ -505,8 +546,11 @@ forest$effect_z[forest$effect_z == 'beta'] <- 'beta coefficient of the variable'
 forest$effect_z[forest$effect_z == 'beta p value'] <- 'p value of the beta coefficient of the variable'
 forest$effect_z[forest$effect_z == 'OR p value'] <- 'p value of the Odds Ratio'
 #### change names
+#forest_joint$effect_z_low <- forest_joint$mm
 forest_joint$effect_z <- forest_joint$mm
 up_forest_state1$effect_z_state <- up_forest_state1$mm
+#forest_joint$effect_z_low <- forest_joint$mm
+#up_forest_state1$effect_z_state <- up_forest_state1$mm <- for states forest plot
 #forest_cross_event$effect_z[forest_cross_event$effect_z == 'OR'] <- 'Odds Ratio (OR)'
 #forest_cross_event$effect_z[forest_cross_event$effect_z == 'PR'] <- 'Prevalence Ratio (PR)'
 #forest_cross_event$effect_z[forest$effect_z == 'beta'] <- 'beta coefficient of the variable'
@@ -611,8 +655,8 @@ dataset <- dataset %>%
 ROB_cols <- grep("ROB_", names(dataset), value = TRUE)[c(1:7, 9:15)]
 
 ## summary - ROB ####
-bias_types <- c("Confounding", "Selection of Participants", "Measurement of Exposures",
-                "Missing Data", "Measurement of Outcome", "Selection of Reported Result", "Measurement of Interventions")
+bias_types <- c("Misclassification of outcome", "Misclassification of exposure", "Selection bias",
+                "Selection_bias 2", "Measurement of Outcome", "Selection of Reported Result", "Measurement of Interventions")
 r2 <- rob %>%
   select(Refid,Categorized.class,ROB_confounding_paige,
          ROB_selection_paige, ROB_measurementExposure_paige,

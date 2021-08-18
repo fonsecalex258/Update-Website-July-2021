@@ -16,6 +16,7 @@ dashboardPage(
       menuItem("Health Outcomes", tabName = "outcome", icon = icon("fas fa-notes-medical"),
                menuItem("Lower Respiratory", tabName = "low_rsp",
                         menuItem("Overview", tabName = "low_rsp_intro"),
+                        menuItem("Forest Plot for Health States", tabName = "low_rsp_forest_state"),
                         menuItem("Forest Plot", tabName = "low_rsp_forest"),
                         menuItem("Risk of Bias", tabName = "low_rsp_risk_of_bias"),
                         menuItem("Interpretation", tabName = "low_rsp_conclusion")),
@@ -78,12 +79,12 @@ dashboardPage(
                                    p("A living systematic reviews is a review that is frequently updated, incorporating relevant new evidence as it becomes available.
                   This term means that rather than being a static publication in a peer reviewed journal, 
                   the review is housed on this website allowing for more timely updates and more accessible information."),
-                  #                  p("This process can be visualized in the this animation. Our last static systematic review about this topic was published in 2017 based on  16 relevant studies published before that year. 
-                  #   However, during the last 3 years, new studies may have been published and would need to be incorporated in  new systematic reviews. These new reviews are published on this website and updated periodically."),
-                  #                  
-                  #                  p("Through this website producers, public health officers, community leaders and community members can access
-                  # the latest summary of the available studies and a balance interpretation of the findings and their implications
-                  # in the wider body of literature will better serve the needs of the community because it"),
+                                   #                  p("This process can be visualized in the this animation. Our last static systematic review about this topic was published in 2017 based on  16 relevant studies published before that year. 
+                                   #   However, during the last 3 years, new studies may have been published and would need to be incorporated in  new systematic reviews. These new reviews are published on this website and updated periodically."),
+                                   #                  
+                                   #                  p("Through this website producers, public health officers, community leaders and community members can access
+                                   # the latest summary of the available studies and a balance interpretation of the findings and their implications
+                                   # in the wider body of literature will better serve the needs of the community because it"),
                                    p("1. Democratizes access to the information and interpretation, and"),
                                    p("2. Provides for more timely and relevant update"),
                                    
@@ -92,7 +93,7 @@ dashboardPage(
                   column(width = 5,div(img(src = "lsr1.gif", height = 320, width = 380), style="text-align: center;")
                   )),
                   hr(),
-                
+                  
                   fluidRow(column(width = 7, h4("Community Health and Animal Facilities"),
                                   br(),                
                                   p("In recent years there have been a growing concern about the effects that animal facilities could have on nearby communities. 
@@ -144,20 +145,20 @@ dashboardPage(
                     hr(),
                     fluidRow( column(width = 12, h4("How to use the forest plot graph?"),
                                      br(),
-                    p("The reported effect measures were either regression coefficients (βs) or prevalence ORs and prevalence ratios. In the forest plot (left side), 
+                                     p("The reported effect measures were either regression coefficients (βs) or prevalence ORs and prevalence ratios. In the forest plot (left side), 
                       each point represents the reported effect measure (e.g. an odds ratio) for a specific exposure-outcome relationship."),
-                    p("The gray column in the forest plot’s left side, groups the exposures in four categories: distance, gases, odor and aerosols. While distance is considered as an indirect type of exposure, the other ones are considered as a direct type of exposure, since they involve direct contact with the individual."),
-                    p(" The table on the right side shows the risk of bias assessment for the specific point selected previously on the forest plot. For further details about risk of bias assessment displayed in the table", a("click here", href = "https://www.bristol.ac.uk/population-health-sciences/centres/cresyda/barr/riskofbias/"),".", 
-                      "Once you click on one a row, a table is going to pop-up to provide more details about the judgment made by the authors for that particular exposure-outcome relationship.  "),
-                    p("The video below  provides more details about the usage of the forest plot and its annexes."),
-                    column(width = 12,
-                           br(),
-                           HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/BPUWWaVx0k0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
-                    )
+                                     p("The gray column in the forest plot’s left side, groups the exposures in four categories: distance, gases, odor and aerosols. While distance is considered as an indirect type of exposure, the other ones are considered as a direct type of exposure, since they involve direct contact with the individual."),
+                                     p(" The table on the right side shows the risk of bias assessment for the specific point selected previously on the forest plot. For further details about risk of bias assessment displayed in the table", a("click here", href = "https://www.bristol.ac.uk/population-health-sciences/centres/cresyda/barr/riskofbias/"),".", 
+                                       "Once you click on one a row, a table is going to pop-up to provide more details about the judgment made by the authors for that particular exposure-outcome relationship.  "),
+                                     p("The video below  provides more details about the usage of the forest plot and its annexes."),
+                                     column(width = 12,
+                                            br(),
+                                            HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/BPUWWaVx0k0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
+                                     )
                     )),
                     br(),
                     hr()
-                    ))),
+                ))),
       
       tabItem(tabName = "glossary",
               fluidRow(
@@ -174,7 +175,7 @@ specific research question.They use explicit, systematic methods
 that are selected with a view aimed at minimizing bias, to produce
 more reliable findings to inform decision making” (https://www.
 cochranelibrary.com/about/about-cochrane-reviews).")
-                  
+                    
                 )
               )),
       
@@ -215,7 +216,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                       choices = c(`<i class='fa fa-globe'></i> Geographic Location of all studies` = "sp", 
                                   `<i class='fa fa-calendar-alt'></i> Timeline of all studies` = "ts", 
                                   `<i class='fa fa-poll'></i> Health Outcome of all studies` = "coef")#,
-                                  #`<i class='fa fa-file-text'></i> All Studies  ` = "tabl"),
+                      #`<i class='fa fa-file-text'></i> All Studies  ` = "tabl"),
                     ),
                     
                     uiOutput("eda_text"),
@@ -229,18 +230,18 @@ cochranelibrary.com/about/about-cochrane-reviews).")
       tabItem(tabName = "roses",
               fluidRow(
                 box(width = 12, navbarPage("ROSES Flow Chart",
-                               
-                               # Tab 1 ----
-                               
-                               
-                               # Tab 2 ----
-                               tabPanel("Create flow diagram",
-                                        
-                                        mainPanel(
-                                          DiagrammeR::grVizOutput(outputId = "plot1", width = "130%", height = "650px"))
-                               
-                                 
-                               )
+                                           
+                                           # Tab 1 ----
+                                           
+                                           
+                                           # Tab 2 ----
+                                           tabPanel("Create flow diagram",
+                                                    
+                                                    mainPanel(
+                                                      DiagrammeR::grVizOutput(outputId = "plot1", width = "130%", height = "650px"))
+                                                    
+                                                    
+                                           )
                 ),
                 hr(),
                 
@@ -364,87 +365,17 @@ effects."),
                     p("Please select an effect size and a type of exposure from the drop-down menus below."),
                     br(),
                     fluidRow(
-                      #column(width = 4,
-                      #      wellPanel(
-                      #       uiOutput("measure")
-                      #     )
-                      #),
-                      # column(width = 4,
-                      #       wellPanel(
-                      #         uiOutput("expo_var_1")
-                      #       ) 
-                      
-                      #),
-                      column(width = 4,
-                             wellPanel(
-                               uiOutput("expo_var_1")
-                             )),
                       
                       column(width = 4,
                              wellPanel(
-                               uiOutput("expo_var_2")
-                             )),
-                      infoBoxOutput("out1")
-                      #br(),
-                      
-                    ),
-                    
-                    hr(),
-                    fluidRow(
-                      column(width = 5,
-                             h4("Select a point: "),
-                             #actionButton("reset", label = "Reset selection"),
-                             ggiraph::girafeOutput("plot_low",height="auto"),
-                             #plotOutput("gg_forestp"),
-                             #plotOutput("myplot"),
-                             #DT::dataTableOutput("low_rsp_dt")#,
-                             #DT::dataTableOutput('mytable1234')
-                      ),
-                      tags$head(
-                        tags$style(type = "text/css",
-                                   HTML("th { text-align: center; }")
-                        )
-                      ),
-                      column(width = 7,
-                             #selectInput("Measure", "Mesure:", 
-                             #               choices=(forest$mm)),
-                             h4("Selected outcome-exposure"),
-                             #uiOutput("expo_var_1"),
-                             #div(dataTableOutput("my_table"),style
-                             #     = "overflow-y: auto")#,
-                             div(dataTableOutput("my_table"),style = "font-size: 65%; width: 40%;text-align: center",
-                             )#,
-                             
-                             #DT::dataTableOutput("my_table")
-                      )
-                    )                    
-                )
-                
-                
-                
-              )    
-              
-      ),   
-      
-      
-      tabItem(tabName = "up_rsp_forest",
-              fluidRow(
-                box(width = 12, solidHeader = T, status = "primary",
-                    title = "Forest Plot",
-                    p("Please select an effect size and a type of exposure from the drop-down menus below."),
-                    br(),
-                    fluidRow(
-                      
-                      column(width = 4,
-                             wellPanel(
-                               uiOutput("expo_var_1_up")
+                               uiOutput("expo_var_1_low")
                              )),
                       
-                    #  column(width = 4,
-                            # wellPanel(
-                             #  uiOutput("expo_var_2_up")
-                            # )),
-                      infoBoxOutput("out12")
+                      #  column(width = 4,
+                      # wellPanel(
+                      #  uiOutput("expo_var_2_up")
+                      # )),
+                      #infoBoxOutput("out12")
                       
                       
                     ),
@@ -454,7 +385,7 @@ effects."),
                       column(width = 12,
                              h4("Select a point: "),
                              #actionButton("reset", label = "Reset selection"),
-                             ggiraph::girafeOutput("plot_up"),
+                             ggiraph::girafeOutput("plot_low",height="auto"),
                              
                       ),
                       tags$head(
@@ -470,6 +401,97 @@ effects."),
               )    
               
       ),  
+      
+      
+      tabItem(tabName = "up_rsp_forest",
+              fluidRow(
+                box(width = 12, solidHeader = T, status = "primary",
+                    title = "Forest Plot",
+                    p("Please select an effect size and a type of exposure from the drop-down menus below."),
+                    br(),
+                    fluidRow(
+                      
+                      column(width = 4,
+                             wellPanel(
+                               uiOutput("expo_var_1_up")
+                             )),
+                      
+                      #  column(width = 4,
+                      # wellPanel(
+                      #  uiOutput("expo_var_2_up")
+                      # )),
+                      infoBoxOutput("out12")
+                      
+                      
+                    ),
+                    
+                    hr(),
+                    fluidRow(
+                      column(width = 12,
+                             h4("Select a point: "),
+                             #actionButton("reset", label = "Reset selection"),
+                             ggiraph::girafeOutput("plot_up",height="auto"),
+                             
+                      ),
+                      tags$head(
+                        tags$style(type = "text/css",
+                                   HTML("th { text-align: center; }")
+                        )
+                      )
+                    )                    
+                )
+                
+                
+                
+              )    
+              
+      ),  
+      
+      
+      tabItem(tabName = "low_rsp_forest_state",
+              fluidRow(
+                box(width = 12, solidHeader = T, status = "primary",
+                    title = "Forest Plot",
+                    p("Please select an effect size and a type of exposure from the drop-down menus below."),
+                    br(),
+                    fluidRow(
+                      
+                      column(width = 4,
+                             wellPanel(
+                               uiOutput("expo_var_1_low_state")
+                             )),
+                      
+                      #  column(width = 4,
+                      # wellPanel(
+                      #  uiOutput("expo_var_2_up")
+                      # )),
+                      #infoBoxOutput("out12")
+                      
+                      
+                    ),
+                    
+                    hr(),
+                    fluidRow(
+                      column(width = 12,
+                             h4("Select a point: "),
+                             #actionButton("reset", label = "Reset selection"),
+                             ggiraph::girafeOutput("plot_low_state",height="auto"),
+                             
+                      ),
+                      tags$head(
+                        tags$style(type = "text/css",
+                                   HTML("th { text-align: center; }")
+                        )
+                      )
+                    )                    
+                )
+                
+                
+                
+              )    
+              
+      ),  
+      
       
       tabItem(tabName = "up_rsp_forest_state",
               fluidRow(
@@ -498,7 +520,7 @@ effects."),
                       column(width = 12,
                              h4("Select a point: "),
                              #actionButton("reset", label = "Reset selection"),
-                             ggiraph::girafeOutput("plot_up_state"),
+                             ggiraph::girafeOutput("plot_up_state",height="auto"),
                              
                       ),
                       tags$head(
@@ -674,9 +696,9 @@ effects."),
               )    
               
       ),
- 
-    
-     
+      
+      
+      
       
       ## * risk of bias ####
       tabItem(tabName = "low_rsp_risk_of_bias",
@@ -692,11 +714,11 @@ effects."),
 risk of bias was considered to be serious or critical for
 the studies that provided outcomes measured as regression coefficients."),
                     br(),
-                tags$li("The overall risk of bias was serious for all of the studies
+                    tags$li("The overall risk of bias was serious for all of the studies
 that reported prevalence ORs as measures of association"),
-                br(),
-                br()
-              ))), 
+                    br(),
+                    br()
+                ))), 
       ## * risk of bias upper R
       tabItem(tabName = "up_rsp_risk_of_bias",
               fluidRow(
@@ -767,7 +789,7 @@ the outcome reported by Feingold et al."),
                     tags$li("The study was performed during a Q fever outbreak, and the finding suggested that exposure to goats was strongly associated with Q fever risk. The authors used pneumonia as a potential Q fever-related outcome, because pneumonia was the most frequent diagnosis among the notified Q fever patients in the Netherlands epidemic. The authors also noted that exposure to poultry was associated with increased prevalence odds of pneumonia. This association between goats and pneumonia was likely due to Q fever, rather than particulate or gaseous emissions. The overall risk of bias was serious for all of the studies that reported prevalence ORs as measures of association."),    
                     tags$li("The overall risk of bias was serious for all of the studies
 that reported prevalence ORs as measures of association.")
-                    )
+                )
               )),
       
       tabItem(tabName = "up_rsp_conclusion",
@@ -776,7 +798,7 @@ that reported prevalence ORs as measures of association.")
                     tags$li("In Schinasi et al. there were inconsistent associations between the objective measures of exposure and the subjective measures of upper respiratory tract outcomes. For objectively measured exposure metrics and subjectively measured outcomes, most effect sizes had levels of precision that were associated with protective effects, no effect, or risk effects. There were consistent associations between subjectively measured exposures (average 12-h odor levels and twice-daily odor levels) and outcomes (i.e., increased odor was associated with increased disease). Large positive effect sizes indicated higher values for measures of upper respiratory tract outcomes in participants who indicated that they were exposed to higher odor levels. For this subgroup, all of the values in the 95% CI were associated with increased prevalence, except for the sore throat outcome."),
                     tags$li("Four studies used prevalence ORs to measure associations between exposure to animal facilities and upper respiratory tract outcomes. The associations were not consistent for the subgroups objective exposure/objective outcome, objective exposure/ subjective outcome, and subjective exposure/objective outcome. The findings across dose gradient were also inconsistent. Some results indicated that compared with high-level exposures, lower- or medium-level exposures were associated with higher odds of disease."),
                     tags$li("When the measure of exposure was the level of odor annoyance, a dose-response was present if the outcome was measured subjectively (self-reported symptoms). The association was inconsistent when an objective measure of disease occurrence was assessed (specific IgE to common allergens). Moderate annoyance at odor was associated with the highest specific IgE response relative to “not at all annoyed” by odor. The precision of the result suggested the direction was consistently positive (OR = 1.71, 95% CI 1.02, 2.87). However, compared with “not at all annoyed,” individuals who responded “somewhat annoyed” (OR = 1.11, 95% CI 0.79, 1.57) and “strongly annoyed” (OR = 1.02, 95% CI 0.51, 2.03) had effect sizes more consistent with an interpretation of no effect (close to OR = 1).")
-                    )
+                )
               )),
       
       tabItem(tabName = "ar_rsp_conclusion",
@@ -786,7 +808,7 @@ that reported prevalence ORs as measures of association.")
                     tags$li("Schinasi et al. evaluated another exposure metric in the same population (the number of farrowing swine permitted within a 1- square-mile block of the participant’s residence) and explored whether a dose-response was present. However, when compared with the lowest exposure level, the middle exposure level had a higher prevalence of MRSA carriage than higher levels of exposure. The authors reported moderate exposure using three metrics (farrowing swine, non-farrowing swine, and swine); the effect sizes and precision estimates were 1.99 (95% CI 0.99, 4.06), 2.04 (0.61, 6.85), and 4.76 (1.36, 16.69), respectively. These estimates contrasted with higher levels of exposure (>149), which were associated with a prevalence OR that suggested lower odds of nasal carriage of Methicillin-resistant Staphylococcus aureus (MRSA). "),
                     tags$li("Feingold et al. did report an association between MRSA carriage and swine (1.37, 95% CI 1.01, 1.67), cattle (2.28, 95% CI 1.17, 4.15), and veal (1.37, 95% CI 1.08, 1.72) density. They did not report any inconsistencies in association because they only reported one exposure metric (the log of municipal density). It is unclear whether other exposure metrics were evaluated but not reported. "),
                     tags$li("The overall risk of bias was serious for all antimicrobial resistance outcomes reported by Schinasi et al.  and moderate for the outcome reported by Feingold et al.")
-                    )
+                )
               )),
       
       tabItem(tabName = "gi_rsp_conclusion",
@@ -802,7 +824,7 @@ that reported prevalence ORs as measures of association.")
                 box(width = 12, solidHeader = TRUE, status = "primary", title = "Interpretation Neurologic Outcomes",
                     tags$li("Horton et al. and Schinasi et al. both publications described the results for the participants of the CHEIHO Study, who were asked to self-report numerous outcomes. Horton et al.reported the associations as odds ratios. Schinasi et al. reported the regression coefficients (betas) from a logistic regression model. The direction of association was not consistent; sometimes the effect size indicated a protective effect or a risk factor. For the odor metrics, the effect measure was always in the direction that indicated increased risk of health outcomes in exposed individuals. The intervals of three (hydrogen sulfide, PM10, semivolatile PM10) of the four effect sizes reported by Horton et al. were associated with estimates that indicated risk, protection, or no association."),
                     tags$li("The overall risk of bias for this exposure-outcome association was serious or critical. Horton et al. reported one effect measure for which the precision measure (95% confidence interval (CI)) only included estimates associated with harm: for the exposure - twice-daily odor rating - and the outcome - confused or unable to concentrate - (95% CI = 1.16, 1.50). The overall risk of bias for this exposure-outcome association was critical.")
-                    )
+                )
               )),
       
       ## references ####  

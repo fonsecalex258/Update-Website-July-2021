@@ -592,23 +592,31 @@ theDiv.innerHTML += "<text text-anchor=\'middle\' style=\'transform: rotate(-90d
 read_PRISMAdata <- function(data){
   
   #Set parameters
-  previous_studies <- scales::comma(as.numeric(data[grep('previous_studies', data[,1]),]$n))
+  #previous_studies <- scales::comma(as.numeric(data[grep('previous_studies', data[,1]),]$n))
+  previous_studies <- scales::comma(as.numeric(16))
   previous_reports <- scales::comma(as.numeric(data[grep('previous_reports', data[,1]),]$n))
   register_results <- scales::comma(as.numeric(data[grep('register_results', data[,1]),]$n))
-  database_results <- scales::comma(as.numeric(data[grep('database_results', data[,1]),]$n))
+  #database_results <- scales::comma(as.numeric(data[grep('database_results', data[,1]),]$n))
+  database_results <- scales::comma(as.numeric(4104))
   website_results <- scales::comma(as.numeric(data[grep('website_results', data[,1]),]$n))
   organisation_results <- scales::comma(as.numeric(data[grep('organisation_results', data[,1]),]$n))
   citations_results <- scales::comma(as.numeric(data[grep('citations_results', data[,1]),]$n))
-  duplicates <- scales::comma(as.numeric(data[grep('duplicates', data[,1]),]$n))
+  #duplicates <- scales::comma(as.numeric(data[grep('duplicates', data[,1]),]$n))
+  duplicates <- scales::comma(as.numeric(3575))
   excluded_automatic <- scales::comma(as.numeric(data[grep('excluded_automatic', data[,1]),]$n))
   excluded_other <- scales::comma(as.numeric(data[grep('excluded_other', data[,1]),]$n))
-  records_screened <- scales::comma(as.numeric(data[grep('records_screened', data[,1]),]$n))
-  records_excluded <- scales::comma(as.numeric(data[grep('records_excluded', data[,1]),]$n))
-  dbr_sought_reports <- scales::comma(as.numeric(data[grep('dbr_sought_reports', data[,1]),]$n))
-  dbr_notretrieved_reports <- scales::comma(as.numeric(data[grep('dbr_notretrieved_reports', data[,1]),]$n))
+  #records_screened <- scales::comma(as.numeric(data[grep('records_screened', data[,1]),]$n))
+  records_screened <- scales::comma(as.numeric(1768))
+  #records_excluded <- scales::comma(as.numeric(data[grep('records_excluded', data[,1]),]$n))
+  records_excluded <- scales::comma(as.numeric(1673))
+  #dbr_sought_reports <- scales::comma(as.numeric(data[grep('dbr_sought_reports', data[,1]),]$n))
+  dbr_sought_reports <- scales::comma(as.numeric(80))
+  #dbr_notretrieved_reports <- scales::comma(as.numeric(data[grep('dbr_notretrieved_reports', data[,1]),]$n))
+  dbr_notretrieved_reports <- scales::comma(as.numeric(60))
   other_sought_reports <- scales::comma(as.numeric(data[grep('other_sought_reports', data[,1]),]$n))
   other_notretrieved_reports <- scales::comma(as.numeric(data[grep('other_notretrieved_reports', data[,1]),]$n))
-  dbr_assessed <- scales::comma(as.numeric(data[grep('dbr_assessed', data[,1]),]$n))
+  #dbr_assessed <- scales::comma(as.numeric(data[grep('dbr_assessed', data[,1]),]$n))
+  dbr_assessed <- scales::comma(as.numeric(20))
   dbr_excluded <- data.frame(reason = gsub(",.*$", "", unlist(strsplit(data[grep('dbr_excluded', data[,1]),]$n, split = '; '))), 
                              n = gsub(".*,", "", unlist(strsplit(data[grep('dbr_excluded', data[,1]),]$n, split = '; '))))
   other_assessed <- scales::comma(as.numeric(data[grep('other_assessed', data[,1]),]$n))
@@ -616,7 +624,8 @@ read_PRISMAdata <- function(data){
                                n = gsub(".*,", "", unlist(strsplit(data[grep('other_excluded', data[,1]),]$n, split = '; '))))
   new_studies <- scales::comma(as.numeric(data[grep('new_studies', data[,1]),]$n))
   new_reports <- scales::comma(as.numeric(data[grep('new_reports', data[,1]),]$n))
-  total_studies <- scales::comma(as.numeric(data[grep('total_studies', data[,1]),]$n))
+  #total_studies <- scales::comma(as.numeric(data[grep('total_studies', data[,1]),]$n))
+  total_studies <- scales::comma(as.numeric(36))
   total_reports <- scales::comma(as.numeric(data[grep('total_reports', data[,1]),]$n))
   tooltips <- stats::na.omit(data$tooltips)
   urls <- data.frame(box = data[!duplicated(data$box), ]$box, url = data[!duplicated(data$box), ]$url)
@@ -819,10 +828,10 @@ bg.picker <- function(z){
 ##### color for new domains
 bg.picker1 <- function(z){
   if(is.na(z)){return("black")}
-  else if(z == "Definitely yes (low risk of bias)"){return("forestgreen")}
-  else if(z == "Probably yes"){return("lightgreen")}
-  else if(z == "Probably no"){return("pink")}
-  else if(z == "Definitely no (high risk of bias)"){return("red")}
+  else if(z == "Low"){return("forestgreen")}
+  else if(z == "Likely Low"){return("lightgreen")}
+  else if(z == "Likely High"){return("pink")}
+  else if(z == "High"){return("red")}
   else if(z == "Unclear risk of bias for one or more key domains."){return("wheat")}
   else if(z == "Low risk of bias for all key domains."){return("forestgreen")}
   else if(z == "High risk of bias for one or more key domains."){return("red")}
@@ -868,7 +877,7 @@ increases the potential for identification of false associations due to random e
         column(width = 6, plotlyOutput("geobar") %>% withSpinner())),
       "ts" = timevisOutput("timeline"),
       "coef" = plotOutput("measure_all", hover = "plot_hover") %>% withSpinner()#,
-    #"tabl" = DT::dataTableOutput("mytable1234")
+      #"tabl" = DT::dataTableOutput("mytable1234")
     )
   })
   
@@ -978,12 +987,12 @@ increases the potential for identification of false associations due to random e
   
   
   ##### only measure of association
-  output$expo_var_1 <- renderUI({
-    choices1 <- forest$effect_z
+  output$expo_var_1_low <- renderUI({
+    choices1 <- forest_joint$mm
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
-    selectInput("expo_b",
+    selectInput("expo_b_low",
                 "Effect size",
                 choices = unique(choices1), 
                 selected = choices1[1])
@@ -1004,9 +1013,20 @@ increases the potential for identification of false associations due to random e
                 selected = choices1[1])
     
   })
+ ##########
+  output$expo_var_1_low_state <- renderUI({
+    choices1 <- up_forest_state1$mm
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    selectInput("expo_b_low_state",
+                "Effect size",
+                choices = unique(choices1), 
+                selected = choices1[1])
+    
+  })
   
-  
-  
+ ########## 
   output$expo_var_1_up_state <- renderUI({
     choices1 <- up_forest_state1$mm
     #forest %>%
@@ -1324,7 +1344,7 @@ increases the potential for identification of false associations due to random e
                                                                       
                  ), ifelse(cafoo$Country=="Germany", paste("Country:",cafoo$Country,"<br>",
                                                            "No Records"
-                                                                            ),
+                 ),
                  paste("Country:",cafoo$Country,"<br>",
                        
                        
@@ -1660,7 +1680,7 @@ increases the potential for identification of false associations due to random e
   #####################
   ## * forest plot ####
   #####################
-  selected_state <- reactive({
+  selected_state_low <- reactive({
     input$plot_low_selected
   })
   
@@ -1691,7 +1711,7 @@ increases the potential for identification of false associations due to random e
   #####
   
   forest_data <- reactive({
-   
+    
     forest_data <- forest %>% filter(
       effect_z == input$expo_b &  t_expo == input$expo_c)
   })
@@ -1708,7 +1728,7 @@ increases the potential for identification of false associations due to random e
             icon = icon("chalkboard-teacher"), color = "blue"
     )
   }) 
- #### for Upper R 
+  #### for Upper R 
   output$out12 <- renderInfoBox({
     infoBox("How to use a forest plot",  
             a("Click here to go to the tutorial", onclick = "openTab('tutorial')", href="#", style = "font-size: 90%;"),
@@ -1741,70 +1761,129 @@ increases the potential for identification of false associations due to random e
   })
   
   
+  ##### For Lower R
+  forest_data_low <- reactive({
+    
+    forest_data_low <- forest_joint %>% filter(
+      effect_z == input$expo_b_low )
+  })
+  
   output$plot_low <- renderGirafe({
-    low_forest <- forest_data() %>% filter(Categorized.class==selected_class())
+    low_forest <- forest_data_low() %>% filter(Categorized.class==selected_class())
+    g <- nrow(low_forest)
+    low_forest[g+1,]<- NA
+    low_forest <-  low_forest%>% mutate(id2 = c(1:(g+1)))
+    
+    #up_forest[g+1,3] <- "OUTCOME"
+    low_forest[g+1,13] <- "EXPOSURE1"
+    low_forest[g+1,7] <- "SUBCATEGORY1"
+    #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
+    low_forest[g+1,4] <- "CATEGORY1"
+    low_forest[g+1,11] <- "OUTCOME1"
     
     
-       validate(
+    
+    
+    validate(
       need(low_forest$id != "", "There are no records for the selected combination of effect size (ES) and Type of exposure, please make another selection.")
     )
     
-    x <- girafe(code = print(
-      
-      
-      ggplot(low_forest, aes(y=Reference, x=yi, col=study))+
-        #Add data points and color them black
-        
-        geom_point_interactive(
-              aes( data_id = Reference, tooltip = inter), size = 7, shape=18,position=position_dodge(5)) +
-        #Add 'special' points for the summary estimates, by making them diamond shaped
-        #geom_point(data=subset(forest, h=='Summary'), color='black', shape=18, size=4)+
-        #add the CI error bars
-        geom_errorbarh(aes(xmin= lowerci, xmax=upperci),height=.4, position=position_dodge(5) )+
-        coord_cartesian(xlim= c(min(low_forest$yi),max(low_forest$yi)))+
-        #coord_cartesian(xlim= c(lowerci,upperci))+
-        #geom_jitter(position=position_dodge(3))+
-        #coord_cartesian(xlim= if (input$expo_b == "OR") {c(min(forest$lowerci),max(forest$yi))} else {c(-5,5)})+
-        #Specify the limits of the x-axis and relabel it to something more meaningful
-        scale_x_continuous( if (input$expo_b == "Odds Ratio (OR)") {name = "Odds Ratio (95% confidence interval)"}
-                            else if (input$expo_b == "beta coefficient of the variable"){name = "beta coefficient (95% CI)"}
-                            else if (input$expo_b == "Mean difference"){name = "Mean difference"}
-                            else if (input$expo_b == "Prevalence Ratio (PR)"){name = "Prevalence ratio (95% CI)"}
-                            else if (input$expo_b == "p value of the Odds Ratio"){name = "p value of the Odds Ratio"}
-                            else if (input$expo_b == "p value of the beta coefficient of the variable"){name = "p value of the beta coefficient"}
-        )+
-        scale_y_discrete('References',position="right")+
-        #Give y-axis a meaningful label
-        #ylab('Reference')+ 
-        #Add a vertical dashed line indicating an effect size of zero, for reference
-        geom_vline(xintercept= if (input$expo_b == "Odds Ratio (OR)"|input$expo_b == "Prevalence Ratio (PR)"|input$expo_b == "p value of the odds ratio") {1} else {0}, color='black', linetype='dashed')+
-        #Create sub-plots (i.e., facets) based on levels of setting
-        #And allow them to have their own unique axes (so authors don't redundantly repeat)
-        facet_grid(narrow ~., scales= 'free', space='free', switch="y")+
-        #annotate("segment", x = UCL_l, xend = if (input$expo_b == "OR") {3.3} else {5.4}, y = study, yend = study, alpha=0.6, arrow = arrow(length = unit(0.2, "inches"),type = "closed"))+
-        #geom_segment(aes(x = if(input$expo_b == "OR" & is.na(LCL_l)){lowerci} else {LCL_l-yi}, xend = if (input$expo_b == "OR") {-3.3} else {-5.4}  , y = study , yend = study) ,arrow = arrow(length = unit(0.2, "inches"),type = "closed"))+
-        #geom_segment(aes(x = UCL_l , xend = if (input$expo_b == "OR") {3.3} else {5.4}  , y = study , yend = study) ,arrow = arrow(length = unit(0.2, "inches"),type = "closed"))+
-        apatheme
-    ),
     
-    width_svg = 11, height_svg = if(input$expo_b == "beta coefficient of the variable"){28} 
-    else if (input$expo_b == "Odds Ratio (OR)") {25}
-    else if (input$expo_b == "Prevalence Ratio (PR)") {25} else {10}
-    ,
-    #width_svg = 12, height_svg = 12,
-    options = list(
-      opts_selection(
-        type = "multiple", css = "fill:#0c0000;stroke:black;"),
-      opts_hover(css = "fill:#0c0000;stroke:black;cursor:pointer;")
-    ))
-    #x
-  })
+    ###
+    #g <- nrow(up_forest)
+    #up_forest[gunter+1,]<- NA
+    
+    #up_forest$id2 <- c(1:(g+1))
+    #up_forest$id2 <- seq(1,(g+1))
+    
+    #up_forest[nrow(up_forest)+1,]<- "NEA"
+    ##
+    
+    
+    
+    
+    ###
+    #up_forest[nrow(up_forest),3] <- "OutcomeNEA"
+    
+    ##
+    #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
+    
+    
+    
+    fonseca <- ggplot(low_forest,aes(yi,id2, col=IDD_2)) + 
+      geom_point_interactive(
+        aes(data_id = IDD_2, tooltip = yi), size = 7, shape=18
+        
+      )+
+      #geom_point_interactive(size=5, shape=18) +
+      geom_errorbarh(aes(xmax = upperci, xmin = lowerci), height = 0.15) +
+      #coord_cartesian(xlim= c(min(up_forest$yi),max(up_forest$yi)))+
+      
+      coord_cartesian(xlim= c(min(low_forest$yi),max(low_forest$yi)))+
+      geom_vline(xintercept = 1, linetype = "longdash") +
+      #scale_x_continuous(breaks = seq(-3,10,1))+
+      scale_y_continuous(breaks = seq(1,g,3)) +
+      scale_x_continuous( if (input$expo_b_low == "OR") {name = "Odds Ratio (95% confidence interval)"}
+                          
+                          
+                          else if (input$expo_b_low == "PR"){name = "Prevalence ratio (95% CI)"},
+                          limits=c(0, 6)
+      )+
+      #labs(x="Adjusted Odds Ratio", y="")+
+      theme(axis.title.y=element_blank(),
+            axis.text.y=element_blank(),
+            axis.ticks.y=element_blank(),
+            panel.grid.major=element_blank(),
+            panel.grid.minor=element_blank(),
+            legend.position = "none"
+      )
+    
+    
+    
+    
+    fonseca3 <- ggplot(data = low_forest, aes(y = id2)) +
+      #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
+      geom_text_interactive(aes(x = 1,label = short, tooltip = Outcome.variable),size= 5.1,hjust = 0) + 
+      #geom_text(aes(x = 2.2, label = Outcome.variable), size= 3.4)+
+      geom_text_interactive(aes(x = 2, label = shortexpo,tooltip = Exposure.measure),size= 5.1,hjust = 1) +
+      #geom_text(aes(x = 4, label = Subcategory), size= 3.4,hjust = 1)+
+      #geom_text(aes(x = 5, label = inter1), size= 3.4,hjust = 1)+
+      geom_hline(aes(yintercept=c(g+0.5)))+
+      # +
+      #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
+      scale_colour_identity() +
+      theme_void()
+    
+    low_forest[g+1,15] <- "POINT ESTIMATE(95% CI)"
+    
+    
+    
+    fonseca2 <- ggplot(data = low_forest, aes(y = id2)) +
+      #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
+      #geom_text(aes(x = 1,label = IDD_2),size= 4.5,hjust = 0)+
+      geom_text(aes(x = 1.2, label = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 2, label = inter_95), size= 5.1,hjust = 1)+
+      geom_hline(aes(yintercept=c(g+0.5)))+
+      # +
+      #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
+      scale_colour_identity() +
+      theme_void()
+    
+    high1 <- nrow(low_forest)/2
+    
+    girafe( code = print(fonseca3 + fonseca + fonseca2), width_svg = 25, height_svg = high1,
+            options = list(
+              opts_selection(
+                type = "single", css = "fill:#0c0000;stroke:black;"),
+              opts_hover(css = "fill:#0c0000;stroke:black;cursor:pointer;")
+            )
+            
+    )
+    
+    
+  })   
   
-  observeEvent(input$reset, {
-    session$sendCustomMessage(type = 'plot_low', message = character(0))
-  })
   
-
   
   
   ##### For Upper R
@@ -1821,15 +1900,15 @@ increases the potential for identification of false associations due to random e
     up_forest <-  up_forest%>% mutate(id2 = c(1:(g+1)))
     
     #up_forest[g+1,3] <- "OUTCOME"
-    up_forest[g+1,13] <- "EXPOSURE"
-    up_forest[g+1,7] <- "SUBCATEGORY"
+    up_forest[g+1,13] <- "EXPOSURE1"
+    up_forest[g+1,7] <- "SUBCATEGORY1"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
-    up_forest[g+1,4] <- "CATEGORY"
-    up_forest[g+1,11] <- "OUTCOME"
+    up_forest[g+1,4] <- "CATEGORY1"
+    up_forest[g+1,11] <- "OUTCOME1"
     
-   
     
-   
+    
+    
     validate(
       need(up_forest$id != "", "There are no records for the selected combination of effect size (ES) and Type of exposure, please make another selection.")
     )
@@ -1844,7 +1923,7 @@ increases the potential for identification of false associations due to random e
     
     #up_forest[nrow(up_forest)+1,]<- "NEA"
     ##
-   
+    
     
     
     
@@ -1859,7 +1938,7 @@ increases the potential for identification of false associations due to random e
     fonseca <- ggplot(up_forest,aes(yi,id2, col=IDD_2)) + 
       geom_point_interactive(
         aes(data_id = IDD_2, tooltip = yi), size = 7, shape=18
-      
+        
       )+
       #geom_point_interactive(size=5, shape=18) +
       geom_errorbarh(aes(xmax = upperci, xmin = lowerci), height = 0.15) +
@@ -1869,6 +1948,12 @@ increases the potential for identification of false associations due to random e
       geom_vline(xintercept = 1, linetype = "longdash") +
       #scale_x_continuous(breaks = seq(-3,10,1))+
       scale_y_continuous(breaks = seq(1,g,3)) +
+      scale_x_continuous( if (input$expo_b_up == "OR") {name = "Odds Ratio (95% confidence interval)"}
+                          
+                          
+                          else if (input$expo_b_up == "PR"){name = "Prevalence ratio (95% CI)"}
+                          
+      )+
       #labs(x="Adjusted Odds Ratio", y="")+
       theme(axis.title.y=element_blank(),
             axis.text.y=element_blank(),
@@ -1877,16 +1962,16 @@ increases the potential for identification of false associations due to random e
             panel.grid.minor=element_blank(),
             
             legend.position = "none"
-            )
-   
+      )
+    
     
     
     
     fonseca3 <- ggplot(data = up_forest, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      geom_text_interactive(aes(x = 1,label = short, tooltip = Outcome.variable),size= 4.5,hjust = 0) + 
+      geom_text_interactive(aes(x = 1,label = short, tooltip = Outcome.variable),size= 5.1,hjust = 0) + 
       #geom_text(aes(x = 2.2, label = Outcome.variable), size= 3.4)+
-      geom_text_interactive(aes(x = 2, label = shortexpo,tooltip = Exposure.measure),size= 4.5,hjust = 1) +
+      geom_text_interactive(aes(x = 2, label = shortexpo,tooltip = Exposure.measure),size= 5.1,hjust = 1) +
       #geom_text(aes(x = 4, label = Subcategory), size= 3.4,hjust = 1)+
       #geom_text(aes(x = 5, label = inter1), size= 3.4,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
@@ -1901,29 +1986,144 @@ increases the potential for identification of false associations due to random e
     
     fonseca2 <- ggplot(data = up_forest, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      geom_text(aes(x = 1,label = IDD_2),size= 4.5,hjust = 0)+
-     geom_text(aes(x = 2.2, label = Subcategory),size= 4.5, hjust = 1) +
-      geom_text(aes(x = 3, label = inter_95), size= 4.5,hjust = 1)+
+      #geom_text(aes(x = 1,label = IDD_2),size= 4.5,hjust = 0)+
+      geom_text(aes(x = 1.2, label = Subcategory),size= 5.5, hjust = 0) +
+      geom_text(aes(x = 2, label = inter_95), size= 5.5,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
       scale_colour_identity() +
-     theme_void()
+      theme_void()
+    
+    #high1 <- nrow(up_forest)/2
+    
+    high2 <- nrow(up_forest)/2
+    
+    girafe( code = print(fonseca3 + fonseca + fonseca2), width_svg = 25, height_svg = high2,
+            options = list(
+              opts_selection(
+                type = "single", css = "fill:#0c0000;stroke:black;"),
+              opts_hover(css = "fill:#0c0000;stroke:black;cursor:pointer;")
+            ))
     
     
-    girafe( code = print(fonseca3 + fonseca + fonseca2), width_svg = 22, height_svg = 10,
+  })   
+  ############For lower states
+  ############################################
+  ##### For lower R STATES
+  forest_data_low_state <- reactive({
+    
+    forest_data_low_state <- up_forest_state1 %>% filter(
+      effect_z_state == input$expo_b_low_state )
+  })
+  
+  output$plot_low_state <- renderGirafe({
+    up_forest_state1 <- forest_data_low_state() %>% filter(Categorized.class==selected_class())
+    g <- nrow(up_forest_state1)
+    up_forest_state1[g+1,]<- NA
+    up_forest_state1 <-  up_forest_state1%>% mutate(id2 = c(1:(g+1)))
+    
+    #up_forest[g+1,3] <- "OUTCOME"
+    up_forest_state1[g+1,13] <- "EXPOSURE"
+    up_forest_state1[g+1,7] <- "SUBCATEGORY"
+    #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
+    up_forest_state1[g+1,4] <- "CATEGORY"
+    up_forest_state1[g+1,11] <- "OUTCOME"
+    
+    
+    
+    
+    validate(
+      need(up_forest_state1$id != "", "There are no records for the selected combination of effect size (ES) and Type of exposure, please make another selection.")
+    )
+    
+    
+    ###
+    #g <- nrow(up_forest)
+    #up_forest[gunter+1,]<- NA
+    
+    #up_forest$id2 <- c(1:(g+1))
+    #up_forest$id2 <- seq(1,(g+1))
+    
+    #up_forest[nrow(up_forest)+1,]<- "NEA"
+    ##
+    
+    
+    
+    
+    ###
+    #up_forest[nrow(up_forest),3] <- "OutcomeNEA"
+    
+    ##
+    #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
+    
+    
+    
+    fonseca_state <- ggplot(up_forest_state1,aes(yi,id2, col=IDD_2)) + 
+      geom_point_interactive(
+        aes(data_id = IDD_2, tooltip = yi), size = 7, shape=18
+        
+      )+
+      #geom_point_interactive(size=5, shape=18) +
+      geom_errorbarh(aes(xmax = upperci, xmin = lowerci), height = 0.15) +
+      #coord_cartesian(xlim= c(min(up_forest$yi),max(up_forest$yi)))+
+      
+      coord_cartesian(xlim= c(min(up_forest_state1$yi),max(up_forest_state1$yi)))+
+      geom_vline(xintercept = 1, linetype = "longdash") +
+      #scale_x_continuous(breaks = seq(-3,10,1))+
+      scale_y_continuous(breaks = seq(1,g,3)) +
+      #labs(x="Adjusted Odds Ratio", y="")+
+      theme(axis.title.y=element_blank(),
+            axis.text.y=element_blank(),
+            axis.ticks.y=element_blank(),
+            panel.grid.major=element_blank(),
+            panel.grid.minor=element_blank(),
+            
+            legend.position = "none"
+      )
+    
+    fonseca3_state <- ggplot(data = up_forest_state1, aes(y = id2)) +
+      #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
+      geom_text_interactive(aes(x = 1,label = short, tooltip = Outcome.variable),size= 5.1,hjust = 0) + 
+      #geom_text(aes(x = 2.2, label = Outcome.variable), size= 3.4)+
+      geom_text_interactive(aes(x = 2, label = shortexpo,tooltip = Exposure.measure),size= 5.1,hjust = 1) +
+      #geom_text(aes(x = 4, label = Subcategory), size= 3.4,hjust = 1)+
+      #geom_text(aes(x = 5, label = inter1), size= 3.4,hjust = 1)+
+      geom_hline(aes(yintercept=c(g+0.5)))+
+      # +
+      #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
+      scale_colour_identity() +
+      theme_void()
+    
+    up_forest_state1[g+1,15] <- "POINT ESTIMATE(95% CI)"
+    
+    fonseca2_state <- ggplot(data = up_forest_state1, aes(y = id2)) +
+      #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
+      #geom_text(aes(x = 1,label = Categorized.class),size= 4.5,hjust = 0)+
+      geom_text(aes(x = 1.2, label = Subcategory),size= 5.5, hjust = 0) +
+      geom_text(aes(x = 2, label = inter_95), size= 5.5,hjust = 1)+
+      geom_hline(aes(yintercept=c(g+0.5)))+
+      # +
+      #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
+      scale_colour_identity() +
+      theme_void()
+    
+    
+    high2 <- nrow(up_forest_state1)/2
+    
+    
+    
+    girafe( code = print(fonseca3_state + fonseca_state + fonseca2_state), width_svg = 22, height_svg = high2,
             options = list(
               opts_selection(
                 type = "single", css = "fill:#0c0000;stroke:black;"),
               opts_hover(css = "fill:#0c0000;stroke:black;cursor:pointer;")
             )
             
-            )
+    )
     
     
-  })   
-  
-  
+  })
   ##### For Upper R STATES
   forest_data_up_state <- reactive({
     
@@ -1998,9 +2198,9 @@ increases the potential for identification of false associations due to random e
     
     fonseca3_state <- ggplot(data = up_forest_state1, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      geom_text_interactive(aes(x = 1,label = short, tooltip = Outcome.variable),size= 4.5,hjust = 0) + 
+      geom_text_interactive(aes(x = 1,label = short, tooltip = Outcome.variable),size= 5.1,hjust = 0) + 
       #geom_text(aes(x = 2.2, label = Outcome.variable), size= 3.4)+
-      geom_text_interactive(aes(x = 2, label = shortexpo,tooltip = Exposure.measure),size= 4.5,hjust = 1) +
+      geom_text_interactive(aes(x = 2, label = shortexpo,tooltip = Exposure.measure),size= 5.1,hjust = 1) +
       #geom_text(aes(x = 4, label = Subcategory), size= 3.4,hjust = 1)+
       #geom_text(aes(x = 5, label = inter1), size= 3.4,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
@@ -2013,9 +2213,9 @@ increases the potential for identification of false associations due to random e
     
     fonseca2_state <- ggplot(data = up_forest_state1, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      geom_text(aes(x = 1,label = Categorized.class),size= 4.5,hjust = 0)+
-      geom_text(aes(x = 2.2, label = Subcategory),size= 4.5, hjust = 1) +
-      geom_text(aes(x = 3, label = inter_95), size= 4.5,hjust = 1)+
+      #geom_text(aes(x = 1,label = Categorized.class),size= 4.5,hjust = 0)+
+      geom_text(aes(x = 1.2, label = Subcategory),size= 5.5, hjust = 0) +
+      geom_text(aes(x = 2, label = inter_95), size= 5.5,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
@@ -2023,11 +2223,11 @@ increases the potential for identification of false associations due to random e
       theme_void()
     
     
+    high2 <- nrow(up_forest_state1)/2
     
     
     
-    
-    girafe( code = print(fonseca3_state + fonseca_state + fonseca2_state), width_svg = 22, height_svg = 10,
+    girafe( code = print(fonseca3_state + fonseca_state + fonseca2_state), width_svg = 22, height_svg = high2,
             options = list(
               opts_selection(
                 type = "single", css = "fill:#0c0000;stroke:black;"),
@@ -2038,6 +2238,7 @@ increases the potential for identification of false associations due to random e
     
     
   })
+  
   
   #### For AR
   
@@ -2738,7 +2939,7 @@ increases the potential for identification of false associations due to random e
     
   })
   
- 
+  
   
   #reactive table based on the selected row 
   tbl_reactive <- reactive({
@@ -2750,27 +2951,42 @@ increases the potential for identification of false associations due to random e
     #t(forest123[input$my_table_rows_selected %in% selected_state())
     #t(forest123[selected_state(), ])
   })
-
+  
   
   
   ##### For upper R
   
-#  tbl_reactive_up <- reactive({
-    #t(input$filter(forest123, study == selected_state()))
-#    gew1 <- forest_sabado[forest_sabado$IDD %in% selected_state_up(), ]
-#    gew1<- gew1[c(25, 26,27)]
-#    t(gew1[1,])
-    #t(forest123[as.character(input$my_table_rows_selected[1]),])
-    #t(forest123[input$my_table_rows_selected %in% selected_state())
-    #t(forest123[selected_state(), ])
-    
-#  })
+  #  tbl_reactive_up <- reactive({
+  #t(input$filter(forest123, study == selected_state()))
+  #    gew1 <- forest_sabado[forest_sabado$IDD %in% selected_state_up(), ]
+  #    gew1<- gew1[c(25, 26,27)]
+  #    t(gew1[1,])
+  #t(forest123[as.character(input$my_table_rows_selected[1]),])
+  #t(forest123[input$my_table_rows_selected %in% selected_state())
+  #t(forest123[selected_state(), ])
   
+  #  })
+  ######## lower 
+  tbl_reactive_low <- reactive({
+    gew1low <- ROB_joint[ROB_joint$IDD_2 %in% selected_state_low(), ]
+    
+    if(is.na(gew1low$"Differential information 3")){gew1low <- gew1low[c(1,2, 3, 4, 5)]} else {gew1low <- gew1low[c(1,2, 3, 4, 5, 9, 10)]}    
+    
+    #gew1<- gew1[c(1,2, 3, 4, 5, 9,10)]
+    t(gew1low[1,])
+    
+  }) 
+  
+  
+  #####
   tbl_reactive_up <- reactive({
-          gew1 <- ROB_joint[ROB_joint$IDD_2 %in% selected_state_up(), ]
-      gew1<- gew1[c(1,2,3,4,5,6,7,8,9,10,11)]
-      t(gew1[1,])
-   
+    gew1 <- ROB_joint[ROB_joint$IDD_2 %in% selected_state_up(), ]
+    
+    if(is.na(gew1$"Differential information 3")){gew1 <- gew1[c(1,2, 3, 4, 5)]} else {gew1 <- gew1[c(1,2, 3, 4, 5, 9, 10)]}    
+    
+    #gew1<- gew1[c(1,2, 3, 4, 5, 9,10)]
+    t(gew1[1,])
+    
   })
   
   ##### For AR
@@ -2931,118 +3147,252 @@ increases the potential for identification of false associations due to random e
     #datatable(out ,selection='single')
     #out
     
+    if(is.na(out23up$"Differential information 3")){out23up <- out23up[c(2, 1, 3, 4, 5)]} else {out23up <- out23up[c(2, 1, 3, 4, 5, 9, 10)]}
+    
+    #out23up <- out23up[c(2, 1, 3, 4, 5)]
     #newdata <- out[c(-1,-3, -4, -5,-6,-7,-15, -16, -17, -18)]
     #newdata23up <- out23up[c(10, 11, 12, 13, 14,15, 16, 17)]
     tablereac23up <- as.datatable(formattable(out23up,align = c("l", rep("c", NCOL(out23up) - 1)), list(
       #CPOE = color_tile("white", "green"),
       #VERBAL = color_tile("white", "red"),
       #WRITTEN = color_tile("white", "red"),
-      "Differential information" = formatter("span",
-                              style = j ~ style(display  = "block",
-                                                "border-radius" = "80%",
-                                                height="80px",
-                                                margin="auto",
-                                                width="80px",
-                                                "font-size"="10px", 
-                                                "line-height"="50px",
-                                                "text-align"="center",
-                                                "padding-right" = "4px",
-                                                color = "black",
-                                                "background-color" = sapply(j,bg.picker1))
-                              
+      "Misclassification of exposure" = formatter("span",
+                                                  style = j ~ style(display  = "block",
+                                                                    "border-radius" = "55%",
+                                                                    height="55px",
+                                                                    margin="auto",
+                                                                    width="55px",
+                                                                    "font-size"="11px", 
+                                                                    "line-height"="55px",
+                                                                    "text-align"="center",
+                                                                    "padding-right" = "4px",
+                                                                    color = "black",
+                                                                    "background-color" = sapply(j,bg.picker1))
+                                                  
       ),
-      "Differential information 2" = formatter("span",
-                                              style = j ~ style(display  = "block",
-                                                                "border-radius" = "70%",
-                                                                height="80px",
-                                                                #margin="auto",
-                                                                width="80px",
-                                                                "font-size"="10px", 
-                                                                "line-height"="70px",
-                                                                "text-align"="center",
-                                                                "padding-right" = "4px",
-                                                                color = "black",
-                                                                "background-color" = sapply(j,bg.picker1))),
+      "Misclassification of outcome" = formatter("span",
+                                                 style = j ~ style(display  = "block",
+                                                                   "border-radius" = "55%",
+                                                                   height="55px",
+                                                                   margin="auto",
+                                                                   width="55px",
+                                                                   "font-size"="11px", 
+                                                                   "line-height"="55px",
+                                                                   "text-align"="center",
+                                                                   "padding-right" = "4px",
+                                                                   color = "black",
+                                                                   "background-color" = sapply(j,bg.picker1))
+      ),
       
       "Selection bias" = formatter("span",
-                                            style = j ~ style(display  = "block",
-                                                              "border-radius" = "50%",
-                                                              height="80px",
-                                                              margin="auto",
-                                                              width="80px",
-                                                              "font-size"="9px", 
-                                                              "line-height"="50px",
-                                                              "text-align"="center",
-                                                              "padding-right" = "4px",
-                                                              color = "black",
-                                                              "background-color" = sapply(j,bg.picker1))),
+                                   style = j ~ style(display  = "block",
+                                                     "border-radius" = "55%",
+                                                     height="55px",
+                                                     margin="auto",
+                                                     width="55px",
+                                                     "font-size"="11px", 
+                                                     "line-height"="55px",
+                                                     "text-align"="center",
+                                                     "padding-right" = "4px",
+                                                     color = "black",
+                                                     "background-color" = sapply(j,bg.picker1))),
       "Selection_bias 2" = formatter("span",
+                                     style = j ~ style(display  = "block",
+                                                       "border-radius" = "55%",
+                                                       height="55px",
+                                                       margin="auto",
+                                                       width="55px",
+                                                       "font-size"="11px", 
+                                                       "line-height"="55px",
+                                                       "text-align"="center",
+                                                       "padding-right" = "4px",
+                                                       color = "black",
+                                                       "background-color" = sapply(j,bg.picker1))),
+      "Confounding" = formatter("span",
+                                style = j ~ style(display  = "block",
+                                                  "border-radius" = "55%",
+                                                  height="55px",
+                                                  margin="auto",
+                                                  width="55px",
+                                                  "font-size"="11px", 
+                                                  "line-height"="55px",
+                                                  "text-align"="center",
+                                                  "padding-right" = "4px",
+                                                  color = "black",
+                                                  "background-color" = sapply(j,bg.picker1))),
+      "Overall bias" = formatter("span",
                                  style = j ~ style(display  = "block",
                                                    "border-radius" = "50%",
-                                                   height="80px",
+                                                   height="50px",
                                                    margin="auto",
-                                                   width="80px",
+                                                   width="50px",
                                                    "font-size"="9px", 
                                                    "line-height"="50px",
                                                    "text-align"="center",
                                                    "padding-right" = "4px",
                                                    color = "black",
                                                    "background-color" = sapply(j,bg.picker1))),
-      "Confounding" = formatter("span",
-                                           style = j ~ style(display  = "block",
-                                                             "border-radius" = "50%",
-                                                             height="80px",
-                                                             margin="auto",
-                                                             width="80px",
-                                                             "font-size"="10px", 
-                                                             "line-height"="50px",
-                                                             "text-align"="center",
-                                                             "padding-right" = "4px",
-                                                             color = "black",
-                                                             "background-color" = sapply(j,bg.picker1))),
-      "Overall bias" = formatter("span",
-                                                  style = j ~ style(display  = "block",
-                                                                    "border-radius" = "50%",
-                                                                    height="50px",
-                                                                    margin="auto",
-                                                                    width="50px",
-                                                                    "font-size"="9px", 
-                                                                    "line-height"="50px",
-                                                                    "text-align"="center",
-                                                                    "padding-right" = "4px",
-                                                                    color = "black",
-                                                                    "background-color" = sapply(j,bg.picker1))),
       "Differential information 3" = formatter("span",
-                                                 style = j ~ style(display  = "block",
-                                                                   "border-radius" = "50%",
-                                                                   height="50px",
-                                                                   margin="auto",
-                                                                   width="50px",
-                                                                   "font-size"="9px", 
-                                                                   "line-height"="50px",
-                                                                   "text-align"="center",
-                                                                   "padding-right" = "4px",
-                                                                   color = "black",
-                                                                   "background-color" = sapply(j,bg.picker1))),
+                                               style = j ~ style(display  = "block",
+                                                                 "border-radius" = "55%",
+                                                                 height="55px",
+                                                                 margin="auto",
+                                                                 width="55px",
+                                                                 "font-size"="11px", 
+                                                                 "line-height"="55px",
+                                                                 "text-align"="center",
+                                                                 "padding-right" = "4px",
+                                                                 color = "black",
+                                                                 "background-color" = sapply(j,bg.picker1))),
       
       "Differential information 4" = formatter("span",
-                            style = j ~ style(display  = "block",
-                                              "border-radius" = "50%",
-                                              height="50px",
-                                              margin="auto",
-                                              width="50px",
-                                              "font-size"="9px", 
-                                              "line-height"="50px",
-                                              "text-align"="center",
-                                              "padding-right" = "4px",
-                                              color = "black",
-                                              "background-color" = sapply(j,bg.picker1)))
+                                               style = j ~ style(display  = "block",
+                                                                 "border-radius" = "55%",
+                                                                 height="55px",
+                                                                 margin="auto",
+                                                                 width="55px",
+                                                                 "font-size"="11px", 
+                                                                 "line-height"="55px",
+                                                                 "text-align"="center",
+                                                                 "padding-right" = "4px",
+                                                                 color = "black",
+                                                                 "background-color" = sapply(j,bg.picker1)))
       
       
-    )), rownames = FALSE, escape = F, selection = c("single"),class="compact",options = list(ordering=F, bFilter=F))
+    )), rownames = F, escape = F, selection = c("single"),class="compact",options = list(ordering=F, bFilter=F))
     
     
   })
+  
+  ####### traffic for lower
+  output$alexander2 <- renderDataTable({
+    
+    
+    out23low <- ROB_joint_tl[ROB_joint_tl$IDD_2 %in% selected_state_low(), ]
+    if( nrow(out23low) < 1 ) return(NULL)
+    row.names(out23low) <- NULL
+    #datatable(out ,selection='single')
+    #out
+    
+    if(is.na(out23low$"Differential information 3")){out23low <- out23low[c(2, 1, 3, 4, 5)]} else {out23low <- out23low[c(2, 1, 3, 4, 5, 9, 10)]}
+    
+    #out23up <- out23up[c(2, 1, 3, 4, 5)]
+    #newdata <- out[c(-1,-3, -4, -5,-6,-7,-15, -16, -17, -18)]
+    #newdata23up <- out23up[c(10, 11, 12, 13, 14,15, 16, 17)]
+    tablereac23low <- as.datatable(formattable(out23low,align = c("l", rep("c", NCOL(out23low) - 1)), list(
+      #CPOE = color_tile("white", "green"),
+      #VERBAL = color_tile("white", "red"),
+      #WRITTEN = color_tile("white", "red"),
+      "Misclassification of exposure" = formatter("span",
+                                                  style = j ~ style(display  = "block",
+                                                                    "border-radius" = "55%",
+                                                                    height="55px",
+                                                                    margin="auto",
+                                                                    width="55px",
+                                                                    "font-size"="11px", 
+                                                                    "line-height"="55px",
+                                                                    "text-align"="center",
+                                                                    "padding-right" = "4px",
+                                                                    color = "black",
+                                                                    "background-color" = sapply(j,bg.picker1))
+                                                  
+      ),
+      "Misclassification of outcome" = formatter("span",
+                                                 style = j ~ style(display  = "block",
+                                                                   "border-radius" = "55%",
+                                                                   height="55px",
+                                                                   margin="auto",
+                                                                   width="55px",
+                                                                   "font-size"="11px", 
+                                                                   "line-height"="55px",
+                                                                   "text-align"="center",
+                                                                   "padding-right" = "4px",
+                                                                   color = "black",
+                                                                   "background-color" = sapply(j,bg.picker1))
+      ),
+      
+      "Selection bias" = formatter("span",
+                                   style = j ~ style(display  = "block",
+                                                     "border-radius" = "55%",
+                                                     height="55px",
+                                                     margin="auto",
+                                                     width="55px",
+                                                     "font-size"="11px", 
+                                                     "line-height"="55px",
+                                                     "text-align"="center",
+                                                     "padding-right" = "4px",
+                                                     color = "black",
+                                                     "background-color" = sapply(j,bg.picker1))),
+      "Selection_bias 2" = formatter("span",
+                                     style = j ~ style(display  = "block",
+                                                       "border-radius" = "55%",
+                                                       height="55px",
+                                                       margin="auto",
+                                                       width="55px",
+                                                       "font-size"="11px", 
+                                                       "line-height"="55px",
+                                                       "text-align"="center",
+                                                       "padding-right" = "4px",
+                                                       color = "black",
+                                                       "background-color" = sapply(j,bg.picker1))),
+      "Confounding" = formatter("span",
+                                style = j ~ style(display  = "block",
+                                                  "border-radius" = "55%",
+                                                  height="55px",
+                                                  margin="auto",
+                                                  width="55px",
+                                                  "font-size"="11px", 
+                                                  "line-height"="55px",
+                                                  "text-align"="center",
+                                                  "padding-right" = "4px",
+                                                  color = "black",
+                                                  "background-color" = sapply(j,bg.picker1))),
+      "Overall bias" = formatter("span",
+                                 style = j ~ style(display  = "block",
+                                                   "border-radius" = "50%",
+                                                   height="50px",
+                                                   margin="auto",
+                                                   width="50px",
+                                                   "font-size"="9px", 
+                                                   "line-height"="50px",
+                                                   "text-align"="center",
+                                                   "padding-right" = "4px",
+                                                   color = "black",
+                                                   "background-color" = sapply(j,bg.picker1))),
+      "Differential information 3" = formatter("span",
+                                               style = j ~ style(display  = "block",
+                                                                 "border-radius" = "55%",
+                                                                 height="55px",
+                                                                 margin="auto",
+                                                                 width="55px",
+                                                                 "font-size"="11px", 
+                                                                 "line-height"="55px",
+                                                                 "text-align"="center",
+                                                                 "padding-right" = "4px",
+                                                                 color = "black",
+                                                                 "background-color" = sapply(j,bg.picker1))),
+      
+      "Differential information 4" = formatter("span",
+                                               style = j ~ style(display  = "block",
+                                                                 "border-radius" = "55%",
+                                                                 height="55px",
+                                                                 margin="auto",
+                                                                 width="55px",
+                                                                 "font-size"="11px", 
+                                                                 "line-height"="55px",
+                                                                 "text-align"="center",
+                                                                 "padding-right" = "4px",
+                                                                 color = "black",
+                                                                 "background-color" = sapply(j,bg.picker1)))
+      
+      
+    )), rownames = F, escape = F, selection = c("single"),class="compact",options = list(ordering=F, bFilter=F))
+    
+    
+  })
+  
+  ##### to include in the new version of forest plot for lower respiratory
+  
   
   
   ####
@@ -3063,9 +3413,9 @@ increases the potential for identification of false associations due to random e
   })
   
   #here's the table displayed in our modal
-  output$modal_table <- DT::renderDataTable({
-    tbl_reactive()
-    
+  
+  output$modal_table_low <- DT::renderDataTable({
+    tbl_reactive_low()
   })
   
   ### for Upper R
@@ -3093,10 +3443,15 @@ increases the potential for identification of false associations due to random e
   })
   
   #our modal dialog box
-  myModal <- function(failed=FALSE){
+  
+  ######  for Lower R
+  myModal_low <- function(failed=FALSE){
     modalDialog(
-      div(dataTableOutput('modal_table'), style = "font-size:85%"),
-      width= "fit-content",
+      div(dataTableOutput('alexander2'), style = "font-size:95%"),
+      hr(),
+      div(dataTableOutput('modal_table_low'), style = "font-size:95%"),
+      #width= "fit-content",
+      size = c("l"),
       easyClose = TRUE
       
     )
@@ -3150,12 +3505,12 @@ increases the potential for identification of false associations due to random e
     )
   }
   
-  #event to trigger the modal box to appear
-  observeEvent(input$my_table_rows_selected,{
-    #observeEvent(input$selected_state,{
-    showModal(myModal())
-    
-  }) 
+  ###################event to trigger the modal box to appear
+  #observeEvent(input$my_table_rows_selected,{
+  #observeEvent(input$selected_state,{
+  #  showModal(myModal())
+  
+  #}) 
   
   ### For upper R
   observeEvent(selected_state_up(),{
@@ -3163,6 +3518,14 @@ increases the potential for identification of false associations due to random e
     showModal(myModal_up())
     
   }) 
+  
+  ##### for lower
+  observeEvent(selected_state_low(),{
+    #observeEvent(input$selected_state,{
+    showModal(myModal_low())
+    
+  })  
+  
   
   ### For AR
   observeEvent(input$my_table_ar_rows_selected,{
@@ -3344,14 +3707,14 @@ increases the potential for identification of false associations due to random e
     data <- read_PRISMAdata(rv$data)
     attach(data)
     
-   
+    
     
     
     plot <- PRISMA_flowdiagram(data,
                                interactive = FALSE,
                                #previous = include_previous,
                                other = F
-                               )
+    )
   })
   
   
@@ -3380,10 +3743,10 @@ increases the potential for identification of false associations due to random e
 })
 
 
-  
- 
-  
-  
+
+
+
+
 
 
 
