@@ -442,9 +442,9 @@ forest_joint$numberofwords <- sapply(strsplit(forest_joint$Outcome.variable, " "
 forest_joint$short <- ifelse(forest_joint$numberofwords>=5, paste(forest_joint$short, "..." ), forest_joint$short)
 
 
-forest_joint$shortexpo <- ifelse(is.na(word(forest_joint$Exposure.measure, 1, 9)), forest_joint$Exposure.measure, word(forest_joint$Exposure.measure, 1, 9))
+forest_joint$shortexpo <- ifelse(is.na(word(forest_joint$Exposure.measure, 1, 5)), forest_joint$Exposure.measure, word(forest_joint$Exposure.measure, 1, 5))
 forest_joint$numberofwordsexpo <- sapply(strsplit(forest_joint$Exposure.measure, " "), length)
-forest_joint$shortexpo <- ifelse(forest_joint$numberofwords>=9, paste(forest_joint$shortexpo, "..." ), forest_joint$shortexpo)
+forest_joint$shortexpo <- ifelse(forest_joint$numberofwords>=6, paste(forest_joint$shortexpo, "..." ), forest_joint$shortexpo)
 
 forest_joint <- forest_joint %>% mutate(inter_95 = ifelse(is.na(lowerci), paste(forest_joint$yi), paste(forest_joint$yi,"[",forest_joint$lowerci,",", forest_joint$upperci,"]")))
 ######
@@ -453,9 +453,9 @@ up_forest_state1$numberofwords <- sapply(strsplit(up_forest_state1$Outcome.varia
 up_forest_state1$short <- ifelse(up_forest_state1$numberofwords>=5, paste(up_forest_state1$short, "..." ), up_forest_state1$short)
 
 
-up_forest_state1$shortexpo <- ifelse(is.na(word(up_forest_state1$Exposure.measure, 1, 9)), up_forest_state1$Exposure.measure, word(up_forest_state1$Exposure.measure, 1, 9))
+up_forest_state1$shortexpo <- ifelse(is.na(word(up_forest_state1$Exposure.measure, 1, 5)), up_forest_state1$Exposure.measure, word(up_forest_state1$Exposure.measure, 1, 5))
 up_forest_state1$numberofwordsexpo <- sapply(strsplit(up_forest_state1$Exposure.measure, " "), length)
-up_forest_state1$shortexpo <- ifelse(up_forest_state1$numberofwords>=9, paste(up_forest_state1$shortexpo, "..." ), up_forest_state1$shortexpo)
+up_forest_state1$shortexpo <- ifelse(up_forest_state1$numberofwords>=6, paste(up_forest_state1$shortexpo, "..." ), up_forest_state1$shortexpo)
 
 up_forest_state1 <- up_forest_state1 %>% mutate(inter_95 = ifelse(is.na(lowerci), paste(up_forest_state1$yi), paste(up_forest_state1$yi,"[",up_forest_state1$lowerci,",", up_forest_state1$upperci,"]")))
 
@@ -655,8 +655,8 @@ dataset <- dataset %>%
 ROB_cols <- grep("ROB_", names(dataset), value = TRUE)[c(1:7, 9:15)]
 
 ## summary - ROB ####
-bias_types <- c("Misclassification of outcome", "Misclassification of exposure", "Selection bias",
-                "Selection_bias 2", "Measurement of Outcome", "Selection of Reported Result", "Measurement of Interventions")
+bias_types <- c("Confounding", "Selection of Participants", "Measurement of Exposures",
+                "Missing Data", "Measurement of Outcome", "Selection of Reported Result", "Measurement of Interventions")
 r2 <- rob %>%
   select(Refid,Categorized.class,ROB_confounding_paige,
          ROB_selection_paige, ROB_measurementExposure_paige,

@@ -16,31 +16,28 @@ dashboardPage(
       menuItem("Health Outcomes", tabName = "outcome", icon = icon("fas fa-notes-medical"),
                menuItem("Lower Respiratory", tabName = "low_rsp",
                         menuItem("Overview", tabName = "low_rsp_intro"),
-                        menuItem("Forest Plot for Health States", tabName = "low_rsp_forest_state"),
-                        menuItem("Forest Plot", tabName = "low_rsp_forest"),
+                        menuItem("Forest Plot", tabName = "low_rsp_forest_state"),
+                        menuItem("Forest Plot with Risk of Bias", tabName = "low_rsp_forest"),
                         menuItem("Risk of Bias", tabName = "low_rsp_risk_of_bias"),
                         menuItem("Interpretation", tabName = "low_rsp_conclusion")),
                menuItem("Upper Respiratory", tabName = "up_rsp",
                         menuItem("Overview", tabName = "up_rsp_intro"),
-                        menuItem("Forest Plot for Health States", tabName = "up_rsp_forest_state"),
-                        menuItem("Forest Plot", tabName = "up_rsp_forest"),
+                        menuItem("Forest Plot ", tabName = "up_rsp_forest_state"),
+                        menuItem("Forest Plot with Risk of Bias", tabName = "up_rsp_forest"),
                         menuItem("Risk of Bias", tabName = "up_rsp_risk_of_bias"),
                         menuItem("Interpretation", tabName = "up_rsp_conclusion")),
                menuItem("Antimicrobial resistance", tabName = "ar_rsp",
                         menuItem("Overview", tabName = "ar_rsp_intro"),
-                        menuItem("Forest Plot", tabName = "ar_rsp_forest"),
+                        menuItem("Forest Plot ", tabName = "ar_rsp_forest_state"),
+                        menuItem("Forest Plot with Risk of Bias", tabName = "ar_rsp_forest"),
                         menuItem("Risk of Bias", tabName = "ar_rsp_risk_of_bias"),
                         menuItem("Interpretation", tabName = "ar_rsp_conclusion")),
                menuItem("Gastrointestinal diseases", tabName = "gi_rsp",
                         menuItem("Overview", tabName = "gi_rsp_intro"),
-                        menuItem("Forest Plot", tabName = "gi_rsp_forest"),
+                        menuItem("Forest Plot ", tabName = "gi_rsp_forest_state"),
+                        menuItem("Forest Plot with Risk of Bias", tabName = "gi_rsp_forest"),
                         menuItem("Risk of Bias", tabName = "gi_rsp_risk_of_bias"),
-                        menuItem("Interpretation", tabName = "gi_rsp_conclusion")),
-               menuItem("Neurologic", tabName = "Neur_rsp",
-                        menuItem("Overview", tabName = "Neur_rsp_intro"),
-                        menuItem("Forest Plot", tabName = "Neur_rsp_forest"),
-                        menuItem("Risk of Bias", tabName = "Neur_rsp_risk_of_bias"),
-                        menuItem("Interpretation", tabName = "Neur_rsp_conclusion"))),
+                        menuItem("Interpretation", tabName = "gi_rsp_conclusion"))),
       # ),
       menuItem("References", tabName = "ref", icon = icon("book")),
       # selectInput("class",
@@ -145,7 +142,7 @@ dashboardPage(
                     hr(),
                     fluidRow( column(width = 12, h4("How to use the forest plot graph?"),
                                      br(),
-                                     p("The reported effect measures were either regression coefficients (βs) or prevalence ORs and prevalence ratios. In the forest plot (left side), 
+                                     p("The reported effect measures were either odds ratio (OR) or prevalence ratio (PR). In the forest plot (left side), 
                       each point represents the reported effect measure (e.g. an odds ratio) for a specific exposure-outcome relationship."),
                                      p("The gray column in the forest plot’s left side, groups the exposures in four categories: distance, gases, odor and aerosols. While distance is considered as an indirect type of exposure, the other ones are considered as a direct type of exposure, since they involve direct contact with the individual."),
                                      p(" The table on the right side shows the risk of bias assessment for the specific point selected previously on the forest plot. For further details about risk of bias assessment displayed in the table", a("click here", href = "https://www.bristol.ac.uk/population-health-sciences/centres/cresyda/barr/riskofbias/"),".", 
@@ -371,11 +368,8 @@ effects."),
                                uiOutput("expo_var_1_low")
                              )),
                       
-                      #  column(width = 4,
-                      # wellPanel(
-                      #  uiOutput("expo_var_2_up")
-                      # )),
-                      #infoBoxOutput("out12")
+                      
+                      infoBoxOutput("out12_low")
                       
                       
                     ),
@@ -446,6 +440,7 @@ effects."),
               )    
               
       ),  
+      
       
       
       tabItem(tabName = "low_rsp_forest_state",
@@ -537,6 +532,94 @@ effects."),
               
       ),  
       
+      tabItem(tabName = "ar_rsp_forest_state",
+              fluidRow(
+                box(width = 12, solidHeader = T, status = "primary",
+                    title = "Forest Plot",
+                    p("Please select an effect size and a type of exposure from the drop-down menus below."),
+                    br(),
+                    fluidRow(
+                      
+                      column(width = 4,
+                             wellPanel(
+                               uiOutput("expo_var_1_ar_state")
+                             )),
+                      
+                      #  column(width = 4,
+                      # wellPanel(
+                      #  uiOutput("expo_var_2_up")
+                      # )),
+                      #infoBoxOutput("out12")
+                      
+                      
+                    ),
+                    
+                    hr(),
+                    fluidRow(
+                      column(width = 12,
+                             h4("Select a point: "),
+                             #actionButton("reset", label = "Reset selection"),
+                             ggiraph::girafeOutput("plot_ar_state",height="auto"),
+                             
+                      ),
+                      tags$head(
+                        tags$style(type = "text/css",
+                                   HTML("th { text-align: center; }")
+                        )
+                      )
+                    )                    
+                )
+                
+                
+                
+              )    
+              
+      ),  
+      
+      tabItem(tabName = "gi_rsp_forest_state",
+              fluidRow(
+                box(width = 12, solidHeader = T, status = "primary",
+                    title = "Forest Plot",
+                    p("Please select an effect size and a type of exposure from the drop-down menus below."),
+                    br(),
+                    fluidRow(
+                      
+                      column(width = 4,
+                             wellPanel(
+                               uiOutput("expo_var_1_gi_state")
+                             )),
+                      
+                      #  column(width = 4,
+                      # wellPanel(
+                      #  uiOutput("expo_var_2_up")
+                      # )),
+                      #infoBoxOutput("out12")
+                      
+                      
+                    ),
+                    
+                    hr(),
+                    fluidRow(
+                      column(width = 12,
+                             h4("Select a point: "),
+                             #actionButton("reset", label = "Reset selection"),
+                             ggiraph::girafeOutput("plot_gi_state",height="auto"),
+                             
+                      ),
+                      tags$head(
+                        tags$style(type = "text/css",
+                                   HTML("th { text-align: center; }")
+                        )
+                      )
+                    )                    
+                )
+                
+                
+                
+              )    
+              
+      ),
+      
       tabItem(tabName = "ar_rsp_forest",
               fluidRow(
                 box(width = 12, solidHeader = T, status = "primary",
@@ -550,10 +633,7 @@ effects."),
                                uiOutput("expo_var_1_ar")
                              )),
                       
-                      column(width = 4,
-                             wellPanel(
-                               uiOutput("expo_var_2_ar")
-                             )),
+                      
                       infoBoxOutput("out12_ar")
                       
                       
@@ -561,7 +641,7 @@ effects."),
                     
                     hr(),
                     fluidRow(
-                      column(width = 5,
+                      column(width = 12,
                              h4("Select a point: "),
                              #actionButton("reset", label = "Reset selection"),
                              ggiraph::girafeOutput("plot_ar",height="auto"),
@@ -571,16 +651,8 @@ effects."),
                         tags$style(type = "text/css",
                                    HTML("th { text-align: center; }")
                         )
-                      ),
-                      column(width = 7,
-                             
-                             h4("Selected outcome-exposure"),
-                             
-                             div(dataTableOutput("my_table_ar"),style = "font-size: 65%; width: 40%;text-align: center",
-                             )
-                             
-                             
                       )
+                      
                     )                    
                 )
                 
@@ -589,6 +661,7 @@ effects."),
               )    
               
       ),  
+      
       
       tabItem(tabName = "gi_rsp_forest",
               fluidRow(
@@ -603,10 +676,7 @@ effects."),
                                uiOutput("expo_var_1_gi")
                              )),
                       
-                      column(width = 4,
-                             wellPanel(
-                               uiOutput("expo_var_2_gi")
-                             )),
+                      
                       infoBoxOutput("out12_gi")
                       
                       
@@ -614,7 +684,7 @@ effects."),
                     
                     hr(),
                     fluidRow(
-                      column(width = 5,
+                      column(width = 12,
                              h4("Select a point: "),
                              #actionButton("reset", label = "Reset selection"),
                              ggiraph::girafeOutput("plot_gi",height="auto"),
@@ -624,16 +694,8 @@ effects."),
                         tags$style(type = "text/css",
                                    HTML("th { text-align: center; }")
                         )
-                      ),
-                      column(width = 7,
-                             
-                             h4("Selected outcome-exposure"),
-                             
-                             div(dataTableOutput("my_table_gi"),style = "font-size: 65%; width: 40%;text-align: center",
-                             )
-                             
-                             
                       )
+                     
                     )                    
                 )
                 
@@ -782,7 +844,7 @@ the outcome reported by Feingold et al."),
       tabItem(tabName = "low_rsp_conclusion",
               fluidRow(
                 box(width = 12, solidHeader = TRUE, status = "primary", title = "Interpretation Lower Respiratory Outcomes",
-                    tags$li("Many studies reported outcomes associated with the lower respiratory tract. The reported effect measures were either regression coefficients (βs) or prevalence ORs  and prevalence ratios. "),
+                    tags$li("Many studies reported outcomes associated with the lower respiratory tract. The reported effect measures were either odds ratio (OR) or prevalence ratio (PR)."),
                     tags$li("Most of the regression coefficients reported for lower respiratory tract outcomes included a 95% confidence interval (CI), which included effect sizes associated with protective effects, risk effects, and no effect (i.e., the 95% CI included the null value). Three regression coefficient values had negative value beta estimates. The overall risk of bias was considered serious or critical for the studies that provided outcomes measured as regression coefficients."),
                     tags$li("There was no consistent evidence of an association between exposure (or higher levels of exposure) to animal facilities and higher odds of lower respiratory tract outcomes for the prevalence OR effect measure, except when the level of odor annoyance was used as the measure of exposure. The precision of the effect size estimates was low (i.e., the intervals were wide), and the 95% CIs extended across a range that included a protective effect, no effect, and a risk effect. . Mirabelli et al. reported 89 prevalence ratios (PR) and these are reported in Additional file 1, and the same inference applies. Most prevalence ratio intervals included one, and no consistent dose-response effect was observed."),
                     tags$li("Many authors studied ordered levels of exposure (increasing or decreasing) to document a dose-response, which is important for investigation of causation. When the metric for goat exposure was a density indicator (i.e., number of goats within 5 km of the subject’s residence) and the outcome metric was pneumonia, there was evidence of an association between higher goat density and lower respiratory disease. The prevalence OR for the highest goat density (17,191–20,960) was 1.68, which indicated an increased prevalence of disease. Although the precision was moderate, all of the values within the 95% CI were associated with increased prevalence. These apparently inconsistent findings were reported by the same authors in the same study population. One explanation is that different mechanisms lead to the development of pneumonia versus asthma."),
