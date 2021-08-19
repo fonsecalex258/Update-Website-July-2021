@@ -245,7 +245,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                 
                 fluidRow(column(width = 12, h4("Studies included in the baseline review and new ones identified in each update"),
                                 br(), 
-                                p(" The following table contains the articles included in the initial review (baseline review)."),
+                                p(" The following table contains the articles included in the initial review (baseline review). Only 15 studies are included in the current review, because the study Avery et al 2004 in not eligble as it is experimental model of exposure"),
                                 DT::dataTableOutput("mytable1234")
                 )
                 
