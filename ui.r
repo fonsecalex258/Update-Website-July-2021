@@ -142,12 +142,12 @@ dashboardPage(
                     hr(),
                     fluidRow( column(width = 12, h4("How to use the forest plot graph?"),
                                      br(),
-                                     p("The reported effect measures were either odds ratio (OR) or prevalence ratio (PR). In the forest plot (left side), 
+                                     p("The reported effect measures were either odds ratio (OR) or prevalence ratio (PR). In the forest plot, 
                       each point represents the reported effect measure (e.g. an odds ratio) for a specific exposure-outcome relationship."),
-                                     p("The gray column in the forest plot’s left side, groups the exposures in four categories: distance, gases, odor and aerosols. While distance is considered as an indirect type of exposure, the other ones are considered as a direct type of exposure, since they involve direct contact with the individual."),
-                                     p(" The table on the right side shows the risk of bias assessment for the specific point selected previously on the forest plot. For further details about risk of bias assessment displayed in the table", a("click here", href = "https://www.bristol.ac.uk/population-health-sciences/centres/cresyda/barr/riskofbias/"),".", 
-                                       "Once you click on one a row, a table is going to pop-up to provide more details about the judgment made by the authors for that particular exposure-outcome relationship.  "),
-                                     p("The video below  provides more details about the usage of the forest plot and its annexes."),
+                                     #p("The gray column in the forest plot’s left side, groups the exposures in four categories: distance, gases, odor and aerosols. While distance is considered as an indirect type of exposure, the other ones are considered as a direct type of exposure, since they involve direct contact with the individual."),
+                                     #p(" The table on the right side shows the risk of bias assessment for the specific point selected previously on the forest plot. For further details about risk of bias assessment displayed in the table", a("click here", href = "https://www.bristol.ac.uk/population-health-sciences/centres/cresyda/barr/riskofbias/"),".", 
+                                    #   "Once you click on one a row, a table is going to pop-up to provide more details about the judgment made by the authors for that particular exposure-outcome relationship.  "),
+                                     p("Once you click on one point, a table is going to pop-up to provide more details about the judgment made by the authors for that particular exposure-outcome relationship. The video below  provides more details about the usage of the forest plot and its annexes."),
                                      column(width = 12,
                                             br(),
                                             HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/BPUWWaVx0k0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
@@ -181,7 +181,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
               #fluidRow(
               # box(width = 12,
               #    h4("Brief Summary"),
-              #   p("The literture about human health impacts of living near production animals is quite limited. After conducting an exhaustive search, our team identified 16 studies consisting of 10 study populations to include in the analysis.
+              #   p("The literture about human health impacts of living near production animals is quite limited. In the last review, our team identified 16 studies consisting of 10 study populations to include in the analysis.
               #    Those 16 studies were conducted in only three countries. The health outcomes were lower and upper respiratory tracts, antibiotic resistance, other infectious disease, neurological, 
               #        psychological, dermatological, otologic, ocular, gastrointestinal, stress and mood, and other non-infectious health outcomes."),
               #    #column(width = 12,
@@ -197,7 +197,8 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                     p("The literture about human health impacts of living near production animals is quite limited. After conducting an exhaustive search, our team identified 16 studies consisting of 10 study populations to include in the analysis.
                     Those 16 studies were conducted in only three countries. The health outcomes were lower and upper respiratory tracts, MRSA, other infectious disease, neurological, 
                     psychological, dermatological, otologic, ocular, gastrointestinal, stress and mood, and other non-infectious health outcomes.
-                      The health outcomes displayed in the side bar were selected because these were analyzed in more than two papers (see Timeline)."),
+                      The health outcomes displayed in the side bar were selected because these were analyzed in more than two papers (see Timeline). For this update version,  we have identified 22 additional relevant paper approaching this topic" ),
+                    
                     p("Please click the following check box to visualize the titles, year of publication and origin of the those studies. "),
                     
                     #column(width = 12,
@@ -211,8 +212,8 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                     radioGroupButtons(
                       inputId = "eda_btn", justified = T, label = "",
                       choices = c(`<i class='fa fa-globe'></i> Geographic Location of all studies` = "sp", 
-                                  `<i class='fa fa-calendar-alt'></i> Timeline of all studies` = "ts", 
-                                  `<i class='fa fa-poll'></i> Health Outcome of all studies` = "coef")#,
+                                  `<i class='fa fa-calendar-alt'></i> Timeline of all studies` = "ts")# INCLUDE IN CASE OF NEED OUTCOMES OF ALL STUDIES, 
+                                 # `<i class='fa fa-poll'></i> Health Outcome of all studies` = "coef")#,
                       #`<i class='fa fa-file-text'></i> All Studies  ` = "tabl"),
                     ),
                     
@@ -245,7 +246,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                 
                 fluidRow(column(width = 12, h4("Studies included in the baseline review and new ones identified in each update"),
                                 br(), 
-                                p(" The following table contains the articles included in the initial review (baseline review). Only 15 studies are included in the current review, because the study Avery et al 2004 in not eligble as it is experimental model of exposure"),
+                                p(" The following table contains the articles included in the initial review (baseline review). Only 15 studies are included in the current review, because the study Schiffman et al 2005 in not eligble as it is experimental model of exposure"),
                                 DT::dataTableOutput("mytable1234")
                 )
                 
@@ -270,10 +271,11 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                     p("From the 16 studies included in this review, 532 exposure-outcome pairs were identified. An example of an exposure-result pair is: distance to the closest farm (exposure) and asthma (outcome). Of these, lower respiratory diseases, such as asthma, were the most used outcome."),
                     p("There was no consistent evidence of an association between exposure to animal facilities and lower respiratory tract outcomes, except when the level of odor annoyance was used as the measure of exposure."),
                     radioGroupButtons(
-                      inputId = "low_res_btn", justified = F, label = "",
+                      inputId = "low_res_btn", justified = T, label = "",
                       choices = c(`<i class='fa fa-globe'></i> Geographic Distribution of Lower Respiratory Outcomes` = "sp",
-                                  `<i class='fa fa-calendar-alt'></i> Timeline of Lower Respiratory Outcomes` = "ts",
-                                  `<i class='fa fa-poll'></i> Outcomes Categorized as Lower Respiratory` = "coef")
+                                  `<i class='fa fa-calendar-alt'></i> Timeline of Lower Respiratory Outcomes` = "ts"#,
+                                  #`<i class='fa fa-poll'></i> Outcomes Categorized as Lower Respiratory` = "coef"
+                                  )
                     ),
                     uiOutput("low_res_intro_text"),
                     uiOutput("low_res_intro_plot")
@@ -290,10 +292,11 @@ prevalence ORs."),
 disease or symptoms. In other cases, the regression coefficients for exposure indicated the presence of protective
 effects."),
                     radioGroupButtons(
-                      inputId = "up_res_btn", justified = F, label = "",
+                      inputId = "up_res_btn", justified = T, label = "",
                       choices = c(`<i class='fa fa-globe'></i> Geographic Distribution of Upper Respiratory Outcomes` = "sp",
-                                  `<i class='fa fa-calendar-alt'></i> Timeline of Upper Respiratory Outcomes` = "ts",
-                                  `<i class='fa fa-poll'></i> Outcomes Categorized as Upper Respiratory` = "coef")
+                                  `<i class='fa fa-calendar-alt'></i> Timeline of Upper Respiratory Outcomes` = "ts"#,
+                                  #`<i class='fa fa-poll'></i> Outcomes Categorized as Upper Respiratory` = "coef"
+                                  )
                     ),
                     uiOutput("up_res_intro_text"),
                     uiOutput("up_res_intro_plot")
@@ -309,8 +312,9 @@ effects."),
                     radioGroupButtons(
                       inputId = "ar_res_btn", justified = T, label = "",
                       choices = c(`<i class='fa fa-globe'></i> Geographic Distribution of AMR Outcomes` = "sp",
-                                  `<i class='fa fa-calendar-alt'></i> Timeline of AMR Outcomes` = "ts",
-                                  `<i class='fa fa-poll'></i> Outcomes Categorized as AMR` = "coef")
+                                  `<i class='fa fa-calendar-alt'></i> Timeline of AMR Outcomes` = "ts"#,
+                                  #`<i class='fa fa-poll'></i> Outcomes Categorized as AMR` = "coef"
+                                  )
                     ),
                     uiOutput("ar_res_intro_text"),
                     uiOutput("ar_res_intro_plot")
@@ -324,10 +328,11 @@ effects."),
                     p("Gastrointestinal outcomes were assessed in only two publication"),
                     
                     radioGroupButtons(
-                      inputId = "gi_res_btn", justified = F, label = "",
+                      inputId = "gi_res_btn", justified = T, label = "",
                       choices = c(`<i class='fa fa-globe'></i> Geographic Distribution of Gastrointestinal Outcomes` = "sp",
-                                  `<i class='fa fa-calendar-alt'></i> Timeline of Gastrointestinal Outcomes` = "ts",
-                                  `<i class='fa fa-poll'></i> Outcomes Categorized as Gastrointestinal diseases` = "coef")
+                                  `<i class='fa fa-calendar-alt'></i> Timeline of Gastrointestinal Outcomes` = "ts"#,
+                                  #`<i class='fa fa-poll'></i> Outcomes Categorized as Gastrointestinal diseases` = "coef"
+                                  )
                     ),
                     uiOutput("gi_res_intro_text"),
                     uiOutput("gi_res_intro_plot")

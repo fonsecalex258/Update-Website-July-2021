@@ -121,3 +121,64 @@ DOI: <a href='https://doi.org/http://dx.doi.org/10.1186/1476-069X-13-54'>http://
 In: <em>Occupational &amp; Environmental Medicine</em> 71, pp. 134-40.
 ISSN: 1470-7926.
 DOI: <a href='https://doi.org/http://dx.doi.org/10.1136/oemed-2013-101485'>http://dx.doi.org/10.1136/oemed-2013-101485</a>.</cite></p>
+
+
+
+<p>[17]<cite>
+(2013), Carrel, M., Schweizer, M. L., Sarrazin, M. V., Smith, T. C., Perencevich, E. N.
+&ldquo;Residential proximity to large numbers of swine in feeding operations is associated with increased risk of methicillin-resistant Staphylococcus aureus colonization at time of hospital admission in rural Iowa veterans;.
+In: <em>Infection Control and Hospital Epidemiology</em> 121, pp. 92-96.
+ISSN: 0899-823X.
+DOI: <a href='http://dx.doi.org/10.1086/674860'>10.1086/674860</a>.</cite></p>
+
+
+
+<p>[18]<cite>
+(2013), Elstrom, P., Grontvedt, C. A., Gabrielsen, C., Stegger, M., Angen, O., Amdal, S., Enger, H., Urdahl, A. M., Jore, S., Steinbakk, M., Sunde, M.
+&ldquo;Livestock-associated MRSA CC1 in Norway; introduction to pig farms, zoonotic transmission, and eradication;.
+In: <em>Frontiers in Microbiology</em> 121, pp. 92-96.
+ISSN: 1664-302X.
+
+
+<p>[19]<cite>
+(2014), Freidl, G. S., Spruijt, I. T., Borlee, F., Smit, L. A. M., Gageldonk-Lafeber, A. B. van, Heederik, D. J. J., Yzermans, J., Dijk, C. E. van, Maassen, C. B. M., Hoek, W. van der.
+&ldquo;Livestock-associated risk factors for pneumonia in an area of intensive animal farming in the Netherlands;.
+In: <em>PLoS ONE</em> 71, pp. 134-40.
+ISSN: 1932-6203.
+DOI: <a href='https://doi.org/10.1371/journal.pone.0174796'>10.1371/journal.pone.0174796</a>.</cite></p>
+
+
+<p>[20]<cite>
+(2014), Hooiveld, M., Smit, L. A. M., Sman-de Beer, F. van der, Wouters, I. M., Dijk, C. E. van, Spreeuwenberg, P., Heederik, D. J. J., Yzermans, C. J.
+&ldquo;Doctor-diagnosed health problems in a region with a high density of concentrated animal feeding operations: a cross-sectional study;.
+In: <em>Environmental Health</em> 71, pp. 134-40.
+ISSN: 1476-069X.
+
+
+<p>[21]<cite>
+(2014), Levallois, P., Chevalier, P., Gingras, S., Dery, P., Payment, P., Michel, P., Rodriguez, M.
+&ldquo;Risk of infectious gastroenteritis in young children living in quebec rural areas with intensive animal farming: results of a case-control study (2004-2007);.
+In: <em>Zoonoses and Public Health</em> 71, pp. 134-40.
+ISSN: 1863-1959.
+DOI: <a href='http://dx.doi.org/10.1111/zph.12039'>10.1111/zph.12039</a>.</cite></p>
+
+
+<p>[22]<cite>
+(2014), Nava Cortes, N., Romero Nunez, C., Bautista Gomez, L. G., Hernandez Garcia, P. A., Heredia Cardenas, R.
+&ldquo;Presence of anti-Toxocara canis antibodies and risk factors in children from the Amecameca and Chalco regions of Mexico;.
+In: <em>BMC Pediatrics</em> 71, pp. 134-40.
+ISSN: 1471-2431.
+
+<p>[23]<cite>
+(2014), Poulsen, M. N., Pollak, J., Sills, D. L., Casey, J. A., Rasmussen, S. G., Nachman, K. E., Cosgrove, S. E., Stewart, D., Schwartz, B. S.
+&ldquo;Residential proximity to high-density poultry operations associated with campylobacteriosis and infectious diarrhea;.
+In: <em>International Journal of Hygiene and Environmental Health</em> 71, pp. 134-40.
+ISSN: 1438-4639.
+DOI: <a href='http://dx.doi.org/10.1016/j.ijheh.2017.12.005'>10.1016/j.ijheh.2017.12.005</a>.</cite></p>
+
+<p>[24]<cite>
+(2014), Schultz, A. A., Peppard, P., Gangnon, R. E., Malecki, K. M. C.
+&ldquo;Residential proximity to concentrated animal feeding operations and allergic and respiratory disease;.
+In: <em>Environment International</em> 71, pp. 134-40.
+ISSN: 0160-4120.
+DOI: <a href='http://dx.doi.org/10.1016/j.envint.2019.104911'>10.1016/j.envint.2019.104911</a>.</cite></p>
