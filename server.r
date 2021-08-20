@@ -1209,7 +1209,7 @@ increases the potential for identification of false associations due to random e
     switch(
       input$ar_res_btn,
       "sp" = p("Most articles related to Antimicrobial resistance were published in United States and Netherlands"),
-      "ts" = p("This timeline shows the date of publication of references in which outcome related to Antimicrobial resistance were studied. This category was analyzed by 2 out 16 relevant references included."),
+      "ts" = p("This timeline shows the date of publication of references in which outcome related to Antimicrobial resistance were studied. "),
       "coef" = p("The following table shows all the outcomes that were categorized as Antimicrobial resistance outcomes.")
     )
   })
@@ -1220,7 +1220,7 @@ increases the potential for identification of false associations due to random e
     switch(
       input$gi_res_btn,
       "sp" = p("Articles related to Gastrointestinal diseases were published only in United States."),
-      "ts" = p("This timeline shows the date of publication of references in which outcome related to gastrointestinal tract were studied. This category was analyzed by 2 out 16 relevant references included."),
+      "ts" = p("This timeline shows the date of publication of references in which outcome related to gastrointestinal tract were studied."),
       "coef" = p("The following table shows all the outcomes that were categorized as gastrointestinal tract. Diarhea, nausea and poor appetite were the most common outcomes grouped in this category.")
     )
   })
