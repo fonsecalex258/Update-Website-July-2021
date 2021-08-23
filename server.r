@@ -887,51 +887,37 @@ increases the potential for identification of false associations due to random e
   
   ## * geographic distribution ####
   output$map <- renderLeaflet({
-   leaflet(cafoo_map) %>% 
+    webf1 <- testtimeline %>% filter(country=="USA")%>% select(weblink)
+    webf2 <- testtimeline %>% filter(country=="Canada")%>% select(weblink)
+    webf3 <- testtimeline %>% filter(country=="Mexico")%>% select(weblink)
+    webf4 <- testtimeline %>% filter(country=="France")%>% select(weblink)
+    webf5 <- testtimeline %>% filter(country=="UK")%>% select(weblink)
+    webf6 <- testtimeline %>% filter(country=="Netherlands")%>% select(weblink)
+    webf7 <- testtimeline %>% filter(country=="Germany")%>% select(weblink)
+    webf8 <- testtimeline %>% filter(country=="Norway")%>% select(weblink)
+    #rosa <- as.data.frame(paste(webf))
+    #xy.list <- split(webf, seq(nrow(webf)))
+    leaflet(cafoo_map) %>% 
       addProviderTiles(providers$Stamen.TonerLite,
                        options = providerTileOptions(noWrap = TRUE)) %>%  
       setView(-40.679728, 34.738366, zoom = 2) %>%  ## Set/fix the view of the map 
       addMarkers(lng = cafoo_map$long, lat = cafoo_map$lat,
                  #radius = log(cafoo$`Number of Studies`)*8,
-                 popup = ifelse(cafoo_map$Country=="USA", paste("Country:",cafoo_map$Country,"<br>",
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/23111006/'>Wing et al. 2013</a></b>","<br>",
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/7620910/'>Schiffman et al. 1995</a></b>","<br>",
-                                                                      "<b><a href='https://link.springer.com/article/10.1007/s10745-005-1653-3'>Bullers 2005</a></b>","<br>",
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/21228696/'>Schinasi et al. 2011</a></b>","<br>",
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/19890165/'>Horton et al. 2009</a></b>","<br>",
-                                                                "<a href='https://pubmed.ncbi.nlm.nih.gov/28362334/'>Rasmussen et al. 2017</a>","<br>",
-                                                                "<a href='https://pubmed.ncbi.nlm.nih.gov/26352250/'>Loftus et al. 2015</a>","<br>",
-                                                                "<a href='https://pubmed.ncbi.nlm.nih.gov/31543304/'>Loftus et al. 2020</a>","<br>",
-                                                                "<a href='https://pubmed.ncbi.nlm.nih.gov/30228132/'>Kravchenko et al. 2018</a>","<br>",
-                                                                "<a href='https://pubmed.ncbi.nlm.nih.gov/32168021/'>Fisher et al. 2020</a>","<br>",
-                                                                "<a href='https://pubmed.ncbi.nlm.nih.gov/31238264/'>Schultz et al. 2019</a>","<br>",
-                                                                "<a href='https://pubmed.ncbi.nlm.nih.gov/29268955/'>Poulsen et al. 2018</a>","<br>",
-                                                                "<a href='https://pubmed.ncbi.nlm.nih.gov/24442084/'>Carrel et al. 2014</a>","<br>",
-                                                                      "<b><a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4517575/'>Mirabelli et al. 2006</a></b>","<br>",
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/15866765/'>Schiffman et al. 2005</a></b>","<br>",
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/16075904/'>Avery et al. 2004</a></b>","<br>",
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/24958086/'>Schinasi et al. 2014</a></b>","<br>"
-                 ), ifelse(cafoo_map$Country=="Germany", paste("Country:",cafoo$Country,"<br>","<b><a href='https://pubmed.ncbi.nlm.nih.gov/21864103/'>Schulze et al. 2011</a></b>","<br>",
-                                                           "<b><a href='https://pubmed.ncbi.nlm.nih.gov/17435437/'>Radon et al. 2007</a></b>","<br>",
-                                                           "<b><a href='https://pubmed.ncbi.nlm.nih.gov/17039438/'>Hoopmann et al. 2006</a></b>","<br>",
-                                                           "<b><a href='https://pubmed.ncbi.nlm.nih.gov/16379061/'>Radon et al. 2005</a></b>","<br>"
-                 ), ifelse(cafoo_map$Country=="Mexico", paste("Country:",cafoo_map$Country,"<br>","<a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4449520/'>Nava et al. 2015</a></b>","<br>"),
-                           ifelse(cafoo_map$Country=="Canada", paste("Country:",cafoo_map$Country,"<br>","<a href='https://pubmed.ncbi.nlm.nih.gov/23406420/'>Lavallois et al. 2014</a></b>","<br>"),
-                                  ifelse(cafoo_map$Country=="France", paste("Country:",cafoo_map$Country,"<br>","<a href='https://pubmed.ncbi.nlm.nih.gov/29717154/'>Douillard et al. 2018</a>","<br>"),
-                                         ifelse(cafoo_map$Country=="Norway", paste("Country:",cafoo_map$Country,"<br>","<a href='https://pubmed.ncbi.nlm.nih.gov/30800102/'>Elstrom et al. 2019</a>","<br>"),
-                                                ifelse(cafoo_map$Country=="UK", paste("Country:",cafoo_map$Country,"<br>","<a href='https://pubmed.ncbi.nlm.nih.gov/26709884/'>Hunter et al. 2016</a>","<br>"),
-                 paste("Country:",cafoo_map$Country,"<br>",
-                       "<a href='https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0038843'>Smit et al. 2012</a>","<br>",
-                       "<a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3810935/'>Feingold et al. 2012</a>","<br>",
-                       "<a href='https://pubmed.ncbi.nlm.nih.gov/31881422/'>Karsen et al. 2020</a>","<br>",
-                       "<a href='https://pubmed.ncbi.nlm.nih.gov/28805171/'>Zomer et al. 2017</a>","<br>",
-                       "<a href='https://pubmed.ncbi.nlm.nih.gov/26352250/'>Post et al. 2019</a>","<br>",
-                       "<a href='https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0200813'>Kalkowska et al. 2018</a>","<br>",
-                       "<a href='https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-015-1083-9'>Ladbury et al. 2015</a>","<br>",
-                       "<a href='https://pubmed.ncbi.nlm.nih.gov/26888643/'>Hooiveld et al. 2016</a>","<br>",
-                       "<a href='https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0174796'>Freidl et al. 2017</a>","<br>",
-                       "<a href='https://oem.bmj.com/content/71/2/134.long'>Smit et al. 2014</a>","<br>"
-                 ) ))))))))
+                 popup = ifelse(cafoo_map$Country=="USA", paste("<b>Country:<b>",cafoo_map$Country,"<br>", paste(webf1)
+                                                                
+                 ), ifelse(cafoo_map$Country=="Germany", paste("<b>Country:<b>",cafoo_map$Country,"<br>", paste(webf7)
+                 ), ifelse(cafoo_map$Country=="Mexico", paste("<b>Country:<b>",cafoo_map$Country,"<br>",webf3),
+                           ifelse(cafoo_map$Country=="Canada", paste("<b>Country:<b>",cafoo_map$Country,"<br>", webf2),
+                                  ifelse(cafoo_map$Country=="France", paste("<b>Country:<b>",cafoo_map$Country,"<br>",webf4),
+                                         ifelse(cafoo_map$Country=="Norway", paste("<b>Country:<b>",cafoo_map$Country,"<br>",webf8),
+                                                ifelse(cafoo_map$Country=="UK", paste("<b>Country:<b>",cafoo_map$Country,"<br>",webf5),
+                                                       paste("<b>Country:<b>",cafoo_map$Country,"<br>",
+                                                             webf6
+                                                       ) ))))))))
+    
+    ############
+    ##########    
+    
     
     
     
@@ -939,15 +925,15 @@ increases the potential for identification of false associations due to random e
   })
   
   #####
-#  output$geobar <- renderPlotly({
-#    gg <- cafo2 %>% distinct() %>%
-#      group_by(Country) %>% summarise(Count = n()) %>% 
-#      mutate(Country = forcats::fct_reorder(factor(Country), Count)) %>%
-#      ggplot(aes(x = Country, y = Count)) + 
-#      geom_bar(aes(fill = Country), stat = "identity") +
-#      scale_fill_brewer(palette = "Set2")
-#    ggplotly(gg, tooltip = c("x", "y")) %>% layout(showlegend = FALSE)
-#  })
+  #  output$geobar <- renderPlotly({
+  #    gg <- cafo2 %>% distinct() %>%
+  #      group_by(Country) %>% summarise(Count = n()) %>% 
+  #      mutate(Country = forcats::fct_reorder(factor(Country), Count)) %>%
+  #      ggplot(aes(x = Country, y = Count)) + 
+  #      geom_bar(aes(fill = Country), stat = "identity") +
+  #      scale_fill_brewer(palette = "Set2")
+  #    ggplotly(gg, tooltip = c("x", "y")) %>% layout(showlegend = FALSE)
+  #  })
   
   output$geobar <- renderPlotly({
     gg <- cafoo_map %>% ggplot(aes(x = reorder(Country, `Number_of_Studies`), y = `Number_of_Studies`)) + 
@@ -1001,7 +987,7 @@ increases the potential for identification of false associations due to random e
       grepl("up_rsp", input$sidebar) ~ "Upper Respiratory",
       grepl("ar_rsp", input$sidebar) ~ "Antimicrobial resistance",
       grepl("gi_rsp", input$sidebar) ~ "Gastrointestinal diseases",
-
+      
       TRUE ~ "Other"
     )
   }) 
@@ -1013,7 +999,7 @@ increases the potential for identification of false associations due to random e
   
   ##### only measure of association
   output$expo_var_1_low <- renderUI({
-    choices1 <- forest_joint$mm
+    choices1 <- forest_joint$effect_z
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
@@ -1028,7 +1014,7 @@ increases the potential for identification of false associations due to random e
   
   output$expo_var_1_up <- renderUI({
     #choices1 <- forest_sabado$effect_measure
-    choices1 <- forest_joint$mm
+    choices1 <- forest_joint$effect_z
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
@@ -1041,7 +1027,7 @@ increases the potential for identification of false associations due to random e
   
   ####AR
   output$expo_var_1_ar <- renderUI({
-    choices1 <- forest_joint$mm
+    choices1 <- forest_joint$effect_z
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
@@ -1051,7 +1037,7 @@ increases the potential for identification of false associations due to random e
                 selected = choices1[1])
     
   })
- ##########
+  ##########
   output$expo_var_1_low_state <- renderUI({
     choices1 <- up_forest_state1$mm
     #forest %>%
@@ -1064,7 +1050,7 @@ increases the potential for identification of false associations due to random e
     
   })
   
- ########## 
+  ########## 
   output$expo_var_1_up_state <- renderUI({
     choices1 <- up_forest_state1$mm
     #forest %>%
@@ -1107,7 +1093,7 @@ increases the potential for identification of false associations due to random e
   
   output$expo_var_1_gi <- renderUI({
     #choices1 <- forest_sabado$effect_measure
-    choices1 <- forest_joint$mm
+    choices1 <- forest_joint$effect_z
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
@@ -1120,7 +1106,7 @@ increases the potential for identification of false associations due to random e
   
   ### Neuro
   
- 
+  
   
   output$expo_var_2 <- renderUI({
     choices2 <- forest$t_expo
@@ -1188,7 +1174,7 @@ increases the potential for identification of false associations due to random e
     switch(
       input$low_res_btn,
       "sp" = p("Articles related to lower respiratory disease were published in Germany, United States and Netherlands."),
-      "ts" = p("This timeline shows the date of publication of references in which outcome related to lower respiratory tract were studied. This category was the most analyzed with 9 out 16 relevant references included."),
+      "ts" = p("This timeline shows the date of publication of references in which outcome related to lower respiratory tract were studied."),
       "coef" = p("The following table shows all the outcomes that were categorized as lower respiratory tract. Asthma and wheeze related conditions were the most common outcomes grouped in this category.")
     )
   })
@@ -1219,7 +1205,7 @@ increases the potential for identification of false associations due to random e
   output$gi_res_intro_text <- renderUI({
     switch(
       input$gi_res_btn,
-      "sp" = p("Articles related to Gastrointestinal diseases were published only in United States."),
+      "sp" = p("Articles related to Gastrointestinal diseases were published in United States and Canada."),
       "ts" = p("This timeline shows the date of publication of references in which outcome related to gastrointestinal tract were studied."),
       "coef" = p("The following table shows all the outcomes that were categorized as gastrointestinal tract. Diarhea, nausea and poor appetite were the most common outcomes grouped in this category.")
     )
@@ -1281,137 +1267,115 @@ increases the potential for identification of false associations due to random e
     )
   })
   
-
+  
   
   ## ** geographic distribution ####
   output$map_low_res <- renderLeaflet({
-    leaflet(cafoo) %>% 
+    
+    subset_low <- cafoo_map_cat%>% filter(LR=="Yes")
+    webf1 <- subset_low %>% filter(country=="USA")%>% select(weblink)
+    webf2 <- subset_low %>% filter(country=="Germany")%>% select(weblink)
+    webf3 <- subset_low %>% filter(country=="Netherlands")%>% select(weblink)
+    
+    
+    leaflet(subset_low) %>% 
       addProviderTiles(providers$Stamen.TonerLite,
                        options = providerTileOptions(noWrap = TRUE)) %>%  
       setView(-40.679728, 34.738366, zoom = 2) %>%  ## Set/fix the view of the map 
-      addMarkers(lng = cafoo$long, lat = cafoo$lat,
+      addMarkers(lng = subset_low$long, lat = subset_low$lat,
                  #radius = log(cafoo$`Number of Studies`)*8,
-                 popup = ifelse(cafoo$Country=="United States", paste("Country:",cafoo$Country,"<br>",
-                                                                      
-                                                                      
-                                                                      
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/21228696/'>Schinasi et al. 2011</a></b>","<br>",
-                                                                      
-                                                                      "<b><a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4517575/'>Mirabelli et al. 2006</a></b>","<br>",
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/15866765/'>Schiffman et al. 2005</a></b>","<br>"
-                                                                      
-                                                                      
-                 ), ifelse(cafoo$Country=="Germany", paste("Country:",cafoo$Country,"<br>","<b><a href='https://pubmed.ncbi.nlm.nih.gov/21864103/'>Schulze et al. 2011</a></b>","<br>",
-                                                           "<b><a href='https://pubmed.ncbi.nlm.nih.gov/17435437/'>Radon et al. 2007</a></b>","<br>",
-                                                           "<b><a href='https://pubmed.ncbi.nlm.nih.gov/17039438/'>Hoopmann et al. 2006</a></b>","<br>",
-                                                           "<b><a href='https://pubmed.ncbi.nlm.nih.gov/16379061/'>Radon et al. 2005</a></b>","<br>"
-                 ),
-                 paste("Country:",cafoo$Country,"<br>",
-                       "<b><a href='https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0038843'>Smit et al. 2012</a></b>","<br>",
-                       
-                       "<b><a href='https://oem.bmj.com/content/71/2/134.long'>Smit et al. 2014</a></b>","<br>"
-                 ) )))
+                 popup = ifelse (subset_low$country=="USA"  ,paste("<b>Country:<b>",subset_low$country,"<br>", webf1), 
+                                 ifelse(subset_low$country=="Germany"  ,paste("<b>Country:<b>",subset_low$country,"<br>", webf2),
+                                        paste("<b>Country:<b>",subset_low$country,"<br>", webf3))
+                 ))
   })
   
   #####copying for upper
   
   output$map_up_res <- renderLeaflet({
-    leaflet(cafoo) %>% 
+    
+    subset_low <- cafoo_map_cat%>% filter(UR=="Yes")
+    #webf1 <- subset_low %>% filter(country=="USA")%>% select(weblink)
+    webf2 <- subset_low %>% filter(country=="Germany")%>% select(weblink)
+    webf3 <- subset_low %>% filter(country=="Netherlands")%>% select(weblink)
+    
+    
+    leaflet(subset_low) %>% 
       addProviderTiles(providers$Stamen.TonerLite,
                        options = providerTileOptions(noWrap = TRUE)) %>%  
       setView(-40.679728, 34.738366, zoom = 2) %>%  ## Set/fix the view of the map 
-      addMarkers(lng = cafoo$long, lat = cafoo$lat,
+      addMarkers(lng = subset_low$long, lat = subset_low$lat,
                  #radius = log(cafoo$`Number of Studies`)*8,
-                 popup = ifelse(cafoo$Country=="United States", paste("Country:",cafoo$Country,"<br>",
-                                                                      
-                                                                      
-                                                                      
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/21228696/'>Schinasi et al. 2011</a></b>","<br>",
-                                                                      
-                                                                      
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/15866765/'>Schiffman et al. 2005</a></b>","<br>"
-                                                                      
-                                                                      
-                 ), ifelse(cafoo$Country=="Germany", paste("Country:",cafoo$Country,"<br>","<b><a href='https://pubmed.ncbi.nlm.nih.gov/21864103/'>Schulze et al. 2011</a></b>","<br>",
-                                                           "<b><a href='https://pubmed.ncbi.nlm.nih.gov/17435437/'>Radon et al. 2007</a></b>","<br>",
-                                                           "<b><a href='https://pubmed.ncbi.nlm.nih.gov/17039438/'>Hoopmann et al. 2006</a></b>","<br>"
-                 ),
-                 paste("Country:",cafoo$Country,"<br>",
-                       
-                       
-                       "<b><a href='https://oem.bmj.com/content/71/2/134.long'>Smit et al. 2014</a></b>","<br>"
-                 ) )))
+                 popup =  
+                                 ifelse(subset_low$country=="Germany"  ,paste("<b>Country:<b>",subset_low$country,"<br>", webf2),
+                                        paste("<b>Country:<b>",subset_low$country,"<br>", webf3))
+                 )
   })
   
   #####copying for AMR
   
   output$map_ar_res <- renderLeaflet({
-    cafoos <- cafoo[-c(1), ]
-    leaflet(cafoos) %>% 
+    
+    subset_low <- cafoo_map_cat%>% filter(Antimicro=="Yes")
+    #webf1 <- subset_low %>% filter(country=="USA")%>% select(weblink)
+    webf2 <- subset_low %>% filter(country=="USA")%>% select(weblink)
+    webf3 <- subset_low %>% filter(country=="Netherlands")%>% select(weblink)
+    
+    
+    leaflet(subset_low) %>% 
       addProviderTiles(providers$Stamen.TonerLite,
                        options = providerTileOptions(noWrap = TRUE)) %>%  
       setView(-40.679728, 34.738366, zoom = 2) %>%  ## Set/fix the view of the map 
-      addMarkers(lng = cafoos$long, lat = cafoos$lat,
+      addMarkers(lng = subset_low$long, lat = subset_low$lat,
                  #radius = log(cafoo$`Number of Studies`)*8,
-                 popup = ifelse(cafoos$Country=="United States", paste("Country:",cafoos$Country,"<br>",
-                                                                      
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/24958086/'>Schinasi et al. 2014</a></b>","<br>"
-                                                                      
-                 ), 
-                 paste("Country:",cafoos$Country,"<br>",
-                       
-                       
-                       "<b><a href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3810935/'>Feingold et al. 2012</a></b>","<br>"
-                 ) ))
+                 popup =  
+                   ifelse(subset_low$country=="USA"  ,paste("<b>Country:<b>",subset_low$country,"<br>", webf2),
+                          paste("<b>Country:<b>",subset_low$country,"<br>", webf3))
+      )
   })
   
   ####copying for GI
   
   output$map_gi_res <- renderLeaflet({
-    cafoo5 <- cafoo
-    cafoo5[1,1] <- "Canada"
-    cafoo5[1,2] <- -106.346771
-    cafoo5[1,3] <- 56.130366
-    cafoo5 <- cafoo5[-c(2), ]
-    leaflet(cafoo5) %>% 
+    
+    subset_low <- cafoo_map_cat%>% filter(Gastro=="Yes")
+    #webf1 <- subset_low %>% filter(country=="USA")%>% select(weblink)
+    webf2 <- subset_low %>% filter(country=="USA")%>% select(weblink)
+    webf3 <- subset_low %>% filter(country=="Canada")%>% select(weblink)
+    
+    
+    leaflet(subset_low) %>% 
       addProviderTiles(providers$Stamen.TonerLite,
                        options = providerTileOptions(noWrap = TRUE)) %>%  
       setView(-40.679728, 34.738366, zoom = 2) %>%  ## Set/fix the view of the map 
-      addMarkers(lng = cafoo5$long, lat = cafoo5$lat,
+      addMarkers(lng = subset_low$long, lat = subset_low$lat,
                  #radius = log(cafoo$`Number of Studies`)*8,
-                 popup = ifelse(cafoo5$Country=="United States", paste("Country:",cafoo5$Country,"<br>",
-                                                                      
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/15866765/'>Schiffman et al. 2005</a></b>","<br>",
-                                                                      "<b><a href='https://pubmed.ncbi.nlm.nih.gov/21228696/'>Schinasi et al. 2011</a></b>","<br>"
-                                                                      
-                 ), 
-                 paste("Country:",cafoo5$Country,"<br>",
-                       
-                       
-                       "<a href='https://pubmed.ncbi.nlm.nih.gov/23406420/'>Lavallois et al. 2014</a>"
-                 ) ))
+                 popup =  
+                   ifelse(subset_low$country=="USA"  ,paste("<b>Country:<b>",subset_low$country,"<br>", webf2),
+                          paste("<b>Country:<b>",subset_low$country,"<br>", webf3))
+      )
   })
   
   ####copying for Neurologic
   
-
   
-#  output$geobar_low_res <- renderPlotly({
-#    gg <- cafo2 %>% filter(Refid %in% selected_id()) %>% distinct() %>%
-#      group_by(Country) %>% summarise(Count = n()) %>%
-#      mutate(Country = forcats::fct_reorder(factor(Country), Count)) %>%
-#      ggplot(aes(x = Country, y = Count)) +
-#      geom_bar(aes(fill = Country), stat = "identity") +
-#      scale_fill_brewer(palette = "Set2")
-#    ggplotly(gg, tooltip = c("x", "y")) %>% layout(showlegend = FALSE)
-#  })
+  
+  #  output$geobar_low_res <- renderPlotly({
+  #    gg <- cafo2 %>% filter(Refid %in% selected_id()) %>% distinct() %>%
+  #      group_by(Country) %>% summarise(Count = n()) %>%
+  #      mutate(Country = forcats::fct_reorder(factor(Country), Count)) %>%
+  #      ggplot(aes(x = Country, y = Count)) +
+  #      geom_bar(aes(fill = Country), stat = "identity") +
+  #      scale_fill_brewer(palette = "Set2")
+  #    ggplotly(gg, tooltip = c("x", "y")) %>% layout(showlegend = FALSE)
+  #  })
   
   #######
   output$geobar_low_res <- renderPlotly({
-    gg <- ROB_aux %>% filter(category=="Lower Respiratory")%>%
-      distinct()%>% group_by(Country) %>% summarise(Count = n())%>%
-      ggplot(aes(x = reorder(Country, Count), y = Count)) +
-      geom_bar(aes(fill = Country), stat = "identity") +
+    gg <- testtimeline %>% filter(LR=="Yes")%>%
+      #distinct()%>% group_by(country) %>% summarise(Count = n())%>%
+      ggplot(aes(x = country)) +
+      geom_bar(aes(fill = country)) +
       scale_fill_brewer(palette = "Set2")+labs(x = "Country", y = "Number of Studies")+theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
     ggplotly(gg, tooltip = c("x", "y")) %>% layout(showlegend = FALSE)
   })
@@ -1419,10 +1383,10 @@ increases the potential for identification of false associations due to random e
   ########copying for up
   
   output$geobar_up_res <- renderPlotly({
-    gg <- ROB_aux %>% filter(category=="Upper Respiratory")%>%
-      distinct()%>% group_by(Country) %>% summarise(Count = n())%>%
-      ggplot(aes(x = reorder(Country, Count), y = Count)) +
-      geom_bar(aes(fill = Country), stat = "identity") +
+    gg <- testtimeline %>% filter(UR=="Yes")%>%
+      #distinct()%>% group_by(country) %>% summarise(Count = n())%>%
+      ggplot(aes(x = country)) +
+      geom_bar(aes(fill = country)) +
       scale_fill_brewer(palette = "Set2")+labs(x = "Country", y = "Number of Studies")+theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
     ggplotly(gg, tooltip = c("x", "y")) %>% layout(showlegend = FALSE)
   })
@@ -1430,10 +1394,10 @@ increases the potential for identification of false associations due to random e
   ########copying for AMR
   
   output$geobar_ar_res <- renderPlotly({
-    gg <- ROB_aux %>% filter(category=="Antimicrobial resistance")%>%
-      distinct()%>% group_by(Country) %>% summarise(Count = n())%>%
-      ggplot(aes(x = reorder(Country, Count), y = Count)) +
-      geom_bar(aes(fill = Country), stat = "identity") +
+    gg <- testtimeline %>% filter(Antimicro=="Yes")%>%
+      #distinct()%>% group_by(country) %>% summarise(Count = n())%>%
+      ggplot(aes(x = country)) +
+      geom_bar(aes(fill = country)) +
       scale_fill_brewer(palette = "Set2")+labs(x = "Country", y = "Number of Studies")+theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
     ggplotly(gg, tooltip = c("x", "y")) %>% layout(showlegend = FALSE)
   })
@@ -1441,20 +1405,21 @@ increases the potential for identification of false associations due to random e
   ########copying for GI
   
   output$geobar_gi_res <- renderPlotly({
-    gg <- ROB_aux %>% filter(category=="Gastrointestinal diseases")%>%
-      distinct()%>% group_by(Country) %>% summarise(Count = n())%>%
-      ggplot(aes(x = reorder(Country, Count), y = Count)) +
-      geom_bar(aes(fill = Country), stat = "identity") +
+    gg <- testtimeline %>% filter(Gastro=="Yes")%>%
+      #distinct()%>% group_by(country) %>% summarise(Count = n())%>%
+      ggplot(aes(x = country)) +
+      geom_bar(aes(fill = country)) +
       scale_fill_brewer(palette = "Set2")+labs(x = "Country", y = "Number of Studies")+theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+    ggplotly(gg, tooltip = c("x", "y")) %>% layout(showlegend = FALSE)
   })
   
   ########copying for Neurologic
   
- 
+  
   ## ** timeline ####
   output$timeline_low_res <- renderTimevis({
     ## Only select authors and year information columns
-    timedata2 <- testtimeline  %>% filter(Lower=="Yes")
+    timedata2 <- testtimeline  %>% filter(LR=="Yes")
     ## Insert into a dataframe 
     datt2 <- data.frame(
       ## make it reactive
@@ -1470,7 +1435,7 @@ increases the potential for identification of false associations due to random e
   
   output$timeline_up_res <- renderTimevis({
     ## Only select authors and year information columns
-    timedata2 <- testtimeline  %>% filter(Upper=="Yes") 
+    timedata2 <- testtimeline  %>% filter(UR=="Yes") 
     ## Insert into a dataframe 
     datt2 <- data.frame(
       ## make it reactive
@@ -1486,7 +1451,7 @@ increases the potential for identification of false associations due to random e
   
   output$timeline_ar_res <- renderTimevis({
     ## Only select authors and year information columns
-    timedata2 <- testtimeline  %>% filter(AR=="Yes")  
+    timedata2 <- testtimeline  %>% filter(Antimicro=="Yes")  
     ## Insert into a dataframe 
     datt2 <- data.frame(
       ## make it reactive
@@ -1502,7 +1467,7 @@ increases the potential for identification of false associations due to random e
   
   output$timeline_gi_res <- renderTimevis({
     ## Only select authors and year information columns
-    timedata2 <- testtimeline  %>% filter(GI=="Yes") 
+    timedata2 <- testtimeline  %>% filter(Gastro=="Yes") 
     ## Insert into a dataframe 
     datt2 <- data.frame(
       ## make it reactive
@@ -1578,7 +1543,7 @@ increases the potential for identification of false associations due to random e
   
   #######copying for Neurologic
   
-
+  
   
   ## ** outcome ####
   # output$measure_all_low_res <- renderPlotly({
@@ -1625,7 +1590,7 @@ increases the potential for identification of false associations due to random e
   
   ##### For Neuro
   
-
+  
   
   #####
   
@@ -1707,29 +1672,7 @@ increases the potential for identification of false associations due to random e
       need(low_forest$Outcome.variable!= "", "There are no records for the effect size (ES) and health outcome selected, please make another selection.")
     )
     
-    
-    
-    ###
-    #g <- nrow(up_forest)
-    #up_forest[gunter+1,]<- NA
-    
-    #up_forest$id2 <- c(1:(g+1))
-    #up_forest$id2 <- seq(1,(g+1))
-    
-    #up_forest[nrow(up_forest)+1,]<- "NEA"
-    ##
-    
-    
-    
-    
-    ###
-    #up_forest[nrow(up_forest),3] <- "OutcomeNEA"
-    
-    ##
-    #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
-    
-    
-    
+
     fonseca <- ggplot(low_forest,aes(yi,id2, col=IDD_2)) + 
       geom_point_interactive(
         aes(data_id = IDD_2, tooltip = yi), size = 7, shape=18
@@ -2674,17 +2617,17 @@ increases the potential for identification of false associations due to random e
   
   #### For AR
   
- 
+  
   
   #### For Gastro
   
-
+  
   
   #### For Neuro ELIMINATED
   
- 
   
- 
+  
+  
   
   
   
@@ -2819,7 +2762,7 @@ increases the potential for identification of false associations due to random e
   
   #### For AR
   
-
+  
   
   #### For GI
   
@@ -2827,7 +2770,7 @@ increases the potential for identification of false associations due to random e
   
   #### For Neuro
   
- 
+  
   
   
   #reactive table based on the selected row 
@@ -3421,7 +3364,7 @@ increases the potential for identification of false associations due to random e
   
   ##### For Neuro
   
- 
+  
   #here's the table displayed in our modal
   
   output$modal_table_low <- DT::renderDataTable({
@@ -3448,7 +3391,7 @@ increases the potential for identification of false associations due to random e
   
   ### for Neuro
   
-
+  
   
   #our modal dialog box
   
@@ -3509,7 +3452,7 @@ increases the potential for identification of false associations due to random e
   
   #### for Neuro
   
-
+  
   
   ###################event to trigger the modal box to appear
   #observeEvent(input$my_table_rows_selected,{
@@ -3548,7 +3491,7 @@ increases the potential for identification of false associations due to random e
   }) 
   
   ### For Neuro
-
+  
   
   
   output$mytable1234 <- DT::renderDataTable({
@@ -3567,53 +3510,67 @@ increases the potential for identification of false associations due to random e
   
   ## * risk of bias ####
   output$bias <- renderPlotly({
+    
+    
     #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
-    gg <- r22 %>% filter(Categorized.class==selected_class()) %>% 
+    gg <- r22_1 %>% filter(category==selected_class()) %>%
       ggplot(aes(x = `Type of Bias`, fill = Bias)) + 
       geom_bar(position = "fill") + coord_flip() + 
-      scale_fill_manual(values = color_table$Color) + 
-      scale_x_discrete(labels = rev(c("Overall", "Confounding", "Measurement of Exposure", 
-                                      "Measurement of Outcome", "Measurement of Interventions","Missing Data", "Selection of Participants",
-                                      "Selection of Reported Result"))) +
+      scale_fill_manual(values = color_table$Color)  +
       ylab("Proportion")
     ggplotly(gg)
   })
   
-  output$bias_up <- renderPlotly({
+#  output$bias_up <- renderPlotly({
     #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
-    gg <- r22 %>% filter(Categorized.class==selected_class()) %>% 
+#    gg <- r22 %>% filter(Categorized.class==selected_class()) %>% 
+#      ggplot(aes(x = `Type of Bias`, fill = Bias)) + 
+#      geom_bar(position = "fill") + coord_flip() + 
+#      scale_fill_manual(values = color_table$Color) + 
+#      scale_x_discrete(labels = rev(c("Overall", "Confounding", "Measurement of Exposure", 
+#                                      "Measurement of Outcome", "Measurement of Interventions","Missing Data", "Selection of Participants",
+#                                      "Selection of Reported Result"))) +
+#      ylab("Proportion")
+#    ggplotly(gg)
+#  })
+  
+  ######
+
+  #######
+  output$bias_up <- renderPlotly({
+    
+    
+    #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
+    gg <- r22_1 %>% filter(category==selected_class()) %>%
       ggplot(aes(x = `Type of Bias`, fill = Bias)) + 
       geom_bar(position = "fill") + coord_flip() + 
-      scale_fill_manual(values = color_table$Color) + 
-      scale_x_discrete(labels = rev(c("Overall", "Confounding", "Measurement of Exposure", 
-                                      "Measurement of Outcome", "Measurement of Interventions","Missing Data", "Selection of Participants",
-                                      "Selection of Reported Result"))) +
+      scale_fill_manual(values = color_table$Color)  +
       ylab("Proportion")
     ggplotly(gg)
   })
+  
+  ####
   
   output$bias_ar <- renderPlotly({
+    
+    
     #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
-    gg <- r22 %>% filter(Categorized.class==selected_class()) %>% 
+    gg <- r22_1 %>% filter(category==selected_class()) %>%
       ggplot(aes(x = `Type of Bias`, fill = Bias)) + 
       geom_bar(position = "fill") + coord_flip() + 
-      scale_fill_manual(values = color_table$Color) + 
-      scale_x_discrete(labels = rev(c("Overall", "Confounding", "Measurement of Exposure", 
-                                      "Measurement of Outcome", "Measurement of Interventions","Missing Data", "Selection of Participants",
-                                      "Selection of Reported Result"))) +
+      scale_fill_manual(values = color_table$Color)  +
       ylab("Proportion")
     ggplotly(gg)
   })
   
   output$bias_gi <- renderPlotly({
+    
+    
     #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
-    gg <- r22 %>% filter(Categorized.class==selected_class()) %>% 
+    gg <- r22_1 %>% filter(category==selected_class()) %>%
       ggplot(aes(x = `Type of Bias`, fill = Bias)) + 
       geom_bar(position = "fill") + coord_flip() + 
-      scale_fill_manual(values = color_table$Color) + 
-      scale_x_discrete(labels = rev(c("Overall", "Confounding", "Measurement of Exposure", 
-                                      "Measurement of Outcome", "Measurement of Interventions","Missing Data", "Selection of Participants",
-                                      "Selection of Reported Result"))) +
+      scale_fill_manual(values = color_table$Color)  +
       ylab("Proportion")
     ggplotly(gg)
   })
@@ -3732,12 +3689,3 @@ increases the potential for identification of false associations due to random e
   )
   
 })
-
-
-
-
-
-
-
-
-

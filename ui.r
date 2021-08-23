@@ -143,10 +143,10 @@ dashboardPage(
                     fluidRow( column(width = 12, h4("How to use the forest plot graph?"),
                                      br(),
                                      p("The reported effect measures were either odds ratio (OR) or prevalence ratio (PR). In the forest plot, 
-                      each point represents the reported effect measure (e.g. an odds ratio) for a specific exposure-outcome relationship."),
+                      each point represents the reported effect measure (e.g. an prevalence odds ratio) for a specific exposure-outcome relationship."),
                                      #p("The gray column in the forest plot’s left side, groups the exposures in four categories: distance, gases, odor and aerosols. While distance is considered as an indirect type of exposure, the other ones are considered as a direct type of exposure, since they involve direct contact with the individual."),
                                      #p(" The table on the right side shows the risk of bias assessment for the specific point selected previously on the forest plot. For further details about risk of bias assessment displayed in the table", a("click here", href = " http://help.magicapp.org/knowledgebase/articles/327941-tool-to-assess-risk-of-bias-in-cohort-studies"),".", 
-                                    #   "Once you click on one a row, a table is going to pop-up to provide more details about the judgment made by the authors for that particular exposure-outcome relationship.  "),
+                                     #   "Once you click on one a row, a table is going to pop-up to provide more details about the judgment made by the authors for that particular exposure-outcome relationship.  "),
                                      p("Once you click on one point, a table is going to pop-up to provide more details about the judgment made by the authors for that particular exposure-outcome relationship. The video below  provides more details about the usage of the forest plot and its annexes."),
                                      column(width = 12,
                                             br(),
@@ -213,7 +213,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                       inputId = "eda_btn", justified = T, label = "",
                       choices = c(`<i class='fa fa-globe'></i> Geographic Location of all studies` = "sp", 
                                   `<i class='fa fa-calendar-alt'></i> Timeline of all studies` = "ts")# INCLUDE IN CASE OF NEED OUTCOMES OF ALL STUDIES, 
-                                 # `<i class='fa fa-poll'></i> Health Outcome of all studies` = "coef")#,
+                      # `<i class='fa fa-poll'></i> Health Outcome of all studies` = "coef")#,
                       #`<i class='fa fa-file-text'></i> All Studies  ` = "tabl"),
                     ),
                     
@@ -275,7 +275,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                       choices = c(`<i class='fa fa-globe'></i> Geographic Distribution of Lower Respiratory Outcomes` = "sp",
                                   `<i class='fa fa-calendar-alt'></i> Timeline of Lower Respiratory Outcomes` = "ts"#,
                                   #`<i class='fa fa-poll'></i> Outcomes Categorized as Lower Respiratory` = "coef"
-                                  )
+                      )
                     ),
                     uiOutput("low_res_intro_text"),
                     uiOutput("low_res_intro_plot")
@@ -292,7 +292,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                       choices = c(`<i class='fa fa-globe'></i> Geographic Distribution of Upper Respiratory Outcomes` = "sp",
                                   `<i class='fa fa-calendar-alt'></i> Timeline of Upper Respiratory Outcomes` = "ts"#,
                                   #`<i class='fa fa-poll'></i> Outcomes Categorized as Upper Respiratory` = "coef"
-                                  )
+                      )
                     ),
                     uiOutput("up_res_intro_text"),
                     uiOutput("up_res_intro_plot")
@@ -310,7 +310,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                       choices = c(`<i class='fa fa-globe'></i> Geographic Distribution of AMR Outcomes` = "sp",
                                   `<i class='fa fa-calendar-alt'></i> Timeline of AMR Outcomes` = "ts"#,
                                   #`<i class='fa fa-poll'></i> Outcomes Categorized as AMR` = "coef"
-                                  )
+                      )
                     ),
                     uiOutput("ar_res_intro_text"),
                     uiOutput("ar_res_intro_plot")
@@ -328,7 +328,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                       choices = c(`<i class='fa fa-globe'></i> Geographic Distribution of Gastrointestinal Outcomes` = "sp",
                                   `<i class='fa fa-calendar-alt'></i> Timeline of Gastrointestinal Outcomes` = "ts"#,
                                   #`<i class='fa fa-poll'></i> Outcomes Categorized as Gastrointestinal diseases` = "coef"
-                                  )
+                      )
                     ),
                     uiOutput("gi_res_intro_text"),
                     uiOutput("gi_res_intro_plot")
@@ -471,7 +471,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                     hr(),
                     fluidRow(
                       column(width = 12,
-                             h4("Select a point: "),
+                             h4(""),
                              #actionButton("reset", label = "Reset selection"),
                              ggiraph::girafeOutput("plot_low_state",height="auto"),
                              
@@ -518,7 +518,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                     hr(),
                     fluidRow(
                       column(width = 12,
-                             h4("Select a point: "),
+                             h4(""),
                              #actionButton("reset", label = "Reset selection"),
                              ggiraph::girafeOutput("plot_up_state",height="auto"),
                              
@@ -564,7 +564,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                     hr(),
                     fluidRow(
                       column(width = 12,
-                             h4("Select a point: "),
+                             h4(""),
                              #actionButton("reset", label = "Reset selection"),
                              ggiraph::girafeOutput("plot_ar_state",height="auto"),
                              
@@ -610,7 +610,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                     hr(),
                     fluidRow(
                       column(width = 12,
-                             h4("Select a point: "),
+                             h4(""),
                              #actionButton("reset", label = "Reset selection"),
                              ggiraph::girafeOutput("plot_gi_state",height="auto"),
                              
@@ -704,7 +704,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                                    HTML("th { text-align: center; }")
                         )
                       )
-                     
+                      
                     )                    
                 )
                 
@@ -780,11 +780,6 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                     br(),
                     tags$li("For further details about risk of bias assessment 
                     ", a("click here", href = " http://help.magicapp.org/knowledgebase/articles/327941-tool-to-assess-risk-of-bias-in-cohort-studies")), 
-                    br(),
-                    tags$li(""),
-                    br(),
-                    tags$li(""),
-                    br(),
                     br()
                 ))), 
       ## * risk of bias upper R
@@ -810,8 +805,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                     tags$li("For further details about risk of bias assessment 
                     ", a("click here", href = " http://help.magicapp.org/knowledgebase/articles/327941-tool-to-assess-risk-of-bias-in-cohort-studies")),
                     br(),
-                    tags$li("The overall risk of bias was serious for all antimicrobial resistance outcomes reported by Schinasi et al. and moderate for
-the outcome reported by Feingold et al."),
+                    
                     br(),
                     br()
                 ))), 

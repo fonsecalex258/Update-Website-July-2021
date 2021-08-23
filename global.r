@@ -35,6 +35,7 @@ mybib <- readr::read_file("datasets/bib.txt")
 
 ## read files ####
 #distiller <- readxl::read_xlsx("www/PRISMA.xlsx")
+mango <- readxl::read_xlsx("datasets/mango.xlsx")
 testtimeline <- readxl::read_xlsx("datasets/testtimeline.xlsx")
 cafo <- readxl::read_xlsx("datasets/cafo.xlsx", sheet = "Treatment-Outcome data")
 cafo2 <- readxl::read_xlsx("datasets/cafo2.xlsx") %>% 
@@ -54,10 +55,37 @@ forest <- read_excel("datasets/forest.xlsx")
 ######### cration of a new dataset based on newest distiller form
 forest_cross <- read_excel("datasets/distiller_cross.xlsx")
 forest_cross1 <- read_excel("datasets/distiller_cross.xlsx")
-forest_cohort <- read_excel("datasets/distiller_cohort.xlsx")
+forest_cohort <- read_excel("datasets/distiller_cohort_lunes_2.xlsx")
 forest_case <- read_excel("datasets/distiller_casecontrol.xlsx")
 ###with this work only for cross
 forest_sabado <- read_excel("datasets/distiller_cross.xlsx")
+################
+mangos <- forest_cross %>% select(Refid, category)
+mangos1 <- forest_cohort %>% select(Refid, category)
+mangos2 <- forest_case %>% select(Refid, category)
+
+mangosT <- bind_rows(mangos, mangos1, mangos2)
+
+
+reyes<- mangosT %>% distinct()
+reyes1 <- reyes%>% filter(category=="Lower Respiratory")
+reyes2 <- reyes%>% filter(category=="Upper Respiratory")
+reyes3 <- reyes%>% filter(category=="Gastrointestinal diseases")
+reyes4 <- reyes%>% filter(category=="Antimicrobial resistance")
+
+
+testtimeline <- testtimeline %>%
+  mutate(LR = ifelse(Refid %in% reyes1$Refid, "Yes", "No")   )
+
+testtimeline <- testtimeline %>%
+  mutate(Gastro = ifelse(Refid %in% reyes3$Refid, "Yes", "No")   )
+
+testtimeline <- testtimeline %>%
+  mutate(UR = ifelse(Refid %in% reyes2$Refid, "Yes", "No")   )
+
+testtimeline <- testtimeline %>%
+  mutate(Antimicro = ifelse(Refid %in% reyes4$Refid, "Yes", "No")   )
+
 ################
 #forest_cross_event <- forest_cross %>% filter(event_state == "Event")
 #forest_cross_state <- forest_cross %>% filter(event_state == "State")
@@ -470,23 +498,18 @@ colnames(ROB_Case) <- c("Differential information", "Differential information 2"
 colnames(ROB_Cohort) <- c("Selection bias", "Differential information", "Differential information 2","Confounding","Differential information 3", "Differential information 4", "Selection bias 2", "Overall bias","IDD", "IDD_2")
 ROB_joint <-  bind_rows(ROB_1,ROB_2, ROB_Cohort, ROB_Case)
 
-###### creta a dataset for barchart grouped by countries
-ROB_44 <-  forest_cross %>% select(Refid, category, Country)
-ROB_55 <-  forest_cohort %>% select(Refid, category, Country)
-ROB_66 <-  forest_case %>% select(Refid, category, Country)
 
-ROB_aux <-  bind_rows(ROB_44, ROB_55, ROB_66)
 
 ###### a dataset to ROB for traffic light graphic
-ROB_1_event <-  forest_cross %>% filter(health_event== "Yes") %>% select(Differential_information_bias_1_V2, Differential_information_bias2_V2, selection_bias_1_V2, selection_bias_2_V2, confounding_V2,overall_bias_V2,IDD,IDD_2)
-ROB_2_event <-  forest_cross %>% filter(rare_outcome== "Yes") %>% select(Differential_information_bias, Differential_information_bias2,selection_bias_1, selection_bias_2, confounding, overall_bias, IDD, IDD_2)
-colnames(ROB_1_event) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
-colnames(ROB_2_event) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
+ROB_1_event <-  forest_cross %>% filter(health_event== "Yes") %>% select(Differential_information_bias_1_V2, Differential_information_bias2_V2, selection_bias_1_V2, selection_bias_2_V2, confounding_V2,overall_bias_V2,IDD,IDD_2, category)
+ROB_2_event <-  forest_cross %>% filter(rare_outcome== "Yes") %>% select(Differential_information_bias, Differential_information_bias2,selection_bias_1, selection_bias_2, confounding, overall_bias, IDD, IDD_2, category)
+colnames(ROB_1_event) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2", "category")
+colnames(ROB_2_event) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2", "category")
 
-ROB_Cohort_tl <-  forest_cohort %>% select(selection_bias, information_bias,information_bias_2, confounding, information_bias_3,information_bias_4, selection_bias_2,overall_bias,IDD, IDD_2)
-ROB_Case_tl <-  forest_case %>% select(Differential_information_bias, Differential_information_bias2,selection_bias_1, selection_bias_2, confounding, overall_bias, IDD, IDD_2)
-colnames(ROB_Case_tl) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
-colnames(ROB_Cohort_tl) <- c("Selection bias", "Misclassification of exposure", "Misclassification of outcome","Confounding","Differential information 3", "Differential information 4", "Selection_bias 2", "Overall bias","IDD", "IDD_2")
+ROB_Cohort_tl <-  forest_cohort %>% select(selection_bias, information_bias,information_bias_2, confounding, information_bias_3,information_bias_4, selection_bias_2,overall_bias,IDD, IDD_2,category)
+ROB_Case_tl <-  forest_case %>% select(Differential_information_bias, Differential_information_bias2,selection_bias_1, selection_bias_2, confounding, overall_bias, IDD, IDD_2, category)
+colnames(ROB_Case_tl) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2", "category")
+colnames(ROB_Cohort_tl) <- c("Selection bias", "Misclassification of exposure", "Misclassification of outcome","Confounding","Differential information 3", "Differential information 4", "Selection_bias 2", "Overall bias","IDD", "IDD_2", "category")
 ROB_joint_tl <-  bind_rows(ROB_1_event,ROB_2_event, ROB_Cohort_tl, ROB_Case_tl)
 
 ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Definitely yes (low risk of bias)'] <- 'Low'
@@ -553,6 +576,7 @@ forest$effect_z[forest$effect_z == 'OR p value'] <- 'p value of the Odds Ratio'
 
 forest_joint$effect_z <- forest_joint$mm
 up_forest_state1$effect_z_state <- up_forest_state1$mm
+forest_joint$effect_z[forest_joint$effect_z == 'PR'] <- 'IDR'
 #forest_cross_event$effect_z[forest_cross_event$effect_z == 'OR'] <- 'Odds Ratio (OR)'
 #forest_cross_event$effect_z[forest_cross_event$effect_z == 'PR'] <- 'Prevalence Ratio (PR)'
 #forest_cross_event$effect_z[forest$effect_z == 'beta'] <- 'beta coefficient of the variable'
@@ -596,7 +620,14 @@ cafoo_map <- cafo_map %>% group_by(Country) %>%
   mutate(lat = ifelse(Country == "Germany", 51.165691,
                       ifelse(Country == "Netherlands", 52.132633,ifelse(Country == "USA", 37.09024, ifelse(Country=="Norway", 60.472024, ifelse(Country=="Mexico", 23.634501, ifelse(Country=="Canada", 56.130366, ifelse(Country=="UK", 55.378051, 46.227638))) )))))
 
-####
+####### alternative for each health category
+
+
+cafoo_map_cat <- testtimeline %>%
+  mutate(long = ifelse(country == "Germany", 10.44768,
+                       ifelse(country == "Netherlands", 5.2913,ifelse(country == "USA", -98.5795, ifelse(country=="Norway", 8.468946, ifelse(country=="Mexico", -102.552784, ifelse(country=="Canada", -106.346771, ifelse(country=="UK", -3.435973, 2.213749))) ))))) %>% 
+  mutate(lat = ifelse(country == "Germany", 51.165691,
+                      ifelse(country == "Netherlands", 52.132633,ifelse(country == "USA", 37.09024, ifelse(country=="Norway", 60.472024, ifelse(country=="Mexico", 23.634501, ifelse(country=="Canada", 56.130366, ifelse(country=="UK", 55.378051, 46.227638))) )))))
 
 ## timeline data ####
 ## add two columns: author(paperInfo) & published year(paperYear) 
@@ -670,28 +701,28 @@ dataset <- dataset %>%
 ROB_cols <- grep("ROB_", names(dataset), value = TRUE)[c(1:7, 9:15)]
 
 ## summary - ROB ####
-bias_types <- c("Confounding", "Selection of Participants", "Measurement of Exposures",
-                "Missing Data", "Measurement of Outcome", "Selection of Reported Result", "Measurement of Interventions")
-r2 <- rob %>%
-  select(Refid,Categorized.class,ROB_confounding_paige,
-         ROB_selection_paige, ROB_measurementExposure_paige,
-         ROB_missingData_paige,  ROB_measureOutcome_paige,
-         ROB_SelectionofReportedResult_paige,ROB_measurementInterventions_paige,ROB_overall_paige) %>% 
-  setNames(c("Refid", "Categorized.class",bias_types, "Overall"))
-r22 <- r2 %>% gather(key = `Type of Bias`, value = Bias, Confounding:Overall) %>% 
-  mutate(Bias = forcats::fct_relevel(Bias, "Critical","Serious", "Moderate", "Low", "Uncertain"),
-         `Type of Bias` = forcats::fct_relevel(`Type of Bias`, "Selection of Reported Result",
-                                               "Selection of Participants", "Missing Data", "Measurement of Interventions","Measurement of Outcome",
-                                               "Measurement of Exposures", "Confounding","Overall")) %>% 
-  replace_na(list(Bias = "Uncertain"))
+
+
+############ summary risk of bias: added monday 08/23/2021
+r2 <- ROB_joint_tl# %>%
+#select('IDD', 'category','Selection bias' , 'Selection_bias 2', 'Misclassification of exposure', 'Misclassification of outcome' ,'Differential information 3' ,'Differential information 4', 'Confounding') %>% 
+#setNames(c("Refid", "categoy",bias_types))
+r22 <- r2 %>% gather(key = `Type of Bias`, value = Bias, c('Selection bias' , 'Selection_bias 2', 'Misclassification of exposure', 'Misclassification of outcome' ,'Differential information 3' ,'Differential information 4', 'Confounding')) %>% 
+  mutate(Bias = forcats::fct_relevel(Bias, "Low","Likely Low", "Likely High", "High", "Uncertain"),
+         `Type of Bias` = forcats::fct_relevel(`Type of Bias`, 'Selection bias' , 'Selection_bias 2', 'Misclassification of exposure', 'Misclassification of outcome' ,'Differential information 3' ,'Differential information 4', 'Confounding')) #%>% 
+
+r22_1 <- r22[complete.cases(r22), ]
+
 color_table <- tibble(
-  Bias = c("Critical", "Serious", "Moderate", "Low", "Uncertain"),
+  Bias = c("High", "Likely High", "Likely Low", "Low", "Uncertain"),
   #Color = c(RColorBrewer::brewer.pal(4, "RdYlGn"), "#bdbdbd")
-  Color = c("red", "salmon","lightgreen","forestgreen" , "wheat")
+  #Color = c("red", "salmon","lightgreen","forestgreen" , "wheat")
+  Color = c("forestgreen", "lightgreen","salmon","red" , "wheat")
 )
 pal <- color_table$Color
 names(pal) <- color_table$Bias
 
+############
 ## DT ####
 forest_dt <- function(forest_data){
   forest_data %>% 
