@@ -1,5 +1,5 @@
 #hello world
-# adding mre lines of text to chek the push 
+# adding more lines of text to chek the push 
 library(shinydashboard)
 library(shinycssloaders)
 library(shinyWidgets)
