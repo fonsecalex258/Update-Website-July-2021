@@ -83,7 +83,10 @@ dashboardPage(
                                    # the latest summary of the available studies and a balance interpretation of the findings and their implications
                                    # in the wider body of literature will better serve the needs of the community because it"),
                                    p("1. Democratizes access to the information and interpretation, and"),
-                                   p("2. Provides for more timely and relevant update"),
+                                   p("2. Provide for more timely and relevant update"),
+                                   p ("The figure to the illusrates the living systematic review process:" ),
+                                   p("1. At a starting point begin a review that summarizes the data to that point, and"),
+                                   p("2. Subsequently periodically update the review with additional literture" ),
                                    
                   ),
                   br(),
