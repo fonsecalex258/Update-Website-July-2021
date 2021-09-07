@@ -57,6 +57,11 @@ forest_cross <- read_excel("datasets/distiller_cross.xlsx")
 forest_cross1 <- read_excel("datasets/distiller_cross.xlsx")
 forest_cohort <- read_excel("datasets/distiller_cohort_lunes_2.xlsx")
 forest_case <- read_excel("datasets/distiller_casecontrol.xlsx")
+######
+forest_cross <-  forest_cross %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+forest_cross1 <-  forest_cross1 %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+forest_cohort <-  forest_cohort %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+forest_case <-  forest_case %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
 ###with this work only for cross
 forest_sabado <- read_excel("datasets/distiller_cross.xlsx")
 ################
@@ -110,6 +115,7 @@ if (sum(rty)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cross$outcome, each = 6)
+  authors <- rep(forest_cross$authors, each = 6)
   mm <- rep(forest_cross$effect_measure, each = 6)
   Exposure.measure <- rep(forest_cross$exposure, each = 6)
   Categorized.class <- rep(forest_cross$category, each = 6)
@@ -117,7 +123,7 @@ if (sum(rty)==6 ) {
   IDD_2 <- rep(forest_cross$IDD_2, each = 6)
   
   up_forest_melo <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }else if (sum(rty)==5){
   yis0 <- forest_cross[c(9,13,17,21,25)]
@@ -130,6 +136,7 @@ if (sum(rty)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cross$outcome, each = 5)
+  authors <- rep(forest_cross$authors, each = 5)
   mm <- rep(forest_cross$effect_measure, each = 5)
   Exposure.measure <- rep(forest_cross$exposure, each = 5)
   Categorized.class <- rep(forest_cross$category, each = 5)
@@ -137,7 +144,7 @@ if (sum(rty)==6 ) {
   IDD_2 <- rep(forest_cross$IDD_2, each = 5)
   
   up_forest_melo <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }else if (sum(rty)==4){
   yis0 <- forest_cross[c(9,13,17,21)]
@@ -150,6 +157,7 @@ if (sum(rty)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cross$outcome, each = 4)
+  authors <- rep(forest_cross$authors, each = 4)
   mm <- rep(forest_cross$effect_measure, each = 4)
   Exposure.measure <- rep(forest_cross$exposure, each = 4)
   Categorized.class <- rep(forest_cross$category, each = 4)
@@ -157,7 +165,7 @@ if (sum(rty)==6 ) {
   IDD_2 <- rep(forest_cross$IDD_2, each = 4)
   
   up_forest_melo <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2,authors)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }else if (sum(rty)==3){
   yis0 <- forest_cross[c(9,13,17)]
@@ -170,6 +178,7 @@ if (sum(rty)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cross$outcome, each = 3)
+  authors <- rep(forest_cross$authors, each = 3)
   mm <- rep(forest_cross$effect_measure, each = 3)
   Exposure.measure <- rep(forest_cross$exposure, each = 3)
   Categorized.class <- rep(forest_cross$category, each = 3)
@@ -177,7 +186,7 @@ if (sum(rty)==6 ) {
   IDD_2 <- rep(forest_cross$IDD_2, each = 3)
   
   up_forest_melo <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }
 ##############
@@ -200,6 +209,7 @@ if (sum(rty3)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cross_state$outcome, each = 6)
+  authors <- rep(forest_cross_state$authors, each = 6)
   mm <- rep(forest_cross_state$effect_measure, each = 6)
   Exposure.measure <- rep(forest_cross_state$exposure, each = 6)
   Categorized.class <- rep(forest_cross_state$category, each = 6)
@@ -207,7 +217,7 @@ if (sum(rty3)==6 ) {
   IDD_2 <- rep(forest_cross_state$IDD_2, each = 6)
   
   up_forest_state <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_state1 <- up_forest_state[complete.cases(up_forest_state),]
 }else if (sum(rty3)==5){
   yis0 <- forest_cross_state[c(9,13,17,21,25)]
@@ -220,6 +230,7 @@ if (sum(rty3)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cross_state$outcome, each = 5)
+  authors <- rep(forest_cross_state$authors, each = 5)
   mm <- rep(forest_cross_state$effect_measure, each = 5)
   Exposure.measure <- rep(forest_cross_state$exposure, each = 5)
   Categorized.class <- rep(forest_cross_state$category, each = 5)
@@ -227,7 +238,7 @@ if (sum(rty3)==6 ) {
   IDD_2 <- rep(forest_cross_state$IDD_2, each = 5)
   
   up_forest_state <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_state1 <- up_forest_state[complete.cases(up_forest_state),]
 }else if (sum(rty3)==4){
   yis0 <- forest_cross_state[c(9,13,17,21)]
@@ -240,6 +251,7 @@ if (sum(rty3)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cross_state$outcome, each = 4)
+  authors <- rep(forest_cross_state$authors, each = 4)
   mm <- rep(forest_cross_state$effect_measure, each = 4)
   Exposure.measure <- rep(forest_cross_state$exposure, each = 4)
   Categorized.class <- rep(forest_cross_state$category, each = 4)
@@ -247,7 +259,7 @@ if (sum(rty3)==6 ) {
   IDD_2 <- rep(forest_cross_state$IDD_2, each = 4)
   
   up_forest_state <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_state1 <- up_forest_state[complete.cases(up_forest_state),]
 }else if (sum(rty3)==3){
   yis0 <- forest_cross_state[c(9,13,17)]
@@ -260,6 +272,7 @@ if (sum(rty3)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cross_state$outcome, each = 3)
+  authors <- rep(forest_cross_state$authors, each = 3)
   mm <- rep(forest_cross_state$effect_measure, each = 3)
   Exposure.measure <- rep(forest_cross_state$exposure, each = 3)
   Categorized.class <- rep(forest_cross_state$category, each = 3)
@@ -267,7 +280,7 @@ if (sum(rty3)==6 ) {
   IDD_2 <- rep(forest_cross_state$IDD_2, each = 3)
   
   up_forest_state <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_state1 <- up_forest_state[complete.cases(up_forest_state),]
 }
 
@@ -287,6 +300,7 @@ if (sum(rty1)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_case$outcome, each = 6)
+  authors <- rep(forest_case$authors, each = 6)
   mm <- rep(forest_case$effect_measure, each = 6)
   Exposure.measure <- rep(forest_case$exposure, each = 6)
   Categorized.class <- rep(forest_case$category, each = 6)
@@ -294,7 +308,7 @@ if (sum(rty1)==6 ) {
   IDD_2 <- rep(forest_case$IDD_2, each = 6)
   
   up_forest_case <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_case1 <- up_forest_case[complete.cases(up_forest_case),]
 }else if (sum(rty1)==5){
   yis0 <- forest_case[c(9,13,17,21,25)]
@@ -307,6 +321,7 @@ if (sum(rty1)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_case$outcome, each = 5)
+  authors <- rep(forest_case$authors, each = 5)
   mm <- rep(forest_case$effect_measure, each = 5)
   Exposure.measure <- rep(forest_case$exposure, each = 5)
   Categorized.class <- rep(forest_case$category, each = 5)
@@ -314,7 +329,7 @@ if (sum(rty1)==6 ) {
   IDD_2 <- rep(forest_case$IDD_2, each = 5)
   
   up_forest_case <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_case1 <- up_forest_case[complete.cases(up_forest_case),]
 }else if (sum(rty1)==4){
   yis0 <- forest_case[c(9,13,17,21)]
@@ -327,6 +342,7 @@ if (sum(rty1)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_case$outcome, each = 4)
+  authors <- rep(forest_case$authors, each = 4)
   mm <- rep(forest_case$effect_measure, each = 4)
   Exposure.measure <- rep(forest_case$exposure, each = 4)
   Categorized.class <- rep(forest_case$category, each = 4)
@@ -334,7 +350,7 @@ if (sum(rty1)==6 ) {
   IDD_2 <- rep(forest_case$IDD_2, each = 4)
   
   up_forest_case <- data.frame(
-    IDD, IDD_2, Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2, Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_case1 <- up_forest_case[complete.cases(up_forest_case),]
 }else if (sum(rty1)==3){
   yis0 <- forest_case[c(9,13,17)]
@@ -347,6 +363,7 @@ if (sum(rty1)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_case$outcome, each = 3)
+  authors <- rep(forest_case$authors, each = 3)
   mm <- rep(forest_case$effect_measure, each = 3)
   Exposure.measure <- rep(forest_case$exposure, each = 3)
   Categorized.class <- rep(forest_case$category, each = 3)
@@ -354,7 +371,7 @@ if (sum(rty1)==6 ) {
   IDD_2 <- rep(forest_case$IDD_2, each = 3)
   
   up_forest_case <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_case1 <- up_forest_case[complete.cases(up_forest_case),]
 }
 
@@ -375,6 +392,7 @@ if (sum(rty2)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cohort$outcome, each = 6)
+  authors <- rep(forest_cohort$authors, each = 6)
   mm <- rep(forest_cohort$effect_measure, each = 6)
   Exposure.measure <- rep(forest_cohort$exposure, each = 6)
   Categorized.class <- rep(forest_cohort$category, each = 6)
@@ -382,7 +400,7 @@ if (sum(rty2)==6 ) {
   IDD_2 <- rep(forest_cohort$IDD_2, each = 6)
   
   up_forest_cohort <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_cohort1 <- up_forest_cohort[complete.cases(up_forest_cohort),]
 }else if (sum(rty2)==5){
   yis0 <- forest_cohort[c(10,14,18,22,26)]
@@ -395,6 +413,7 @@ if (sum(rty2)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cohort$outcome, each = 5)
+  authors <- rep(forest_cohort$authors, each = 5)
   mm <- rep(forest_cohort$effect_measure, each = 5)
   Exposure.measure <- rep(forest_cohort$exposure, each = 5)
   Categorized.class <- rep(forest_cohort$category, each = 5)
@@ -402,7 +421,7 @@ if (sum(rty2)==6 ) {
   IDD_2 <- rep(forest_cohort$IDD_2, each = 5)
   
   up_forest_cohort <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_cohort1 <- up_forest_cohort[complete.cases(up_forest_cohort),]
 }else if (sum(rty2)==4){
   yis0 <- forest_cohort[c(10,14,18,22)]
@@ -415,6 +434,7 @@ if (sum(rty2)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cohort$outcome, each = 4)
+  authors <- rep(forest_cohort$authors, each = 4)
   mm <- rep(forest_cohort$effect_measure, each = 4)
   Exposure.measure <- rep(forest_cohort$exposure, each = 4)
   Categorized.class <- rep(forest_cohort$category, each = 4)
@@ -422,7 +442,7 @@ if (sum(rty2)==6 ) {
   IDD_2 <- rep(forest_cohort$IDD_2, each = 4)
   
   up_forest_cohort <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_cohort1 <- up_forest_cohort[complete.cases(up_forest_cohort),]
 }else if (sum(rty2)==3){
   yis0 <- forest_cohort[c(10,14,18)]
@@ -435,6 +455,7 @@ if (sum(rty2)==6 ) {
   tinto2 <- data.frame(lowerci=c(t((yis2))))
   
   Outcome.variable <- rep(forest_cohort$outcome, each = 3)
+  authors <- rep(forest_cohort$authors, each = 3)
   mm <- rep(forest_cohort$effect_measure, each = 3)
   Exposure.measure <- rep(forest_cohort$exposure, each = 3)
   Categorized.class <- rep(forest_cohort$category, each = 3)
@@ -442,7 +463,7 @@ if (sum(rty2)==6 ) {
   IDD_2 <- rep(forest_cohort$IDD_2, each = 3)
   
   up_forest_cohort <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
   up_forest_cohort1 <- up_forest_cohort[complete.cases(up_forest_cohort),]
 }
 

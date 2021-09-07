@@ -593,7 +593,8 @@ read_PRISMAdata <- function(data){
   
   #Set parameters
   #previous_studies <- scales::comma(as.numeric(data[grep('previous_studies', data[,1]),]$n))
-  previous_studies <- scales::comma(as.numeric(15))
+  previous_studies <- scales::comma(as.numeric(16))
+  
   previous_reports <- scales::comma(as.numeric(data[grep('previous_reports', data[,1]),]$n))
   register_results <- scales::comma(as.numeric(data[grep('register_results', data[,1]),]$n))
   #database_results <- scales::comma(as.numeric(data[grep('database_results', data[,1]),]$n))
@@ -1613,28 +1614,28 @@ increases the potential for identification of false associations due to random e
     )
   }) 
   #### for Upper R 
-  output$out12 <- renderInfoBox({
-    infoBox("How to use a forest plot",  
-            a("Click here to go to the tutorial", onclick = "openTab('tutorial')", href="#", style = "font-size: 90%;"),
-            icon = icon("chalkboard-teacher"), color = "blue"
-    )
-  })
+ # output$out12 <- renderInfoBox({
+#    infoBox("How to use a forest plot",  
+#            a("Click here to go to the tutorial", onclick = "openTab('tutorial')", href="#", style = "font-size: 90%;"),
+#            icon = icon("chalkboard-teacher"), color = "blue"
+#    )
+#  })
   
   #### for AR 
-  output$out12_ar <- renderInfoBox({
-    infoBox("How to use a forest plot",  
-            a("Click here to go to the tutorial", onclick = "openTab('tutorial')", href="#", style = "font-size: 90%;"),
-            icon = icon("chalkboard-teacher"), color = "blue"
-    )
-  })
+#  output$out12_ar <- renderInfoBox({
+#    infoBox("How to use a forest plot",  
+#            a("Click here to go to the tutorial", onclick = "openTab('tutorial')", href="#", style = "font-size: 90%;"),
+#            icon = icon("chalkboard-teacher"), color = "blue"
+#    )
+#  })
   
   #### for GI 
-  output$out12_gi <- renderInfoBox({
-    infoBox("How to use a forest plot",  
-            a("Click here to go to the tutorial", onclick = "openTab('tutorial')", href="#", style = "font-size: 90%;"),
-            icon = icon("chalkboard-teacher"), color = "blue"
-    )
-  })
+#  output$out12_gi <- renderInfoBox({
+#    infoBox("How to use a forest plot",  
+#            a("Click here to go to the tutorial", onclick = "openTab('tutorial')", href="#", style = "font-size: 90%;"),
+#            icon = icon("chalkboard-teacher"), color = "blue"
+#    )
+#  })
   
   #### for Neuro 
   output$out12_Neur <- renderInfoBox({
@@ -1659,11 +1660,12 @@ increases the potential for identification of false associations due to random e
     low_forest <-  low_forest%>% mutate(id2 = c(1:(g+1)))
     
     #up_forest[g+1,3] <- "OUTCOME"
-    low_forest[g+1,13] <- "EXPOSURE"
+    low_forest[g+1,14] <- "EXPOSURE"
     low_forest[g+1,7] <- "SUBCATEGORY"
-    #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
+    #low_forest[g+1,15] <- "POINT ESTIMATE(95% CI)"
     low_forest[g+1,4] <- "CATEGORY"
-    low_forest[g+1,11] <- "OUTCOME"
+    low_forest[g+1,12] <- "OUTCOME"
+    low_forest[g+1,11] <- "STUDY"
     
     
     
@@ -1717,15 +1719,15 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    low_forest[g+1,15] <- "POINT ESTIMATE(95% CI)"
+    low_forest[g+1,16] <- "POINT ESTIMATE(95% CI)"
     
     
     
     fonseca2 <- ggplot(data = low_forest, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      #geom_text(aes(x = 1,label = IDD_2),size= 4.5,hjust = 0)+
-      geom_text(aes(x = 1.2, label = Subcategory),size= 5.1, hjust = 0) +
-      geom_text(aes(x = 2, label = inter_95), size= 5.1,hjust = 1)+
+      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
+      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
@@ -1762,12 +1764,12 @@ increases the potential for identification of false associations due to random e
     up_forest[g+1,]<- NA
     up_forest <-  up_forest%>% mutate(id2 = c(1:(g+1)))
     
-    #up_forest[g+1,3] <- "OUTCOME"
-    up_forest[g+1,13] <- "EXPOSURE"
+    up_forest[g+1,12] <- "OUTCOME"
+    up_forest[g+1,14] <- "EXPOSURE"
     up_forest[g+1,7] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
-    up_forest[g+1,4] <- "CATEGORY"
-    up_forest[g+1,11] <- "OUTCOME"
+    #up_forest_state1[g+1,4] <- "CATEGORY"
+    up_forest[g+1,11] <- "STUDY"
     
     
     
@@ -1844,15 +1846,15 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    up_forest[g+1,15] <- "POINT ESTIMATE(95% CI)"
+    up_forest[g+1,16] <- "POINT ESTIMATE(95% CI)"
     
     
     
     fonseca2 <- ggplot(data = up_forest, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      #geom_text(aes(x = 1,label = IDD_2),size= 4.5,hjust = 0)+
-      geom_text(aes(x = 1.2, label = Subcategory),size= 5.5, hjust = 0) +
-      geom_text(aes(x = 2, label = inter_95), size= 5.5,hjust = 1)+
+      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
+      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
@@ -1889,12 +1891,12 @@ increases the potential for identification of false associations due to random e
     ar_forest[g+1,]<- NA
     ar_forest <-  ar_forest%>% mutate(id2 = c(1:(g+1)))
     
-    #up_forest[g+1,3] <- "OUTCOME"
-    ar_forest[g+1,13] <- "EXPOSURE"
+    ar_forest[g+1,12] <- "OUTCOME"
+    ar_forest[g+1,14] <- "EXPOSURE"
     ar_forest[g+1,7] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
-    ar_forest[g+1,4] <- "CATEGORY"
-    ar_forest[g+1,11] <- "OUTCOME"
+    #up_forest_state1[g+1,4] <- "CATEGORY"
+    ar_forest[g+1,11] <- "STUDY"
     
     
     
@@ -1970,15 +1972,15 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    ar_forest[g+1,15] <- "POINT ESTIMATE(95% CI)"
+    ar_forest[g+1,16] <- "POINT ESTIMATE(95% CI)"
     
     
     
     fonseca2 <- ggplot(data = ar_forest, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      #geom_text(aes(x = 1,label = IDD_2),size= 4.5,hjust = 0)+
-      geom_text(aes(x = 1.2, label = Subcategory),size= 5.5, hjust = 0) +
-      geom_text(aes(x = 2, label = inter_95), size= 5.5,hjust = 1)+
+      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
+      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
@@ -2014,12 +2016,12 @@ increases the potential for identification of false associations due to random e
     gi_forest[g+1,]<- NA
     gi_forest <-  gi_forest%>% mutate(id2 = c(1:(g+1)))
     
-    #up_forest[g+1,3] <- "OUTCOME"
-    gi_forest[g+1,13] <- "EXPOSURE"
+    gi_forest[g+1,12] <- "OUTCOME"
+    gi_forest[g+1,14] <- "EXPOSURE"
     gi_forest[g+1,7] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
-    gi_forest[g+1,4] <- "CATEGORY"
-    gi_forest[g+1,11] <- "OUTCOME"
+    #up_forest_state1[g+1,4] <- "CATEGORY"
+    gi_forest[g+1,11] <- "STUDY"
     
     
     
@@ -2096,15 +2098,15 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    gi_forest[g+1,15] <- "POINT ESTIMATE(95% CI)"
+    gi_forest[g+1,16] <- "POINT ESTIMATE(95% CI)"
     
     
     
     fonseca2 <- ggplot(data = gi_forest, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      #geom_text(aes(x = 1,label = IDD_2),size= 4.5,hjust = 0)+
-      geom_text(aes(x = 1.2, label = Subcategory),size= 5.5, hjust = 0) +
-      geom_text(aes(x = 2, label = inter_95), size= 5.5,hjust = 1)+
+      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
+      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
@@ -2140,16 +2142,16 @@ increases the potential for identification of false associations due to random e
     up_forest_state1[g+1,]<- NA
     up_forest_state1 <-  up_forest_state1%>% mutate(id2 = c(1:(g+1)))
     
-    #up_forest[g+1,3] <- "OUTCOME"
-    up_forest_state1[g+1,13] <- "EXPOSURE"
+    up_forest_state1[g+1,12] <- "OUTCOME"
+    up_forest_state1[g+1,14] <- "EXPOSURE"
     up_forest_state1[g+1,7] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
-    up_forest_state1[g+1,4] <- "CATEGORY"
-    up_forest_state1[g+1,11] <- "OUTCOME"
+    #up_forest_state1[g+1,4] <- "CATEGORY"
+    up_forest_state1[g+1,11] <- "STUDY"
     
-    
-    
-    
+    ###
+
+    ##
     validate(
       need(up_forest_state1$Outcome.variable != "", "There are no records for the effect size (ES) and health outcome selected, please make another selection.")
     )
@@ -2218,13 +2220,13 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    up_forest_state1[g+1,15] <- "POINT ESTIMATE(95% CI)"
+    up_forest_state1[g+1,16] <- "POINT ESTIMATE(95% CI)"
     
     fonseca2_state <- ggplot(data = up_forest_state1, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      #geom_text(aes(x = 1,label = Categorized.class),size= 4.5,hjust = 0)+
-      geom_text(aes(x = 1.2, label = Subcategory),size= 5.5, hjust = 0) +
-      geom_text(aes(x = 2, label = inter_95), size= 5.5,hjust = 1)+
+      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
+      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
@@ -2260,12 +2262,12 @@ increases the potential for identification of false associations due to random e
     up_forest_state1[g+1,]<- NA
     up_forest_state1 <-  up_forest_state1%>% mutate(id2 = c(1:(g+1)))
     
-    #up_forest[g+1,3] <- "OUTCOME"
-    up_forest_state1[g+1,13] <- "EXPOSURE"
+    up_forest_state1[g+1,12] <- "OUTCOME"
+    up_forest_state1[g+1,14] <- "EXPOSURE"
     up_forest_state1[g+1,7] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
-    up_forest_state1[g+1,4] <- "CATEGORY"
-    up_forest_state1[g+1,11] <- "OUTCOME"
+    #up_forest_state1[g+1,4] <- "CATEGORY"
+    up_forest_state1[g+1,11] <- "STUDY"
     
     
     
@@ -2339,13 +2341,13 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    up_forest_state1[g+1,15] <- "POINT ESTIMATE(95% CI)"
+    up_forest_state1[g+1,16] <- "POINT ESTIMATE(95% CI)"
     
     fonseca2_state <- ggplot(data = up_forest_state1, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      #geom_text(aes(x = 1,label = Categorized.class),size= 4.5,hjust = 0)+
-      geom_text(aes(x = 1.2, label = Subcategory),size= 5.5, hjust = 0) +
-      geom_text(aes(x = 2, label = inter_95), size= 5.5,hjust = 1)+
+      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
+      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
@@ -2383,12 +2385,12 @@ increases the potential for identification of false associations due to random e
     up_forest_state1[g+1,]<- NA
     up_forest_state1 <-  up_forest_state1%>% mutate(id2 = c(1:(g+1)))
     
-    #up_forest[g+1,3] <- "OUTCOME"
-    up_forest_state1[g+1,13] <- "EXPOSURE"
+    up_forest_state1[g+1,12] <- "OUTCOME"
+    up_forest_state1[g+1,14] <- "EXPOSURE"
     up_forest_state1[g+1,7] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
-    up_forest_state1[g+1,4] <- "CATEGORY"
-    up_forest_state1[g+1,11] <- "OUTCOME"
+    #up_forest_state1[g+1,4] <- "CATEGORY"
+    up_forest_state1[g+1,11] <- "STUDY"
     
     
     
@@ -2462,13 +2464,13 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    up_forest_state1[g+1,15] <- "POINT ESTIMATE(95% CI)"
+    up_forest_state1[g+1,16] <- "POINT ESTIMATE(95% CI)"
     
     fonseca2_state <- ggplot(data = up_forest_state1, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      #geom_text(aes(x = 1,label = Categorized.class),size= 4.5,hjust = 0)+
-      geom_text(aes(x = 1.2, label = Subcategory),size= 5.5, hjust = 0) +
-      geom_text(aes(x = 2, label = inter_95), size= 5.5,hjust = 1)+
+      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
+      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
@@ -2506,12 +2508,12 @@ increases the potential for identification of false associations due to random e
     up_forest_state1[g+1,]<- NA
     up_forest_state1 <-  up_forest_state1%>% mutate(id2 = c(1:(g+1)))
     
-    #up_forest[g+1,3] <- "OUTCOME"
-    up_forest_state1[g+1,13] <- "EXPOSURE"
+    up_forest_state1[g+1,12] <- "OUTCOME"
+    up_forest_state1[g+1,14] <- "EXPOSURE"
     up_forest_state1[g+1,7] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
-    up_forest_state1[g+1,4] <- "CATEGORY"
-    up_forest_state1[g+1,11] <- "OUTCOME"
+    #up_forest_state1[g+1,4] <- "CATEGORY"
+    up_forest_state1[g+1,11] <- "STUDY"
     
     
     
@@ -2585,13 +2587,13 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    up_forest_state1[g+1,15] <- "POINT ESTIMATE(95% CI)"
+    up_forest_state1[g+1,16] <- "POINT ESTIMATE(95% CI)"
     
     fonseca2_state <- ggplot(data = up_forest_state1, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      #geom_text(aes(x = 1,label = Categorized.class),size= 4.5,hjust = 0)+
-      geom_text(aes(x = 1.2, label = Subcategory),size= 5.5, hjust = 0) +
-      geom_text(aes(x = 2, label = inter_95), size= 5.5,hjust = 1)+
+      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
+      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)

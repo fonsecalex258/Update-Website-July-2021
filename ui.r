@@ -75,7 +75,7 @@ dashboardPage(
                                    br(), 
                                    p("A living systematic reviews is a review that is frequently updated, incorporating relevant new evidence as it becomes available.
                   This term means that rather than being a static publication in a peer reviewed journal, 
-                  the review is housed on this website allowing for more timely updates and more accessible information."),
+                  the review is housed on this website allowing for more timely updates and more accessible information. The rationale for living systematic reviews is that they:"),
                                    #                  p("This process can be visualized in the this animation. Our last static systematic review about this topic was published in 2017 based on  16 relevant studies published before that year. 
                                    #   However, during the last 3 years, new studies may have been published and would need to be incorporated in  new systematic reviews. These new reviews are published on this website and updated periodically."),
                                    #                  
@@ -233,7 +233,7 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                                            
                                            
                                            # Tab 2 ----
-                                           tabPanel("Create flow diagram",
+                                           tabPanel(
                                                     
                                                     mainPanel(
                                                       DiagrammeR::grVizOutput(outputId = "plot1", width = "130%", height = "650px"))
