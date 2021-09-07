@@ -75,7 +75,7 @@ dashboardPage(
                                    br(), 
                                    p("A living systematic reviews is a review that is frequently updated, incorporating relevant new evidence as it becomes available.
                   This term means that rather than being a static publication in a peer reviewed journal, 
-                  the review is housed on this website allowing for more timely updates and more accessible information."),
+                  the review is housed on this website allowing for more timely updates and more accessible information. The rationale for living systematic reviews is that they:"),
                                    #                  p("This process can be visualized in the this animation. Our last static systematic review about this topic was published in 2017 based on  16 relevant studies published before that year. 
                                    #   However, during the last 3 years, new studies may have been published and would need to be incorporated in  new systematic reviews. These new reviews are published on this website and updated periodically."),
                                    #                  
@@ -83,7 +83,10 @@ dashboardPage(
                                    # the latest summary of the available studies and a balance interpretation of the findings and their implications
                                    # in the wider body of literature will better serve the needs of the community because it"),
                                    p("1. Democratizes access to the information and interpretation, and"),
-                                   p("2. Provides for more timely and relevant update"),
+                                   p("2. Provide for more timely and relevant update"),
+                                   p ("The figure to the illusrates the living systematic review process:" ),
+                                   p("1. At a starting point begin a review that summarizes the data to that point, and"),
+                                   p("2. Subsequently periodically update the review with additional literture" ),
                                    
                   ),
                   br(),
