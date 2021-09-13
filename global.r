@@ -52,6 +52,20 @@ cafo4 <- cafo4[c(6, 1, 2, 3)]
 dataset <- readr::read_csv("datasets/CAFO_All_data_new_Aug21.csv")
 rob <- readxl::read_xlsx("datasets/cafo.xlsx", sheet = "Risk of bias")
 forest <- read_excel("datasets/forest.xlsx")
+#### Exclusion data
+exclusion <- readxl::read_xlsx("datasets/exclusion_september.xlsx")
+exclusion$count <- rowSums( !is.na( exclusion [,11:18]))
+exclusion <- exclusion %>%
+  mutate(`Reason for exclusion` = ifelse(count==1, "The study is not written entirely in English",
+                         ifelse(count==3, "The study is not primary research",
+                                ifelse(count==4, "The study does not report a comparative association between a relevant animal feeding operation and measures of health in surrounding-community members only and include occupational exposure", 
+                                       ifelse(count==5, "The study does not analyze the relationship between outcome and exposure at individual human level",
+                                              ifelse(count==6, "The study does not report animal feeding operations that would be reasonably considered either large, concentrated or intensive by modern standards",
+                                                     ifelse(count==7, "The study does not include more than one unit of measurement of exposure", "The study does not include at least one human health outcome measured using either an eligible survey instrument, test, assay or diseases measure obtained from medical records")
+                                                     
+                                              ))))))
+exclusionF <- exclusion[c(2, 3, 4, 5, 6, 7,8, 21)]
+
 ######### cration of a new dataset based on newest distiller form
 forest_cross <- read_excel("datasets/distiller_cross.xlsx")
 forest_cross1 <- read_excel("datasets/distiller_cross.xlsx")

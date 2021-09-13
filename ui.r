@@ -45,6 +45,7 @@ dashboardPage(
                         menuItem("Summary Risk of Bias", tabName = "gi_rsp_risk_of_bias"),
                         menuItem("Interpretation", tabName = "gi_rsp_conclusion"))),
       # ),
+      menuItem("Excluded studies", tabName = "excluded", icon = icon("fas fa-spell-check")),
       menuItem("References", tabName = "ref", icon = icon("book")),
       # selectInput("class",
       #             "Outcome class",
@@ -1027,6 +1028,20 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                     tags$li("The overall risk of bias for this exposure-outcome association was serious or critical. Horton et al. reported one effect measure for which the precision measure (95% confidence interval (CI)) only included estimates associated with harm: for the exposure - twice-daily odor rating - and the outcome - confused or unable to concentrate - (95% CI = 1.16, 1.50). The overall risk of bias for this exposure-outcome association was critical.")
                 )
               )),
+      
+      ### ROSES flow chart
+      tabItem(tabName = "excluded",
+        
+                fluidRow(column(width = 12, h4("Studies included in the updated review"),
+                                br(), 
+                                p(" The following table contains the new references identified in the updated review."),
+                                DT::dataTableOutput("exclusionF")
+                )
+                
+                )
+                
+                
+                ),
       
       ## references ####  
       tabItem(tabName = "ref",
