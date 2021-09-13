@@ -77,6 +77,7 @@ reyes1 <- reyes%>% filter(category=="Lower Respiratory")
 reyes2 <- reyes%>% filter(category=="Upper Respiratory")
 reyes3 <- reyes%>% filter(category=="Gastrointestinal diseases")
 reyes4 <- reyes%>% filter(category=="Antimicrobial resistance")
+reyes5 <- reyes%>% filter(category=="Infectious conditions")
 
 
 testtimeline <- testtimeline %>%
@@ -90,6 +91,9 @@ testtimeline <- testtimeline %>%
 
 testtimeline <- testtimeline %>%
   mutate(Antimicro = ifelse(Refid %in% reyes4$Refid, "Yes", "No")   )
+
+testtimeline <- testtimeline %>%
+  mutate(Infectious = ifelse(Refid %in% reyes5$Refid, "Yes", "No")   )
 
 ################
 #forest_cross_event <- forest_cross %>% filter(event_state == "Event")

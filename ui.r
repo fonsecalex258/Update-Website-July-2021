@@ -32,6 +32,12 @@ dashboardPage(
                         menuItem("Incidence Forest Plot", tabName = "ar_rsp_forest"),
                         menuItem("Summary Risk of Bias", tabName = "ar_rsp_risk_of_bias"),
                         menuItem("Interpretation", tabName = "ar_rsp_conclusion")),
+               menuItem("Infectious conditions", tabName = "ic_rsp",
+                        menuItem("Overview", tabName = "ic_rsp_intro"),
+                        menuItem("Prevalence Forest Plot ", tabName = "ic_rsp_forest_state"),
+                        menuItem("Incidence Forest Plot", tabName = "ic_rsp_forest"),
+                        menuItem("Summary Risk of Bias", tabName = "ic_rsp_risk_of_bias"),
+                        menuItem("Interpretation", tabName = "ic_rsp_conclusion")),
                menuItem("Gastrointestinal diseases", tabName = "gi_rsp",
                         menuItem("Overview", tabName = "gi_rsp_intro"),
                         menuItem("Prevalence Forest Plot ", tabName = "gi_rsp_forest_state"),
@@ -321,6 +327,24 @@ cochranelibrary.com/about/about-cochrane-reviews).")
               )
       ),
       
+      tabItem(tabName = "ic_rsp_intro",
+              fluidRow(
+                box(width = 12,
+                    #p("From the 16 studies included in this review, 532 exposure-outcome pairs were identified. An example of an exposure-result pair is: distance to the closest farm (exposure) and asthma (outcome). Of these, lower respiratory diseases, such as asthma, were the most used outcome."),
+                    #p("There was no consistent evidence of an association between exposure to animal facilities and lower respiratory tract outcomes, except when the level of odor annoyance was used as the measure of exposure."),
+                    radioGroupButtons(
+                      inputId = "ic_res_btn", justified = T, label = "",
+                      choices = c(`<i class='fa fa-globe'></i> Geographic Distribution of Infectious conditions Outcomes` = "sp",
+                                  `<i class='fa fa-calendar-alt'></i> Timeline of Infectious Conditions Outcomes` = "ts"#,
+                                  #`<i class='fa fa-poll'></i> Outcomes Categorized as Lower Respiratory` = "coef"
+                      )
+                    ),
+                    uiOutput("ic_res_intro_text"),
+                    uiOutput("ic_res_intro_plot")
+                )
+              )
+      ),
+      
       tabItem(tabName = "gi_rsp_intro",
               fluidRow(
                 box(width = 12,
@@ -586,6 +610,8 @@ cochranelibrary.com/about/about-cochrane-reviews).")
               
       ),  
       
+      
+      
       tabItem(tabName = "gi_rsp_forest_state",
               fluidRow(
                 box(width = 12, solidHeader = T, status = "primary",
@@ -616,6 +642,54 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                              h4(""),
                              #actionButton("reset", label = "Reset selection"),
                              ggiraph::girafeOutput("plot_gi_state",height="auto"),
+                             
+                      ),
+                      tags$head(
+                        tags$style(type = "text/css",
+                                   HTML("th { text-align: center; }")
+                        )
+                      )
+                    )                    
+                )
+                
+                
+                
+              )    
+              
+      ),
+      
+      
+      
+      tabItem(tabName = "ic_rsp_forest_state",
+              fluidRow(
+                box(width = 12, solidHeader = T, status = "primary",
+                    title = "Forest Plot",
+                    p("Please select an effect size and a type of exposure from the drop-down menus below. With these data we are looking at the prevalence of a health outcome i.e. how common a health state is in a population. We compare prevalence of the health outcome by either the prevalence ratio (PR) or the prevalence odds ratio (OR).
+
+"),
+                    br(),
+                    fluidRow(
+                      
+                      column(width = 4,
+                             wellPanel(
+                               uiOutput("expo_var_1_ic_state")
+                             )),
+                      
+                      #  column(width = 4,
+                      # wellPanel(
+                      #  uiOutput("expo_var_2_up")
+                      # )),
+                      #infoBoxOutput("out12")
+                      
+                      
+                    ),
+                    
+                    hr(),
+                    fluidRow(
+                      column(width = 12,
+                             h4(""),
+                             #actionButton("reset", label = "Reset selection"),
+                             ggiraph::girafeOutput("plot_ic_state",height="auto"),
                              
                       ),
                       tags$head(
@@ -717,6 +791,48 @@ cochranelibrary.com/about/about-cochrane-reviews).")
               
       ),  
       
+      tabItem(tabName = "ic_rsp_forest",
+              fluidRow(
+                box(width = 12, solidHeader = T, status = "primary",
+                    title = "Forest Plot",
+                    p("Please select an effect size from the drop-down menus below. With these data we are looking at the incidence of a health outcome i.e. how common a health event is in a population. We compare incidence of the health outcome by either the incidence risk ratio (IRR), Incidence rate ratio or the incidence odds ratio (OR)."),
+                    br(),
+                    fluidRow(
+                      
+                      column(width = 4,
+                             wellPanel(
+                               uiOutput("expo_var_1_ic")
+                             )),
+                      
+                      
+                      infoBoxOutput("out12_ic")
+                      
+                      
+                    ),
+                    
+                    hr(),
+                    fluidRow(
+                      column(width = 12,
+                             h4("Select a point: "),
+                             #actionButton("reset", label = "Reset selection"),
+                             ggiraph::girafeOutput("plot_ic",height="auto"),
+                             
+                      ),
+                      tags$head(
+                        tags$style(type = "text/css",
+                                   HTML("th { text-align: center; }")
+                        )
+                      )
+                      
+                    )                    
+                )
+                
+                
+                
+              )    
+              
+      ),  
+      
       
       tabItem(tabName = "Neur_rsp_forest",
               fluidRow(
@@ -798,6 +914,21 @@ cochranelibrary.com/about/about-cochrane-reviews).")
                 )
               )), 
       
+      ## * risk of bias IC
+      tabItem(tabName = "ic_rsp_risk_of_bias",
+              fluidRow(
+                box(width = 12, solidHeader = TRUE, status = "primary", title = "Risk of Bias for Infectious condition outcomes",
+                    p("Risk of Bias plot"),
+                    plotlyOutput("bias_ic") %>% withSpinner(),
+                    br(),
+                    tags$li("For further details about risk of bias assessment 
+                    ", a("click here", href = " http://help.magicapp.org/knowledgebase/articles/327941-tool-to-assess-risk-of-bias-in-cohort-studies")),
+                    br(),
+                    
+                    br(),
+                    br()
+                ))),
+      
       ## * risk of bias AR
       tabItem(tabName = "ar_rsp_risk_of_bias",
               fluidRow(
@@ -864,6 +995,16 @@ cochranelibrary.com/about/about-cochrane-reviews).")
       tabItem(tabName = "ar_rsp_conclusion",
               fluidRow(
                 box(width = 12, solidHeader = TRUE, status = "primary", title = "Interpretation Antimicrobial resistance Outcomes",
+                    tags$li("Pending Interpretation.")#,
+                    #tags$li("Schinasi et al. evaluated another exposure metric in the same population (the number of farrowing swine permitted within a 1- square-mile block of the participant’s residence) and explored whether a dose-response was present. However, when compared with the lowest exposure level, the middle exposure level had a higher prevalence of MRSA carriage than higher levels of exposure. The authors reported moderate exposure using three metrics (farrowing swine, non-farrowing swine, and swine); the effect sizes and precision estimates were 1.99 (95% CI 0.99, 4.06), 2.04 (0.61, 6.85), and 4.76 (1.36, 16.69), respectively. These estimates contrasted with higher levels of exposure (>149), which were associated with a prevalence OR that suggested lower odds of nasal carriage of Methicillin-resistant Staphylococcus aureus (MRSA). "),
+                    #tags$li("Feingold et al. did report an association between MRSA carriage and swine (1.37, 95% CI 1.01, 1.67), cattle (2.28, 95% CI 1.17, 4.15), and veal (1.37, 95% CI 1.08, 1.72) density. They did not report any inconsistencies in association because they only reported one exposure metric (the log of municipal density). It is unclear whether other exposure metrics were evaluated but not reported. "),
+                    #tags$li("The overall risk of bias was serious for all antimicrobial resistance outcomes reported by Schinasi et al.  and moderate for the outcome reported by Feingold et al.")
+                )
+              )),
+      
+      tabItem(tabName = "ic_rsp_conclusion",
+              fluidRow(
+                box(width = 12, solidHeader = TRUE, status = "primary", title = "Interpretation Infectious condition Outcomes",
                     tags$li("Pending Interpretation.")#,
                     #tags$li("Schinasi et al. evaluated another exposure metric in the same population (the number of farrowing swine permitted within a 1- square-mile block of the participant’s residence) and explored whether a dose-response was present. However, when compared with the lowest exposure level, the middle exposure level had a higher prevalence of MRSA carriage than higher levels of exposure. The authors reported moderate exposure using three metrics (farrowing swine, non-farrowing swine, and swine); the effect sizes and precision estimates were 1.99 (95% CI 0.99, 4.06), 2.04 (0.61, 6.85), and 4.76 (1.36, 16.69), respectively. These estimates contrasted with higher levels of exposure (>149), which were associated with a prevalence OR that suggested lower odds of nasal carriage of Methicillin-resistant Staphylococcus aureus (MRSA). "),
                     #tags$li("Feingold et al. did report an association between MRSA carriage and swine (1.37, 95% CI 1.01, 1.67), cattle (2.28, 95% CI 1.17, 4.15), and veal (1.37, 95% CI 1.08, 1.72) density. They did not report any inconsistencies in association because they only reported one exposure metric (the log of municipal density). It is unclear whether other exposure metrics were evaluated but not reported. "),
