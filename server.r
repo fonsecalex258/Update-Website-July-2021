@@ -4017,7 +4017,7 @@ increases the potential for identification of false associations due to random e
   output$exclusionF <- DT::renderDataTable({
     #datatable(df())
     #DT::datatable(ROB_joint_tl, escape = FALSE, options = list(ordering=F, bFilter=F, pageLength = 20))
-    DT::datatable(exclusionF, escape = FALSE, options = list(ordering=F, bFilter=F, pageLength = 20))
+    DT::datatable(exclusionF, escape = FALSE, options = list(autoWidth = TRUE,ordering=F, bFilter=F, pageLength = 10))
   })
   
   output$mytable12345 <- DT::renderDataTable({

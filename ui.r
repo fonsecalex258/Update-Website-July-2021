@@ -1032,10 +1032,10 @@ cochranelibrary.com/about/about-cochrane-reviews).")
       ### ROSES flow chart
       tabItem(tabName = "excluded",
         
-                fluidRow(column(width = 12, h4("Studies included in the updated review"),
+                fluidRow(column(width = 12, h4("Studies excluded in the updated review"),
                                 br(), 
-                                p(" The following table contains the new references identified in the updated review."),
-                                DT::dataTableOutput("exclusionF")
+                                p("The following table contains the references excluded at level 2. The criteria for exclude each study are shown in the column 'Reason for exclusion'."),
+                                div(DT::dataTableOutput("exclusionF", height = "10em"),style = "font-size: 90%")
                 )
                 
                 )
