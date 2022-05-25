@@ -5,8 +5,10 @@ account: cafo-project
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4606500
-bundleId: 5032162
+bundleId: 5465254
 url: https://cafo-project.shinyapps.io/Update-Website-September-2021/
-when: 1631629146.67172
+when: 1642094018.37131
+lastSyncTime: 1642094018.37131
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: susuna.R

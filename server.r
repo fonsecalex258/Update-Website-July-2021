@@ -1,5 +1,8 @@
 library(ggplot2)
 library(ggiraph)
+library(scales)
+library(ggtext)
+library(patchwork)
 library(DT)
 library(huxtable)
 library(dplyr)
@@ -10,6 +13,7 @@ library(shiny)
 library(shinyBS)
 library(shinyjs)
 library(shinydashboard)
+library(shinyWidgets)
 library(dplyr)
 library(rsvg)
 library(rio)
@@ -22,21 +26,23 @@ library(gridExtra)
 library(grid)
 library(patchwork)
 library(cowplot)
+library(tableHTML)
+
 
 
 
 template <- read.csv("www/PRISMA.csv",stringsAsFactors = FALSE)
-template[5,8] <- des[11,1]
+#template[5,8] <- des[11,1]
 #template[11,8] <- as.numeric(des[26,1])#des[11,1]-des[26,1]
 #eo <- as.numeric(des[11,1])- as.numeric(des[26,1])
 #template[14,8] <- 30334
 #template[14,8] <- des[31,1]
-template[14,8] <- as.numeric(des[11,1])-  as.numeric(des[26,1])
-template[15,8] <- as.numeric(des[38,1])
-template[16,8] <- des[49,1]
-template[17,8] <- des[56,1]
-template[20,8] <- des[65,1]
-template[24,8] <- 0
+#template[14,8] <- as.numeric(des[11,1])-  as.numeric(des[26,1])
+#template[15,8] <- as.numeric(des[38,1])
+#template[16,8] <- des[49,1]
+#template[17,8] <- des[56,1]
+#template[20,8] <- des[65,1]
+#template[24,8] <- 0
 #template <- distiller1
 PRISMA_flowdiagram <- function (data,
                                 interactive = FALSE,
@@ -76,7 +82,7 @@ PRISMA_flowdiagram <- function (data,
   if(previous == TRUE){
     xstart <- 0
     ystart <- 0
-    A <- paste0("A [label = '', pos='",xstart+1,",",ystart+0,"!', tooltip = '']")
+    A <- paste0("A [label = '', pos='",xstart+1,",",ystart+1.5,"!', tooltip = '']")
     Aedge <- paste0("subgraph cluster0 {
                   edge [color = White, 
                       arrowhead = none, 
@@ -90,12 +96,12 @@ PRISMA_flowdiagram <- function (data,
                       arrowhead = ", arrow_head, ", 
                       arrowtail = none,
                       constraint = FALSE]
-                  A->19;
+                  A->12;
                 }")
     bottomedge <- paste0("edge [color = ", arrow_colour, ", 
   arrowhead = ", arrow_head, ", 
   arrowtail = ", arrow_tail, "]
-              12->19;\n")
+              ;\n")
     h_adj1 <- 0
     h_adj2 <- 0
     
@@ -138,9 +144,9 @@ PRISMA_flowdiagram <- function (data,
                          cond_prevrep), 
                          "', style = 'filled', width = 3.5, height = 0.5, pos='",xstart+1,",",ystart+7,"!', tooltip = '", tooltips[2], "']")
     finalnode <- paste0("
-  node [shape = box,
+  node [shape = point,
         fontname = ", font, ",
-        color = ", greybox_colour, "]
+        color = white]
   19 [label = '",paste0(stringr::str_wrap(paste0(total_studies_text,
                                                  " (n = ",
                                                  total_studies, 
@@ -153,7 +159,7 @@ PRISMA_flowdiagram <- function (data,
                                                  ')'), 
                                           width = 33)),  
                         "', style = 'filled', width = 3.5, height = 0.5, pos='",xstart+5,",",ystart+0,"!', tooltip = '", tooltips[19], "']")
-    prev_rank1 <- "{rank = same; A; 19}"
+    prev_rank1 <- "{rank = same; A; 18}"
     prevnode1 <- "1; "
     prevnode2 <- "2; "
     
@@ -245,7 +251,7 @@ PRISMA_flowdiagram <- function (data,
   node [shape = box,
         fontname = ", font, ",
         color = ", greybox_colour, "]
-  14 [label = '", paste0('Records identified from:\n',
+  14 [label = '", paste0('Records identified from :\n',
                          cond_websites,
                          cond_organisation,
                          cond_citation),
@@ -384,7 +390,7 @@ PRISMA_flowdiagram <- function (data,
   x <- DiagrammeR::grViz(
     paste0("digraph TD {
   
-  graph[splines=ortho, layout=neato, tooltip = 'Click the boxes for further information', outputorder=edgesfirst]
+  graph[splines=ortho, layout=neato]
   
   ",
            previous_nodes,"
@@ -397,9 +403,9 @@ PRISMA_flowdiagram <- function (data,
   node [shape = box,
         fontname = ", font, ",
         color = ", main_colour, "]
-  4 [label = '", paste0('Records identified from:\n', 
+  4 [label = '", paste0('Records identified through March 31st, 2022:\n', 
                         cond_database, 
-                        cond_register), "', width = 3.5, height = 0.5, height = 0.5, pos='",xstart+5,",",ystart+7,"!', tooltip = '", tooltips[4], "']
+                        cond_register), "', width = 3.5, height = 0.5, height = 0.5, pos='",xstart+5,",",ystart+7,"!']
   
   node [shape = box,
         fontname = ", font, ",
@@ -432,7 +438,7 @@ PRISMA_flowdiagram <- function (data,
   8 [label = '", paste0(dbr_sought_reports_text,
                         '\n(n = ',
                         dbr_sought_reports,
-                        ')'), "', width = 3.5, height = 0.5, height = 0.5, pos='",xstart+5,",",ystart+4.5,"!', tooltip = '", tooltips[10], "']
+                        ')'), "', width = 3.5, height = 0.5, height = 0.5, pos='",xstart+5,",",ystart+4.5,"!', tooltip = '']
   
   node [shape = box,
         fontname = ", font, ",
@@ -440,7 +446,7 @@ PRISMA_flowdiagram <- function (data,
   9 [label = '", paste0(dbr_notretrieved_reports_text,
                         '\n(n = ',
                         dbr_notretrieved_reports,
-                        ')'), "', width = 3.5, height = 0.5, pos='",xstart+9,",",ystart+4.5,"!', tooltip = '", tooltips[11], "']
+                        ')'), "', width = 3.5, height = 0.5, pos='",xstart+9,",",ystart+4.5,"!', tooltip = 'Please go to Excluded Studies tab']
   
   node [shape = box,
         fontname = ", font, ",
@@ -448,11 +454,11 @@ PRISMA_flowdiagram <- function (data,
   10 [label = '", paste0(dbr_assessed_text,
                          '\n(n = ',
                          dbr_assessed,
-                         ')'), "', width = 3.5, height = 0.5, pos='",xstart+5,",",ystart+3.5,"!', tooltip = '", tooltips[14], "']
+                         ')'), "', width = 3.5, height = 0.5, pos='",xstart+5,",",ystart+3.5,"!', tooltip = 'Please go to the Included studies tab']
   
-  node [shape = box,
+  node [shape = point,
         fontname = ", font, ",
-        color = ", main_colour, ", 
+        color = white, 
         fillcolor = White,
         style = filled]
   11 [label = '", paste0(dbr_excluded_text,
@@ -462,7 +468,7 @@ PRISMA_flowdiagram <- function (data,
         fontname = ", font, ",
         color = ", main_colour, ", fillcolor = '', style = solid]
   12 [label = '", paste0(cond_newstud,
-                         cond_newreports), "', width = 3.5, height = 0.5, pos='",xstart+5,",",ystart+1.5,"!', tooltip = '", tooltips[18], "']
+                         cond_newreports), "', width = 3.5, height = 0.5, pos='",xstart+5,",",ystart+1.5,"!', tooltip = 'Please go to the Included studies tab']
   
   ",othernodes,
            
@@ -489,7 +495,7 @@ PRISMA_flowdiagram <- function (data,
     4->5;
     4->6; 6->7;
     6->8; 8->9;
-    8->10; 10->C;
+    8->10; ######10->C;
     10->12;
     edge [style = invis]
     5->7;
@@ -507,7 +513,7 @@ PRISMA_flowdiagram <- function (data,
   {rank = same; ",prevnode2,"4; 5",othernode14,"} 
   {rank = same; 6; 7} 
   {rank = same; 8; 9",othernode1516,"} 
-  {rank = same; 10; 11",othernode1718,"} 
+  
   {rank = same; 12",othernodeB,"} 
   
   }
@@ -593,38 +599,65 @@ read_PRISMAdata <- function(data){
   
   #Set parameters
   #previous_studies <- scales::comma(as.numeric(data[grep('previous_studies', data[,1]),]$n))
-  previous_studies <- scales::comma(as.numeric(16))
+  previous_studies <- scales::comma(as.numeric(15))
   
   previous_reports <- scales::comma(as.numeric(data[grep('previous_reports', data[,1]),]$n))
   register_results <- scales::comma(as.numeric(data[grep('register_results', data[,1]),]$n))
   #database_results <- scales::comma(as.numeric(data[grep('database_results', data[,1]),]$n))
-  database_results <- scales::comma(as.numeric(4104))
+  ####
+  #### Final studies in "Records identified through XXXXX" flowchart --------->
+  #### 
+  database_results <- scales::comma(as.numeric(4694))
+  #database_results <- scales::comma(as.numeric(des[11,1]))
   website_results <- scales::comma(as.numeric(data[grep('website_results', data[,1]),]$n))
   organisation_results <- scales::comma(as.numeric(data[grep('organisation_results', data[,1]),]$n))
   citations_results <- scales::comma(as.numeric(data[grep('citations_results', data[,1]),]$n))
   #duplicates <- scales::comma(as.numeric(data[grep('duplicates', data[,1]),]$n))
-  duplicates <- scales::comma(as.numeric(3575))
+  ####
+  #### Final studies in "Records removed before screening" flowchart --------->
+  #### 
+  duplicates <- scales::comma(as.numeric(711))
+  
+  #duplicates <- scales::comma(as.numeric(as.numeric(des[11,1])-as.numeric(des[26,1])))
   excluded_automatic <- scales::comma(as.numeric(data[grep('excluded_automatic', data[,1]),]$n))
   excluded_other <- scales::comma(as.numeric(data[grep('excluded_other', data[,1]),]$n))
   #records_screened <- scales::comma(as.numeric(data[grep('records_screened', data[,1]),]$n))
-  records_screened <- scales::comma(as.numeric(1768))
+  ####
+  #### Final studies in "Records screened" flowchart --------->
+  #### 
+  records_screened <- scales::comma(as.numeric(1758))
   #records_excluded <- scales::comma(as.numeric(data[grep('records_excluded', data[,1]),]$n))
-  records_excluded <- scales::comma(as.numeric(1673))
+  ####
+  #### Final studies in "Records excluded" flowchart --------->
+  #### 
+  records_excluded <- scales::comma(as.numeric(1671))
   #dbr_sought_reports <- scales::comma(as.numeric(data[grep('dbr_sought_reports', data[,1]),]$n))
-  dbr_sought_reports <- scales::comma(as.numeric(80))
+  ####
+  #### Final studies in "Full-text articles assessed for elegibility" flowchart --------->
+  #### 
+  dbr_sought_reports <- scales::comma(as.numeric(nrow(exclusion)+nrow(inclusion)-15))
   #dbr_notretrieved_reports <- scales::comma(as.numeric(data[grep('dbr_notretrieved_reports', data[,1]),]$n))
-  dbr_notretrieved_reports <- scales::comma(as.numeric(60))
+  ####
+  #### Final studies in "Records excluded" flowchart --------->
+  #### 
+  dbr_notretrieved_reports <- scales::comma(as.numeric(nrow(exclusion)))
   other_sought_reports <- scales::comma(as.numeric(data[grep('other_sought_reports', data[,1]),]$n))
   other_notretrieved_reports <- scales::comma(as.numeric(data[grep('other_notretrieved_reports', data[,1]),]$n))
   #dbr_assessed <- scales::comma(as.numeric(data[grep('dbr_assessed', data[,1]),]$n))
-  dbr_assessed <- scales::comma(as.numeric(20))
+  ####
+  #### Final studies in "New Studies Inclcuded in update" flowchart --------->
+  ####
+  dbr_assessed <- scales::comma(as.numeric(nrow(inclusion)-15))
   dbr_excluded <- data.frame(reason = gsub(",.*$", "", unlist(strsplit(data[grep('dbr_excluded', data[,1]),]$n, split = '; '))), 
                              n = gsub(".*,", "", unlist(strsplit(data[grep('dbr_excluded', data[,1]),]$n, split = '; '))))
   other_assessed <- scales::comma(as.numeric(data[grep('other_assessed', data[,1]),]$n))
   other_excluded <- data.frame(reason = gsub(",.*$", "", unlist(strsplit(data[grep('other_excluded', data[,1]),]$n, split = '; '))), 
                                n = gsub(".*,", "", unlist(strsplit(data[grep('other_excluded', data[,1]),]$n, split = '; '))))
   #new_studies <- scales::comma(as.numeric(data[grep('new_studies', data[,1]),]$n))
-  new_studies <- scales::comma(as.numeric(8))
+  ####
+  #### Final studies included in flowchart --------->
+  ####
+  new_studies <- scales::comma(as.numeric(as.numeric(nrow(inclusion))))
   new_reports <- scales::comma(as.numeric(data[grep('new_reports', data[,1]),]$n))
   #total_studies <- scales::comma(as.numeric(data[grep('total_studies', data[,1]),]$n))
   total_studies <- scales::comma(as.numeric(13))
@@ -899,10 +932,10 @@ increases the potential for identification of false associations due to random e
     #rosa <- as.data.frame(paste(webf))
     #xy.list <- split(webf, seq(nrow(webf)))
     leaflet(cafoo_map) %>% 
-      addProviderTiles(providers$Stamen.TonerLite,
+      addProviderTiles(providers$Esri,
                        options = providerTileOptions(noWrap = TRUE)) %>%  
       setView(-40.679728, 34.738366, zoom = 2) %>%  ## Set/fix the view of the map 
-      addMarkers(lng = cafoo_map$long, lat = cafoo_map$lat,
+      addCircleMarkers(lng = cafoo_map$long, lat = cafoo_map$lat,
                  #radius = log(cafoo$`Number of Studies`)*8,
                  popup = ifelse(cafoo_map$Country=="USA", paste("<b>Country:<b>",cafoo_map$Country,"<br>", paste(webf1)
                                                                 
@@ -935,14 +968,18 @@ increases the potential for identification of false associations due to random e
   #      scale_fill_brewer(palette = "Set2")
   #    ggplotly(gg, tooltip = c("x", "y")) %>% layout(showlegend = FALSE)
   #  })
-  
+  ###########
+  ########### BAr chart of coutries
   output$geobar <- renderPlotly({
     gg <- cafoo_map %>% ggplot(aes(x = reorder(Country, `Number_of_Studies`), y = `Number_of_Studies`)) + 
       geom_bar(aes(fill = Country), stat = "identity") +
       scale_fill_brewer(palette = "Set2")+labs(x = "Country", y = "Number of Studies")+theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
     ggplotly(gg, tooltip = c("x", "y")) %>% layout(showlegend = FALSE)
   })
-  ## * timeline ####
+  
+  ###########
+  ########### 
+  ########### * timeline ####
   output$timeline <- renderTimevis({
     ## Only select authors and year information columns
     timedata <- dataset %>% select(paperInfo, paperYear) %>% distinct() %>% 
@@ -1001,14 +1038,15 @@ increases the potential for identification of false associations due to random e
   
   ##### only measure of association
   output$expo_var_1_low <- renderUI({
-    choices1 <- forest_joint$effect_z
+    choices1 <- low_forest$effect_z
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
-    selectInput("expo_b_low",
-                "Effect size",
+    pickerInput("expo_b_low",
+                "Effect size measure",
                 choices = unique(choices1), 
                 selected = choices1[1])
+    
     
   })
   
@@ -1016,37 +1054,481 @@ increases the potential for identification of false associations due to random e
   
   output$expo_var_1_up <- renderUI({
     #choices1 <- forest_sabado$effect_measure
-    choices1 <- forest_joint$effect_z
+    choices1 <- up_forest$effect_z
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
-    selectInput("expo_b_up",
-                "Effect size",
+    pickerInput("expo_b_up",
+                "Effect size measure",
                 choices = unique(choices1), 
                 selected = choices1[1])
     
   })
   
-  ####AR
-  output$expo_var_1_ar <- renderUI({
-    choices1 <- forest_joint$effect_z
+  ####  filter for study AR
+  output$expo_var_1_ar_susi <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- ar_forest$authors
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
-    selectInput("expo_b_ar",
-                "Effect size",
+    pickerInput("expo_b_ar_susi",
+                "Study",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  ####  filter for study Upper
+  output$expo_var_1_up_susi <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- up_forest$authors
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_up_susi",
+                "Study",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  #### filter for low authors
+  output$expo_var_1_low_susi <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- low_forest$authors
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_low_susi",
+                "Study",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  #### filter for low authors for state
+  output$expo_var_1_low_state_susi <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- low_forest_state$authors
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_low_state_susi",
+                "Study",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  #### filter for ic authors
+  output$expo_var_1_ic_susi <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- ic_forest$authors
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_ic_susi",
+                "Study",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  #### filter for GI authors
+  output$expo_var_1_gi_susi <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- gi_forest$authors
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_gi_susi",
+                "Study",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  
+  
+  ###### filter for  AR country 
+  output$expo_var_1_ar_susi_country <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- ar_forest$Country
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_ar_susi_country",
+                "Country",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  ###### filter for  upper country 
+  output$expo_var_1_up_susi_country <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- up_forest$Country
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_up_susi_country",
+                "Country",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  ###### filter for  Low country 
+  output$expo_var_1_low_susi_country <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- low_forest$Country
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_low_susi_country",
+                "Country",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  ###### filter for  Low country for state
+  output$expo_var_1_low_state_susi_country <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- low_forest_state$Country
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_low_state_susi_country",
+                "Country",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  ###### filter for  IC country 
+  output$expo_var_1_ic_susi_country <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- ic_forest$Country
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_ic_susi_country",
+                "Country",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  
+  ###### filter for  GI country 
+  output$expo_var_1_gi_susi_country <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- gi_forest$Country
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_gi_susi_country",
+                "Country",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  
+  ###### filter for AR outcome 
+  output$expo_var_1_ar_outcome <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- ar_forest$Outcome.variable
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_ar_outcome",
+                "Outcome",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  ###### filter for Upper outcome 
+  output$expo_var_1_up_outcome <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- up_forest$Outcome.variable
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_up_outcome",
+                "Outcome",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  
+  ###### filter for Low R outcome 
+  output$expo_var_1_low_outcome <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- low_forest$Outcome.variable
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_low_outcome",
+                "Outcome",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  
+  ###### filter for Low R outcome 
+  output$expo_var_1_low_state_outcome <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- low_forest_state$Outcome.variable
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_low_state_outcome",
+                "Outcome",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  ###### filter for IC R outcome 
+  output$expo_var_1_ic_outcome <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- ic_forest$Outcome.variable
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_ic_outcome",
+                "Outcome",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  ###### filter for IC R outcome 
+  output$expo_var_1_gi_outcome <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- gi_forest$Outcome.variable
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_gi_outcome",
+                "Outcome",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  
+  ###### filter for AR exposure 
+  output$expo_var_1_ar_exposure <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- ar_forest$Exposure.measure
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_ar_exposure",
+                "Exposure",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  ###### filter for upper exposure 
+  output$expo_var_1_up_exposure <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- up_forest$Exposure.measure
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_up_exposure",
+                "Exposure",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  
+  ###### filter for Low exposure 
+  output$expo_var_1_low_exposure <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- low_forest$Exposure.measure
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_low_exposure",
+                "Exposure",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  
+  ###### filter for Low exposure for state
+  output$expo_var_1_low_state_exposure <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- low_forest_state$Exposure.measure
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_low_state_exposure",
+                "Exposure",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  ###### filter for IC exposure 
+  output$expo_var_1_ic_exposure <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- ic_forest$Exposure.measure
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_ic_exposure",
+                "Exposure",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  ###### filter for GI exposure 
+  output$expo_var_1_gi_exposure <- renderUI({
+    #choices1 <- forest_joint$effect_z
+    choices1 <- gi_forest$Exposure.measure
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_gi_exposure",
+                "Exposure",
+                choices = unique(choices1), 
+                options = list(`actions-box` = TRUE),
+                #choices = unique(choices1),
+                selected = choices1,
+                
+                multiple = T)
+    
+  })
+  
+  
+  
+  ####AR test123
+  output$expo_var_1_ar <- renderUI({
+    choices1 <- ar_forest$effect_z
+    #choices1 <- forest_joint$Outcome.variable
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_ar",
+                "Effect size measure",
                 choices = unique(choices1), 
                 selected = choices1[1])
     
   })
   ##########
   output$expo_var_1_low_state <- renderUI({
-    choices1 <- up_forest_state1$mm
+    choices1 <- low_forest_state$effect_z
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
-    selectInput("expo_b_low_state",
-                "Effect size",
+    pickerInput("expo_b_low_state",
+                "Effect size measure",
                 choices = unique(choices1), 
                 selected = choices1[1])
     
@@ -1054,12 +1536,12 @@ increases the potential for identification of false associations due to random e
   
   ########## 
   output$expo_var_1_up_state <- renderUI({
-    choices1 <- up_forest_state1$mm
+    choices1 <- up_forest_state1$effect_z_state
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
     selectInput("expo_b_up_state",
-                "Effect size",
+                "Effect size measure",
                 choices = unique(choices1), 
                 selected = choices1[1])
     
@@ -1067,12 +1549,12 @@ increases the potential for identification of false associations due to random e
   ### AR
   
   output$expo_var_1_ar_state <- renderUI({
-    choices1 <- up_forest_state1$mm
+    choices1 <- up_forest_state1$effect_z_state
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
     selectInput("expo_b_ar_state",
-                "Effect size",
+                "Effect size measure",
                 choices = unique(choices1), 
                 selected = choices1[1])
     
@@ -1080,12 +1562,12 @@ increases the potential for identification of false associations due to random e
   
   #### GI STATES
   output$expo_var_1_gi_state <- renderUI({
-    choices1 <- up_forest_state1$mm
+    choices1 <- up_forest_state1$effect_z_state
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
     selectInput("expo_b_gi_state",
-                "Effect size",
+                "Effect size measure",
                 choices = unique(choices1), 
                 selected = choices1[1])
     
@@ -1093,46 +1575,48 @@ increases the potential for identification of false associations due to random e
   
   #### IC STATES
   output$expo_var_1_ic_state <- renderUI({
-    choices1 <- up_forest_state1$mm
+    choices1 <- up_forest_state1$effect_z_state
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
     selectInput("expo_b_ic_state",
-                "Effect size",
+                "Effect size measure",
                 choices = unique(choices1), 
                 selected = choices1[1])
     
   })
   
-  ### GI
-  
-  output$expo_var_1_gi <- renderUI({
-    #choices1 <- forest_sabado$effect_measure
-    choices1 <- forest_joint$effect_z
-    #forest %>%
-    #filter(mm == selected_state()) %>%
-    #pull(mm) %>% unique() %>% sort() 
-    selectInput("expo_b_gi",
-                "Effect size",
-                choices = unique(choices1), 
-                selected = choices1[1])
-    
-  })
-  
+
   ### IC
   
   output$expo_var_1_ic <- renderUI({
     #choices1 <- forest_sabado$effect_measure
-    choices1 <- forest_joint$effect_z
+    choices1 <- ic_forest$effect_z
     #forest %>%
     #filter(mm == selected_state()) %>%
     #pull(mm) %>% unique() %>% sort() 
-    selectInput("expo_b_ic",
-                "Effect size",
+    pickerInput("expo_b_ic",
+                "Effect size measure",
                 choices = unique(choices1), 
                 selected = choices1[1])
     
   })
+  
+  #### GI
+  
+  output$expo_var_1_gi <- renderUI({
+    #choices1 <- forest_sabado$effect_measure
+    choices1 <- gi_forest$effect_z
+    #forest %>%
+    #filter(mm == selected_state()) %>%
+    #pull(mm) %>% unique() %>% sort() 
+    pickerInput("expo_b_gi",
+                "Effect size measure",
+                choices = unique(choices1), 
+                selected = choices1[1])
+    
+  })
+  
   
   ### Neuro
   
@@ -1195,6 +1679,55 @@ increases the potential for identification of false associations due to random e
   #### Neuro
   
   
+  output$selected_var <- renderText({ 
+    
+    
+    d = nrow ((testtimeline))
+    
+    
+    paste("This page provides basic descriptive information of studies included 
+    in the living systematic review. ","The last search was conducted on March 31 st, 2022."," A total of ", d, " studies have been included 
+    to date.", "The geographical distribution and the date of publications of the studied 
+          populations are visualized in the graphics provided.")
+  })
+  
+  
+  output$upper_pairs <- renderText({ 
+    
+    sat1 <- forest_cross %>% filter(category=="Upper Respiratory")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    sat2 <- forest_cohort %>% filter(category=="Upper Respiratory")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    sat3 <- forest_case %>% filter(category=="Upper Respiratory")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    
+    forest_joint_up <-  bind_rows(sat1,sat2,sat3)
+    
+    
+    
+    timedata2 <- testtimeline  %>% filter(UR=="Yes")  
+    d = nrow ((up_forest))
+    s = nrow ((timedata2))
+    u = nrow ((forest_joint_up))
+    
+    paste("Of the", s,"studies reporting upper respiratory outcomes,", u, " conditions (listed in the 'Outcomes Categorized as Upper Respiratory' tab) were identified, and", d, "exposure-outcome pairs were extracted.")
+  })
+  
+  
+  ## flow chart ####
+  ## * intro #####
+  output$flow_intro_text <- renderUI({
+    switch(
+      input$flow_btn,
+      "sp" = p(br(),"The flow diagram depicts the flow of information through the different phases of a systematic review. It maps out the number of records identified, included and excluded."),
+      "ts" = p(br(),"This timeline shows the number of new searches, when a revision update was made and the number of new records added to the body of work.", br())
+      
+    )
+  })
+  
   
   
   
@@ -1203,9 +1736,9 @@ increases the potential for identification of false associations due to random e
   output$low_res_intro_text <- renderUI({
     switch(
       input$low_res_btn,
-      "sp" = p("Articles related to lower respiratory disease were published in Germany, United States and Netherlands."),
-      "ts" = p("This timeline shows the date of publication of references in which outcome related to lower respiratory tract were studied."),
-      "coef" = p("The following table shows all the outcomes that were categorized as lower respiratory tract. Asthma and wheeze related conditions were the most common outcomes grouped in this category.")
+      "sp" = p(br(),"Articles related to lower respiratory disease were published in Germany, United States and Netherlands."),
+      "ts" = p(br(),"This timeline shows the date of publication of references in which outcome related to lower respiratory tract were studied."),
+      "coef" = p(br(),"The following table shows all the outcomes that were categorized as lower respiratory tract.")
     )
   })
   
@@ -1214,9 +1747,9 @@ increases the potential for identification of false associations due to random e
   output$up_res_intro_text <- renderUI({
     switch(
       input$up_res_btn,
-      "sp" = p("Most articles related to upper respiratory disease were published in United States, Netherlands and Germany."),
-      "ts" = p("This timeline shows the date of publication of references in which outcome related to upper respiratory tract were studied. This category was analyzed by 6 out 16 relevant references included."),
-      "coef" = p("The following table shows all the outcomes that were categorized as upper respiratory tract. Allergic rhinitis and nasal irritation were the most common variables grouped in this category.")
+      "sp" = p(br(),"Most articles related to upper respiratory disease were published in United States, Netherlands and Germany."),
+      "ts" = p(br(),"This timeline shows the date of publication of references in which outcome related to upper respiratory tract were studied."),
+      "coef" = p(br(),"The following table shows all the outcomes that were categorized as upper respiratory tract.")
     )
   })
   
@@ -1224,9 +1757,9 @@ increases the potential for identification of false associations due to random e
   output$ar_res_intro_text <- renderUI({
     switch(
       input$ar_res_btn,
-      "sp" = p("Most articles related to Antimicrobial resistance were published in United States and Netherlands"),
-      "ts" = p("This timeline shows the date of publication of references in which outcome related to Antimicrobial resistance were studied. "),
-      "coef" = p("The following table shows all the outcomes that were categorized as Antimicrobial resistance outcomes.")
+      "sp" = p(br(),"Most articles related to Antimicrobial resistance were published in United States and Netherlands"),
+      "ts" = p(br(),"This timeline shows the date of publication of references in which outcome related to Antimicrobial resistance were studied. "),
+      "coef" = p(br(),"The following table shows all the outcomes that were categorized as Antimicrobial resistance outcomes.")
     )
   })
   
@@ -1234,9 +1767,9 @@ increases the potential for identification of false associations due to random e
   output$ic_res_intro_text <- renderUI({
     switch(
       input$ic_res_btn,
-      "sp" = p("Most articles related to Infectious conditions were published in Mexico and Netherlands"),
-      "ts" = p("This timeline shows the date of publication of references in which outcome related to Infectious conditions were studied. "),
-      "coef" = p("The following table shows all the outcomes that were categorized as Antimicrobial resistance outcomes.")
+      "sp" = p(br(),"Most articles related to Infectious conditions were published in Mexico and Netherlands"),
+      "ts" = p(br(),"This timeline shows the date of publication of references in which outcome related to Infectious conditions were studied. "),
+      "coef" = p(br(),"The following table shows all the outcomes that were categorized as Infectious condition outcomes.")
     )
   })
   
@@ -1245,9 +1778,22 @@ increases the potential for identification of false associations due to random e
   output$gi_res_intro_text <- renderUI({
     switch(
       input$gi_res_btn,
-      "sp" = p("Articles related to Gastrointestinal diseases were published in United States and Canada."),
-      "ts" = p("This timeline shows the date of publication of references in which outcome related to gastrointestinal tract were studied."),
-      "coef" = p("The following table shows all the outcomes that were categorized as gastrointestinal tract. Diarhea, nausea and poor appetite were the most common outcomes grouped in this category.")
+      "sp" = p(br(),"Articles related to Gastrointestinal diseases were published in United States, the Netherlands and Canada."),
+      "ts" = p(br(),"This timeline shows the date of publication of references in which outcome related to gastrointestinal tract were studied."),
+      "coef" = p(br(),"The following table shows all the outcomes that were categorized as gastrointestinal conditions.")
+    )
+  })
+  
+  #### Flow chart
+  
+  output$flow_intro_plot <- renderUI({
+    switch(
+      input$flow_btn,
+      "sp" = fluidRow(
+        column(width = 12, DiagrammeR::grVizOutput(outputId = "plot1", width = "90%", height = "750px") %>% withSpinner())),
+      "ts" = timevisOutput("timeline_news"),
+      #"coef" = plotlyOutput("measure_all_low_res") %>% withSpinner()
+      
     )
   })
   
@@ -1305,7 +1851,7 @@ increases the potential for identification of false associations due to random e
         column(width = 6, plotlyOutput("geobar_ic_res") %>% withSpinner())),
       "ts" = timevisOutput("timeline_ic_res"),
       #"coef" = plotlyOutput("measure_all_low_res") %>% withSpinner()
-      "coef" = dataTableOutput("measure_all_ar_res") %>% withSpinner()
+      "coef" = dataTableOutput("measure_all_ic_res") %>% withSpinner()
     )
   })
   
@@ -1335,10 +1881,10 @@ increases the potential for identification of false associations due to random e
     
     
     leaflet(subset_low) %>% 
-      addProviderTiles(providers$Stamen.TonerLite,
+      addProviderTiles(providers$Esri,
                        options = providerTileOptions(noWrap = TRUE)) %>%  
       setView(-40.679728, 34.738366, zoom = 2) %>%  ## Set/fix the view of the map 
-      addMarkers(lng = subset_low$long, lat = subset_low$lat,
+      addCircleMarkers(lng = subset_low$long, lat = subset_low$lat,
                  #radius = log(cafoo$`Number of Studies`)*8,
                  popup = ifelse (subset_low$country=="USA"  ,paste("<b>Country:<b>",subset_low$country,"<br>", webf1), 
                                  ifelse(subset_low$country=="Germany"  ,paste("<b>Country:<b>",subset_low$country,"<br>", webf2),
@@ -1357,10 +1903,10 @@ increases the potential for identification of false associations due to random e
     
     
     leaflet(subset_low) %>% 
-      addProviderTiles(providers$Stamen.TonerLite,
+      addProviderTiles(providers$Esri,
                        options = providerTileOptions(noWrap = TRUE)) %>%  
       setView(-40.679728, 34.738366, zoom = 2) %>%  ## Set/fix the view of the map 
-      addMarkers(lng = subset_low$long, lat = subset_low$lat,
+      addCircleMarkers(lng = subset_low$long, lat = subset_low$lat,
                  #radius = log(cafoo$`Number of Studies`)*8,
                  popup =  
                                  ifelse(subset_low$country=="Germany"  ,paste("<b>Country:<b>",subset_low$country,"<br>", webf2),
@@ -1379,10 +1925,10 @@ increases the potential for identification of false associations due to random e
     
     
     leaflet(subset_low) %>% 
-      addProviderTiles(providers$Stamen.TonerLite,
+      addProviderTiles(providers$Esri,
                        options = providerTileOptions(noWrap = TRUE)) %>%  
       setView(-40.679728, 34.738366, zoom = 2) %>%  ## Set/fix the view of the map 
-      addMarkers(lng = subset_low$long, lat = subset_low$lat,
+      addCircleMarkers(lng = subset_low$long, lat = subset_low$lat,
                  #radius = log(cafoo$`Number of Studies`)*8,
                  popup =  
                    ifelse(subset_low$country=="USA"  ,paste("<b>Country:<b>",subset_low$country,"<br>", webf2),
@@ -1401,10 +1947,10 @@ increases the potential for identification of false associations due to random e
     
     
     leaflet(subset_low) %>% 
-      addProviderTiles(providers$Stamen.TonerLite,
+      addProviderTiles(providers$Esri,
                        options = providerTileOptions(noWrap = TRUE)) %>%  
       setView(-40.679728, 34.738366, zoom = 2) %>%  ## Set/fix the view of the map 
-      addMarkers(lng = subset_low$long, lat = subset_low$lat,
+      addCircleMarkers(lng = subset_low$long, lat = subset_low$lat,
                  #radius = log(cafoo$`Number of Studies`)*8,
                  popup =  
                    ifelse(subset_low$country=="Mexico"  ,paste("<b>Country:<b>",subset_low$country,"<br>", webf2),
@@ -1423,10 +1969,10 @@ increases the potential for identification of false associations due to random e
     
     
     leaflet(subset_low) %>% 
-      addProviderTiles(providers$Stamen.TonerLite,
+      addProviderTiles(providers$Esri,
                        options = providerTileOptions(noWrap = TRUE)) %>%  
       setView(-40.679728, 34.738366, zoom = 2) %>%  ## Set/fix the view of the map 
-      addMarkers(lng = subset_low$long, lat = subset_low$lat,
+      addCircleMarkers(lng = subset_low$long, lat = subset_low$lat,
                  #radius = log(cafoo$`Number of Studies`)*8,
                  popup =  
                    ifelse(subset_low$country=="USA"  ,paste("<b>Country:<b>",subset_low$country,"<br>", webf2),
@@ -1520,6 +2066,26 @@ increases the potential for identification of false associations due to random e
     timevis(datt2, showZoom = F)
   })
   
+  ## ** timeline for new studies ####
+  output$timeline_news <- renderTimevis({
+    ## Only select authors and year information columns
+    #timedata2 <- testtimeline  %>% filter(LR=="Yes")
+    ## Insert into a dataframe 
+    newrecords <- data.frame(
+      ## make it reactive
+      id = 1:5,   
+      content = c("Relevant records: 15", "Relevant records: 17", "Relevant records: 0",
+                  "Relevant records: 1", "Relevant records: 0"),
+      start = c("2021-03-30", "2021-06-30", "2021-09-30",
+                "2021-12-31", "2022-03-31"),
+      end = c(NA,NA, NA, NA, NA)
+    )
+    timevis(newrecords)
+  })
+  
+  
+  
+  
   #######copying for up
   
   output$timeline_up_res <- renderTimevis({
@@ -1588,58 +2154,127 @@ increases the potential for identification of false associations due to random e
   ##### table outcomes Lower R
   
   output$measure_all_low_res <- DT::renderDataTable({
-    sat <- dataset %>% filter(Categorized.class==selected_class())%>%
-      group_by(Categorized.class, Outcome.variable) %>%summarise(Frequency = length(Outcome.variable))
-    names(sat)[1] <- "Outcome category"
-    names(sat)[2] <- "Outcome variable analyzed"
-    names(sat)[3] <- "Number of times the variable was analyzed"
+   # sat <- dataset %>% filter(Categorized.class==selected_class())%>%
+  #    group_by(Categorized.class, Outcome.variable) %>%summarise(Frequency = length(Outcome.variable))
+   # names(sat)[1] <- "Outcome category"
+  #  names(sat)[2] <- "Outcome variable analyzed"
+   # names(sat)[3] <- "Number of times the variable was analyzed"
     
-    DT::datatable(sat, rownames = FALSE,escape = FALSE, options = list(ordering=F, bFilter=T, pageLength = 50))
-    #subset(cafoo, cafoo$`Country` == "Germany")
-    #broadfilter <- subset(dataset, Categorized.class == selected_class())
+  #  DT::datatable(sat, rownames = FALSE,escape = FALSE, options = list(ordering=F, bFilter=T, pageLength = 50))
+  #####
+    sat1 <- forest_cross %>% filter(category=="Lower Respiratory")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    sat2 <- forest_cohort %>% filter(category=="Lower Respiratory")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    sat3 <- forest_case %>% filter(category=="Lower respiratory")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    
+      forest_joint_low <-  bind_rows(sat1,sat2,sat3)  
+      sat4 <-  forest_joint_low %>% group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+      sat5 <- sat4 %>% select(category, outcome)  
+      
+      names(sat5)[1] <- "Outcome category"
+      names(sat5)[2] <- "Outcome assessed"
+    
+      DT::datatable(sat5, rownames = FALSE,escape = FALSE, options = list(autoWidth = TRUE, ordering=F, bFilter=T, pageLength = 50, columnDefs = list(list(className = 'dt-center', targets = "_all")))) 
   })
   
   #######copying for up
   
   output$measure_all_up_res <- DT::renderDataTable({
-    sat <- dataset %>% filter(Categorized.class==selected_class())%>%
-      group_by(Categorized.class, Outcome.variable) %>%summarise(Frequency = length(Outcome.variable))
-    names(sat)[1] <- "Outcome category"
-    names(sat)[2] <- "Outcome variable analyzed"
-    names(sat)[3] <- "Number of times the variable was analyzed"
+    sat1 <- forest_cross %>% filter(category=="Upper Respiratory")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
     
-    DT::datatable(sat, rownames = FALSE,escape = FALSE, options = list(ordering=F, bFilter=T, pageLength = 50))
-    #subset(cafoo, cafoo$`Country` == "Germany")
-    #broadfilter <- subset(dataset, Categorized.class == selected_class())
-  })
+    sat2 <- forest_cohort %>% filter(category=="Upper Respiratory")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    sat3 <- forest_case %>% filter(category=="Upper Respiratory")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    
+    forest_joint_low <-  bind_rows(sat1,sat2,sat3)  
+    sat4 <-  forest_joint_low %>% group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    sat5 <- sat4 %>% select(category, outcome)  
+    
+    names(sat5)[1] <- "Outcome category"
+    names(sat5)[2] <- "Variables analyzed in the studies"
+    
+    DT::datatable(sat5, rownames = FALSE,escape = FALSE, options = list(ordering=F, bFilter=T, pageLength = 50, columnDefs = list(list(className = 'dt-center', targets = "_all")))) 
+    })
   
   #######copying for AMR
   
   output$measure_all_ar_res <- DT::renderDataTable({
-    sat <- dataset %>% filter(Categorized.class==selected_class())%>%
-      group_by(Categorized.class, Outcome.variable) %>%summarise(Frequency = length(Outcome.variable))
-    names(sat)[1] <- "Outcome category"
-    names(sat)[2] <- "Outcome variable analyzed"
-    names(sat)[3] <- "Number of times the variable was analyzed"
+    sat1 <- forest_cross %>% filter(category=="Antimicrobial resistance")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
     
-    DT::datatable(sat, rownames = FALSE,escape = FALSE, options = list(ordering=F, bFilter=T, pageLength = 50))
-    #subset(cafoo, cafoo$`Country` == "Germany")
-    #broadfilter <- subset(dataset, Categorized.class == selected_class())
+    sat2 <- forest_cohort %>% filter(category=="Antimicrobial resistance")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    sat3 <- forest_case %>% filter(category=="Antimicrobial resistance")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    
+    forest_joint_low <-  bind_rows(sat1,sat2,sat3)  
+    sat4 <-  forest_joint_low %>% group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    sat5 <- sat4 %>% select(category, outcome)  
+    
+    names(sat5)[1] <- "Outcome category"
+    names(sat5)[2] <- "Variables analyzed in the studies"
+    
+    DT::datatable(sat5, rownames = FALSE,escape = FALSE, options = list(ordering=F, bFilter=T, pageLength = 50, columnDefs = list(list(className = 'dt-center', targets = "_all")))) 
   })
+  
+  ########### for IC
+  output$measure_all_ic_res <- DT::renderDataTable({
+    sat1 <- forest_cross %>% filter(category=="Infectious conditions")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    sat2 <- forest_cohort %>% filter(category=="Infectious conditions")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    sat3 <- forest_case %>% filter(category=="Infectious conditions")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    
+    forest_joint_low <-  bind_rows(sat1,sat2,sat3)  
+    sat4 <-  forest_joint_low %>% group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    sat5 <- sat4 %>% select(category, outcome)  
+    
+    names(sat5)[1] <- "Outcome category"
+    names(sat5)[2] <- "Variables analyzed in the studies"
+    
+    DT::datatable(sat5, rownames = FALSE,escape = FALSE, options = list(ordering=F, bFilter=T, pageLength = 50, columnDefs = list(list(className = 'dt-center', targets = "_all")))) 
+  })
+  
+  
+  
   
   #######copying for GI
   
   output$measure_all_gi_res <- DT::renderDataTable({
-    sat <- dataset %>% filter(Categorized.class==selected_class())%>%
-      group_by(Categorized.class, Outcome.variable) %>%summarise(Frequency = length(Outcome.variable))
+    sat1 <- forest_cross %>% filter(category=="Gastrointestinal condition")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
     
-    names(sat)[1] <- "Outcome category"
-    names(sat)[2] <- "Outcome variable analyzed"
-    names(sat)[3] <- "Number of times the variable was analyzed"
+    sat2 <- forest_cohort %>% filter(category=="Gastrointestinal condition")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
     
-    DT::datatable(sat, rownames = FALSE,escape = FALSE, options = list(ordering=F, bFilter=T, pageLength = 50))
-    #subset(cafoo, cafoo$`Country` == "Germany")
-    #broadfilter <- subset(dataset, Categorized.class == selected_class())
+    sat3 <- forest_case %>% filter(category=="Gastrointestinal condition")%>%
+      group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    
+    forest_joint_low <-  bind_rows(sat1,sat2,sat3)  
+    sat4 <-  forest_joint_low %>% group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    sat5 <- sat4 %>% select(category, outcome)  
+    
+    names(sat5)[1] <- "Outcome category"
+    names(sat5)[2] <- "Variables analyzed in the studies"
+    
+    DT::datatable(sat5, rownames = FALSE,escape = FALSE, options = list(ordering=F, bFilter=T, pageLength = 50, columnDefs = list(list(className = 'dt-center', targets = "_all")))) 
+    
   })
   
   #######copying for Neurologic
@@ -1747,26 +2382,27 @@ increases the potential for identification of false associations due to random e
   
   
   ##### For Lower R
-  forest_data_low <- reactive({
+
+   forest_data_low <- reactive({
     
-    forest_data_low <- forest_joint %>% filter(
-      effect_z == input$expo_b_low )
+    forest_data_low <- low_forest %>% filter(
+      authors %in%  input$expo_b_low_susi , Country %in% input$expo_b_low_susi_country , Outcome.variable %in% input$expo_b_low_outcome , Exposure.measure %in% input$expo_b_low_exposure)
+  
   })
   
   output$plot_low <- renderGirafe({
-    low_forest <- forest_data_low() %>% filter(Categorized.class==selected_class())
+    low_forest <- forest_data_low() %>% filter(effect_z == input$expo_b_low )
     g <- nrow(low_forest)
     low_forest[g+1,]<- NA
     low_forest <-  low_forest%>% mutate(id2 = c(1:(g+1)))
     
     #up_forest[g+1,3] <- "OUTCOME"
-    low_forest[g+1,14] <- "EXPOSURE"
-    low_forest[g+1,7] <- "SUBCATEGORY"
+    low_forest[g+1,15] <- "EXPOSURE"
+    low_forest[g+1,17] <- "SUBCATEGORY"
     #low_forest[g+1,15] <- "POINT ESTIMATE(95% CI)"
     low_forest[g+1,4] <- "CATEGORY"
-    low_forest[g+1,12] <- "OUTCOME"
+    low_forest[g+1,13] <- "OUTCOME"
     low_forest[g+1,11] <- "STUDY"
-    
     
     
     
@@ -1781,23 +2417,30 @@ increases the potential for identification of false associations due to random e
         
       )+
       #geom_point_interactive(size=5, shape=18) +
-      geom_errorbarh(aes(xmax = upperci, xmin = lowerci), height = 0.15) +
+      #geom_errorbarh(aes(xmax = upperci, xmin = lowerci), height = 0.15) +
+      geom_errorbarh(aes(xmax = ifelse(upperci>6, 6, upperci),  xmin = lowerci), height = 0.15) +
       #coord_cartesian(xlim= c(min(up_forest$yi),max(up_forest$yi)))+
       
       coord_cartesian(xlim= c(min(low_forest$yi),max(low_forest$yi)))+
+      #scale_y_continuous(limits = c(5, nrow(low_forest)))+
       geom_vline(xintercept = 1, linetype = "longdash") +
+     
       #scale_x_continuous(breaks = seq(-3,10,1))+
-      scale_y_continuous(breaks = seq(1,g,3)) +
-      scale_x_continuous( if (input$expo_b_low == "OR") {name = "Odds Ratio (95% confidence interval)"}
+      #scale_y_continuous(breaks = seq(1,g,3)) +
+      
+      scale_y_discrete('id2')+
+      scale_x_continuous( if (input$expo_b_low == "Incidence Odds Ratio (OR)") {name = "Odds Ratio (95% confidence interval)"}
                           
                           
-                          else if (input$expo_b_low == "PR"){name = "Prevalence ratio (95% CI)"},
+                          else if (input$expo_b_low == "Incidence Density Ratio (IDR)"){name = "Prevalence ratio (95% CI)"},
                           limits=c(0, 6)
       )+
       #labs(x="Adjusted Odds Ratio", y="")+
       theme(axis.title.y=element_blank(),
             axis.text.y=element_blank(),
             axis.ticks.y=element_blank(),
+            axis.text.x = element_text(size = 20),
+            axis.title.x = element_text(size = 20),
             panel.grid.major=element_blank(),
             panel.grid.minor=element_blank(),
             legend.position = "none"
@@ -1811,32 +2454,36 @@ increases the potential for identification of false associations due to random e
       geom_text_interactive(aes(x = 1,label = short, tooltip = Outcome.variable),size= 5.1,hjust = 0) + 
       #geom_text(aes(x = 2.2, label = Outcome.variable), size= 3.4)+
       geom_text_interactive(aes(x = 2, label = shortexpo,tooltip = Exposure.measure),size= 5.1,hjust = 1) +
+      
       #geom_text(aes(x = 4, label = Subcategory), size= 3.4,hjust = 1)+
       #geom_text(aes(x = 5, label = inter1), size= 3.4,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
-      # +
+      scale_y_discrete('id2')+
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
       scale_colour_identity() +
       theme_void()
     
-    low_forest[g+1,16] <- "POINT ESTIMATE(95% CI)"
+    low_forest[g+1,19] <- "POINT ESTIMATE(95% CI)"
     
     
     
     fonseca2 <- ggplot(data = low_forest, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
-      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
-      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
+      
+      geom_text_interactive(aes(x = 1, label = shortsubcat , tooltip = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 1.5, label = inter_95), size= 5.1,hjust = 0)+
+      geom_text(aes(x = 2.2,label = authors),size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
+      scale_y_discrete('id2')+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
       scale_colour_identity() +
       theme_void()
     
+    
     high1 <- nrow(low_forest)/2
     
-    girafe( code = print(fonseca3 + fonseca + fonseca2), width_svg = 25, height_svg = high1+1.3,
+    girafe( code = print(fonseca3 + fonseca + fonseca2), width_svg = 25, height_svg = high1,
             options = list(
               opts_selection(
                 type = "single", css = "fill:#0c0000;stroke:black;"),
@@ -1854,19 +2501,27 @@ increases the potential for identification of false associations due to random e
   ##### For Upper R
   forest_data_up <- reactive({
     
-    forest_data_up <- forest_joint %>% filter(
-      effect_z == input$expo_b_up )
+    forest_data_up <- up_forest %>% filter(
+      authors %in%  input$expo_b_up_susi , Country %in% input$expo_b_up_susi_country , Outcome.variable %in% input$expo_b_up_outcome , Exposure.measure %in% input$expo_b_up_exposure )
   })
   
   output$plot_up <- renderGirafe({
-    up_forest <- forest_data_up() %>% filter(Categorized.class==selected_class())
+    up_forest <- forest_data_up() %>% filter(effect_z == input$expo_b_up)
+    
+    validate(
+  
+        need(up_forest$Outcome.variable!= "", "There are no records for the effect size (ES) and health outcome selected, please make another selection.")
+    )
+    
+    
+    
     g <- nrow(up_forest)
     up_forest[g+1,]<- NA
     up_forest <-  up_forest%>% mutate(id2 = c(1:(g+1)))
     
-    up_forest[g+1,12] <- "OUTCOME"
-    up_forest[g+1,14] <- "EXPOSURE"
-    up_forest[g+1,7] <- "SUBCATEGORY"
+    up_forest[g+1,13] <- "OUTCOME"
+    up_forest[g+1,15] <- "EXPOSURE"
+    up_forest[g+1,17] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
     #up_forest_state1[g+1,4] <- "CATEGORY"
     up_forest[g+1,11] <- "STUDY"
@@ -1874,9 +2529,7 @@ increases the potential for identification of false associations due to random e
     
     
     
-    validate(
-      need(up_forest$Outcome.variable!= "", "There are no records for the effect size (ES) and health outcome selected, please make another selection.")
-    )
+    
     
     
     
@@ -1907,17 +2560,17 @@ increases the potential for identification of false associations due to random e
         
       )+
       #geom_point_interactive(size=5, shape=18) +
-      geom_errorbarh(aes(xmax = upperci, xmin = lowerci), height = 0.15) +
+      geom_errorbarh(aes(xmax = ifelse(upperci>7, 7, upperci), xmin = lowerci), height = 0.15) +
       #coord_cartesian(xlim= c(min(up_forest$yi),max(up_forest$yi)))+
       
-      coord_cartesian(xlim= c(min(up_forest$yi),max(up_forest$yi)))+
+      coord_cartesian(xlim= c(min(up_forest$lowerci),max(up_forest$upperci)))+
       geom_vline(xintercept = 1, linetype = "longdash") +
       #scale_x_continuous(breaks = seq(-3,10,1))+
-      scale_y_continuous(breaks = seq(1,g,3)) +
-      scale_x_continuous( if (input$expo_b_up == "OR") {name = "Odds Ratio (95% confidence interval)"}
+      scale_y_discrete('id2')+
+      scale_x_continuous( if (input$expo_b_up == "Incidence Odds Ratio (OR)") {name = "Odds Ratio (95% confidence interval)"}
                           
                           
-                          else if (input$expo_b_up == "PR"){name = "Prevalence ratio (95% CI)"}
+                          else if (input$expo_b_up == "Incidence Density Ratio (IDR)"){name = "Prevalence ratio (95% CI)"}
                           
       )+
       #labs(x="Adjusted Odds Ratio", y="")+
@@ -1941,22 +2594,23 @@ increases the potential for identification of false associations due to random e
       #geom_text(aes(x = 4, label = Subcategory), size= 3.4,hjust = 1)+
       #geom_text(aes(x = 5, label = inter1), size= 3.4,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
-      # +
+      scale_y_discrete('id2')+
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
       scale_colour_identity() +
       theme_void()
     
-    up_forest[g+1,16] <- "POINT ESTIMATE(95% CI)"
+    up_forest[g+1,19] <- "POINT ESTIMATE(95% CI)"
     
     
     
     fonseca2 <- ggplot(data = up_forest, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
-      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
-      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
+      
+      geom_text_interactive(aes(x = 1, label = shortsubcat , tooltip = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 1.5, label = inter_95), size= 5.1,hjust = 0)+
+      geom_text(aes(x = 2.2,label = authors),size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
-      # +
+      scale_y_discrete('id2')+
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
       scale_colour_identity() +
       theme_void()
@@ -1965,7 +2619,7 @@ increases the potential for identification of false associations due to random e
     
     high2 <- nrow(up_forest)/2
     
-    girafe( code = print(fonseca3 + fonseca + fonseca2), width_svg = 25, height_svg = high2+1.3,
+    girafe( code = print(fonseca3 + fonseca + fonseca2), width_svg = 25, height_svg = high2,
             options = list(
               opts_selection(
                 type = "single", css = "fill:#0c0000;stroke:black;"),
@@ -1979,21 +2633,21 @@ increases the potential for identification of false associations due to random e
   
   forest_data_ar <- reactive({
     
-    forest_data_ar <- forest_joint %>% filter(
-      effect_z == input$expo_b_ar )
+    forest_data_ar <- ar_forest %>% filter(
+       authors %in%  input$expo_b_ar_susi & Country %in% input$expo_b_ar_susi_country & Outcome.variable %in% input$expo_b_ar_outcome & Exposure.measure %in% input$expo_b_ar_exposure)
     
     
   })
   
   output$plot_ar <- renderGirafe({
-    ar_forest <- forest_data_ar() %>% filter(Categorized.class==selected_class())
+    ar_forest <- forest_data_ar() %>% filter(effect_z == input$expo_b_ar )
     g <- nrow(ar_forest)
     ar_forest[g+1,]<- NA
     ar_forest <-  ar_forest%>% mutate(id2 = c(1:(g+1)))
     
-    ar_forest[g+1,12] <- "OUTCOME"
-    ar_forest[g+1,14] <- "EXPOSURE"
-    ar_forest[g+1,7] <- "SUBCATEGORY"
+    ar_forest[g+1,13] <- "OUTCOME"
+    ar_forest[g+1,15] <- "EXPOSURE"
+    ar_forest[g+1,17] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
     #up_forest_state1[g+1,4] <- "CATEGORY"
     ar_forest[g+1,11] <- "STUDY"
@@ -2033,17 +2687,17 @@ increases the potential for identification of false associations due to random e
         
       )+
       #geom_point_interactive(size=5, shape=18) +
-      geom_errorbarh(aes(xmax = upperci, xmin = lowerci), height = 0.15) +
+      geom_errorbarh(aes(xmax = ifelse(upperci>7, 7, upperci), xmin = lowerci), height = 0.15) +
       #coord_cartesian(xlim= c(min(up_forest$yi),max(up_forest$yi)))+
       
       coord_cartesian(xlim= c(min(ar_forest$yi),max(ar_forest$yi)))+
       geom_vline(xintercept = 1, linetype = "longdash") +
       #scale_x_continuous(breaks = seq(-3,10,1))+
       scale_y_continuous(breaks = seq(1,g,3)) +
-      scale_x_continuous( if (input$expo_b_ar == "OR") {name = "Odds Ratio (95% confidence interval)"}
+      scale_x_continuous( if (input$expo_b_ar == "Incidence Odds Ratio (OR)") {name = "Odds Ratio (95% confidence interval)"}
                           
                           
-                          else if (input$expo_b_ar == "PR"){name = "Prevalence ratio (95% CI)"}
+                          else if (input$expo_b_ar == "Incidence Density Ratio (IDR)"){name = "Prevalence ratio (95% CI)"}
                           
       )+
       #labs(x="Adjusted Odds Ratio", y="")+
@@ -2072,15 +2726,16 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    ar_forest[g+1,16] <- "POINT ESTIMATE(95% CI)"
+    ar_forest[g+1,19] <- "POINT ESTIMATE(95% CI)"
     
     
     
     fonseca2 <- ggplot(data = ar_forest, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
-      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
-      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
+      
+      geom_text_interactive(aes(x = 1, label = shortsubcat , tooltip = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 1.4, label = inter_95), size= 5.1,hjust = 0)+
+      geom_text(aes(x = 2.2,label = authors),size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
@@ -2107,21 +2762,21 @@ increases the potential for identification of false associations due to random e
   
   forest_data_ic <- reactive({
     
-    forest_data_ic <- forest_joint %>% filter(
-      effect_z == input$expo_b_ic )
+    forest_data_ic <- ic_forest %>% filter(
+      authors %in%  input$expo_b_ic_susi , Country %in% input$expo_b_ic_susi_country , Outcome.variable %in% input$expo_b_ic_outcome , Exposure.measure %in% input$expo_b_ic_exposure)
     
     
   })
   
   output$plot_ic <- renderGirafe({
-    ic_forest <- forest_data_ic() %>% filter(Categorized.class==selected_class())
+    ic_forest <- forest_data_ic() %>% filter(effect_z == input$expo_b_ic )
     g <- nrow(ic_forest)
     ic_forest[g+1,]<- NA
     ic_forest <-  ic_forest%>% mutate(id2 = c(1:(g+1)))
     
-    ic_forest[g+1,12] <- "OUTCOME"
-    ic_forest[g+1,14] <- "EXPOSURE"
-    ic_forest[g+1,7] <- "SUBCATEGORY"
+    ic_forest[g+1,13] <- "OUTCOME"
+    ic_forest[g+1,15] <- "EXPOSURE"
+    ic_forest[g+1,17] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
     #up_forest_state1[g+1,4] <- "CATEGORY"
     ic_forest[g+1,11] <- "STUDY"
@@ -2161,17 +2816,18 @@ increases the potential for identification of false associations due to random e
         
       )+
       #geom_point_interactive(size=5, shape=18) +
-      geom_errorbarh(aes(xmax = upperci, xmin = lowerci), height = 0.15) +
+      geom_errorbarh(aes(xmax = ifelse(upperci>7, 7, upperci), xmin = ifelse(lowerci>7, NA, lowerci)), height = 0.15) +
       #coord_cartesian(xlim= c(min(up_forest$yi),max(up_forest$yi)))+
       
       coord_cartesian(xlim= c(min(ic_forest$yi),max(ic_forest$yi)))+
       geom_vline(xintercept = 1, linetype = "longdash") +
       #scale_x_continuous(breaks = seq(-3,10,1))+
       scale_y_continuous(breaks = seq(1,g,3)) +
-      scale_x_continuous( if (input$expo_b_ic == "OR") {name = "Odds Ratio (95% confidence interval)"}
+      scale_x_continuous( if (input$expo_b_ic == "Incidence Odds Ratio (OR)") {name = "Odds Ratio (95% confidence interval)"}
                           
                           
-                          else if (input$expo_b_ic == "PR"){name = "Prevalence ratio (95% CI)"}
+                          else if (input$expo_b_ic == "Incidence Density Ratio (IDR)"){name = "Prevalence ratio (95% CI)"},
+                          limits=c(0, 7)
                           
       )+
       #labs(x="Adjusted Odds Ratio", y="")+
@@ -2200,15 +2856,17 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    ic_forest[g+1,16] <- "POINT ESTIMATE(95% CI)"
+    ic_forest[g+1,19] <- "POINT ESTIMATE(95% CI)"
     
     
     
     fonseca2 <- ggplot(data = ic_forest, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
-      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
-      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
+      geom_text_interactive(aes(x = 1, label = shortsubcat , tooltip = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 1.5, label = inter_95), size= 5.1,hjust = 0)+
+      geom_text(aes(x = 2.2,label = authors),size= 5.1,hjust = 1)+
+      
+      
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
@@ -2232,22 +2890,29 @@ increases the potential for identification of false associations due to random e
   
   ##### AR
   
-  ##### For Upper R
+  ##### For GI
   forest_data_gi <- reactive({
     
-    forest_data_gi <- forest_joint %>% filter(
-      effect_z == input$expo_b_gi )
+    forest_data_gi <- gi_forest %>% filter(
+      authors %in%  input$expo_b_gi_susi , Country %in% input$expo_b_gi_susi_country , Outcome.variable %in% input$expo_b_gi_outcome , Exposure.measure %in% input$expo_b_gi_exposure)
+    
   })
   
   output$plot_gi <- renderGirafe({
-    gi_forest <- forest_data_gi() %>% filter(Categorized.class==selected_class())
+    gi_forest <- forest_data_gi() %>% filter(effect_z == input$expo_b_gi )
+    
+    
+    validate(
+      need(gi_forest$Outcome.variable!= "", "There are no records for the effect size (ES) and health outcome selected, please make another selection.")
+    )
+    
     g <- nrow(gi_forest)
     gi_forest[g+1,]<- NA
     gi_forest <-  gi_forest%>% mutate(id2 = c(1:(g+1)))
     
     gi_forest[g+1,12] <- "OUTCOME"
     gi_forest[g+1,14] <- "EXPOSURE"
-    gi_forest[g+1,7] <- "SUBCATEGORY"
+    gi_forest[g+1,16] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
     #up_forest_state1[g+1,4] <- "CATEGORY"
     gi_forest[g+1,11] <- "STUDY"
@@ -2255,9 +2920,8 @@ increases the potential for identification of false associations due to random e
     
     
     
-    validate(
-      need(gi_forest$Outcome.variable!= "", "There are no records for the effect size (ES) and health outcome selected, please make another selection.")
-    )
+    
+   
     
     
     
@@ -2288,7 +2952,7 @@ increases the potential for identification of false associations due to random e
         
       )+
       #geom_point_interactive(size=5, shape=18) +
-      geom_errorbarh(aes(xmax = upperci, xmin = lowerci), height = 0.15) +
+      geom_errorbarh(aes(xmax = ifelse(upperci>7, 7, upperci), xmin = lowerci), height = 0.15) +
       #coord_cartesian(xlim= c(min(up_forest$yi),max(up_forest$yi)))+
       
       coord_cartesian(xlim= c(min(gi_forest$yi),max(gi_forest$yi)))+
@@ -2327,14 +2991,14 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    gi_forest[g+1,16] <- "POINT ESTIMATE(95% CI)"
+    gi_forest[g+1,18] <- "POINT ESTIMATE(95% CI)"
     
     
     
     fonseca2 <- ggplot(data = gi_forest, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
       geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
-      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
+      geom_text_interactive(aes(x = 1.4, label = shortsubcat , tooltip = Subcategory),size= 5.1, hjust = 0) +
       geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
@@ -2361,19 +3025,19 @@ increases the potential for identification of false associations due to random e
   ##### For lower R STATES
   forest_data_low_state <- reactive({
     
-    forest_data_low_state <- up_forest_state1 %>% filter(
-      effect_z_state == input$expo_b_low_state )
+    forest_data_low_state <- low_forest_state %>% filter(
+      authors %in%  input$expo_b_low_state_susi , Country %in% input$expo_b_low_state_susi_country , Outcome.variable %in% input$expo_b_low_state_outcome , Exposure.measure %in% input$expo_b_low_state_exposure )
   })
   
   output$plot_low_state <- renderGirafe({
-    up_forest_state1 <- forest_data_low_state() %>% filter(Categorized.class==selected_class())
+    up_forest_state1 <- forest_data_low_state() %>% filter(effect_z == input$expo_b_low_state )
     g <- nrow(up_forest_state1)
     up_forest_state1[g+1,]<- NA
     up_forest_state1 <-  up_forest_state1%>% mutate(id2 = c(1:(g+1)))
     
-    up_forest_state1[g+1,12] <- "OUTCOME"
-    up_forest_state1[g+1,14] <- "EXPOSURE"
-    up_forest_state1[g+1,7] <- "SUBCATEGORY"
+    up_forest_state1[g+1,13] <- "OUTCOME"
+    up_forest_state1[g+1,15] <- "SUBCATEGORY"
+    up_forest_state1[g+1,17] <- "EXPOSURE"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
     #up_forest_state1[g+1,4] <- "CATEGORY"
     up_forest_state1[g+1,11] <- "STUDY"
@@ -2419,11 +3083,11 @@ increases the potential for identification of false associations due to random e
       coord_cartesian(xlim= c(min(up_forest_state1$yi),max(up_forest_state1$yi)))+
       geom_vline(xintercept = 1, linetype = "longdash") +
       #scale_x_continuous(breaks = seq(-3,10,1))+
-      scale_y_continuous(breaks = seq(1,g,3)) +
-      scale_x_continuous( if (input$expo_b_low_state == "OR") {name = "Odds Ratio (95% confidence interval)"}
+      scale_y_discrete('id2')+
+      scale_x_continuous( if (input$expo_b_low_state == "Incidence Odds Ratio (OR)") {name = "Odds Ratio (95% confidence interval)"}
                           
                           
-                          else if (input$expo_b_low_state == "PR"){name = "Prevalence ratio (95% CI)"}
+                          else if (input$expo_b_low_state == "Incidence Density Ratio (IDR)"){name = "Prevalence ratio (95% CI)"}
                           
       )+
       #labs(x="Adjusted Odds Ratio", y="")+
@@ -2443,19 +3107,23 @@ increases the potential for identification of false associations due to random e
       geom_text_interactive(aes(x = 2, label = shortexpo,tooltip = Exposure.measure),size= 5.1,hjust = 1) +
       #geom_text(aes(x = 4, label = Subcategory), size= 3.4,hjust = 1)+
       #geom_text(aes(x = 5, label = inter1), size= 3.4,hjust = 1)+
+      scale_y_discrete('id2')+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
       scale_colour_identity() +
       theme_void()
     
-    up_forest_state1[g+1,16] <- "POINT ESTIMATE(95% CI)"
+    up_forest_state1[g+1,19] <- "POINT ESTIMATE(95% CI)"
     
     fonseca2_state <- ggplot(data = up_forest_state1, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
-      geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
-      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
-      geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
+      geom_text_interactive(aes(x = 1, label = shortsubcat , tooltip = Subcategory),size= 5.1, hjust = 0) +
+      geom_text(aes(x = 1.4, label = inter_95), size= 5.1,hjust = 0)+
+      geom_text(aes(x = 2.2,label = authors),size= 5.1,hjust = 1)+
+      
+      
+      scale_y_discrete('id2')+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
@@ -2493,7 +3161,7 @@ increases the potential for identification of false associations due to random e
     
     up_forest_state1[g+1,12] <- "OUTCOME"
     up_forest_state1[g+1,14] <- "EXPOSURE"
-    up_forest_state1[g+1,7] <- "SUBCATEGORY"
+    up_forest_state1[g+1,16] <- "SUBCATEGORY"
     #up_forest[g+1,6] <- "POINT ESTIMATE(95% CI)"
     #up_forest_state1[g+1,4] <- "CATEGORY"
     up_forest_state1[g+1,11] <- "STUDY"
@@ -2570,12 +3238,12 @@ increases the potential for identification of false associations due to random e
       scale_colour_identity() +
       theme_void()
     
-    up_forest_state1[g+1,16] <- "POINT ESTIMATE(95% CI)"
+    up_forest_state1[g+1,18] <- "POINT ESTIMATE(95% CI)"
     
     fonseca2_state <- ggplot(data = up_forest_state1, aes(y = id2)) +
       #geom_hline(aes(yintercept = Outcome.variable), size = 7) +
       geom_text(aes(x = 1,label = authors),size= 5.1,hjust = 0)+
-      geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
+      geom_text_interactive(aes(x = 1.4, label = shortsubcat , tooltip = Subcategory),size= 5.1, hjust = 0) +
       geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
       # +
@@ -2733,6 +3401,13 @@ increases the potential for identification of false associations due to random e
   
   output$plot_gi_state <- renderGirafe({
     up_forest_state1 <- forest_data_gi_state() %>% filter(Categorized.class==selected_class())
+    
+    
+    
+    validate(
+      need(up_forest_state1$Outcome.variable != "", "There are no records for the effect size (ES) and health outcome selected, please make another selection.")
+    )
+    
     g <- nrow(up_forest_state1)
     up_forest_state1[g+1,]<- NA
     up_forest_state1 <-  up_forest_state1%>% mutate(id2 = c(1:(g+1)))
@@ -2747,9 +3422,7 @@ increases the potential for identification of false associations due to random e
     
     
     
-    validate(
-      need(up_forest_state1$Outcome.variable != "", "There are no records for the effect size (ES) and health outcome selected, please make another selection.")
-    )
+
     
     
     
@@ -2786,7 +3459,7 @@ increases the potential for identification of false associations due to random e
       coord_cartesian(xlim= c(min(up_forest_state1$yi),max(up_forest_state1$yi)))+
       geom_vline(xintercept = 1, linetype = "longdash") +
       #scale_x_continuous(breaks = seq(-3,10,1))+
-      scale_y_continuous(breaks = seq(1,g,3)) +
+      scale_y_discrete('id2')+
       scale_x_continuous( if (input$expo_b_up_state == "OR") {name = "Odds Ratio (95% confidence interval)"}
                           
                           
@@ -2811,7 +3484,7 @@ increases the potential for identification of false associations due to random e
       #geom_text(aes(x = 4, label = Subcategory), size= 3.4,hjust = 1)+
       #geom_text(aes(x = 5, label = inter1), size= 3.4,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
-      # +
+      scale_y_discrete('id2')+
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
       scale_colour_identity() +
       theme_void()
@@ -2824,7 +3497,7 @@ increases the potential for identification of false associations due to random e
       geom_text(aes(x = 1.4, label = Subcategory),size= 5.1, hjust = 0) +
       geom_text(aes(x = 2.2, label = inter_95), size= 5.1,hjust = 1)+
       geom_hline(aes(yintercept=c(g+0.5)))+
-      # +
+      scale_y_discrete('id2')+
       #geom_text(aes(x = 3, label = Subcategory), hjust = 1)
       scale_colour_identity() +
       theme_void()
@@ -2871,7 +3544,6 @@ increases the potential for identification of false associations due to random e
     
     
     validate(
-      
       need(up_forest_state1$Outcome.variable != "", "There are no records for the effect size (ES) and health outcome selected, please make another selection.")
     )
     
@@ -3155,9 +3827,43 @@ increases the potential for identification of false associations due to random e
   #  })
   ######## lower 
   tbl_reactive_low <- reactive({
+    
+    names(ROB_joint)[names(ROB_joint) == 'Differential information'] <- 'Question 1. Can we be confident in the assessment of exposure?'
+    names(ROB_joint)[names(ROB_joint) == 'Differential information 2'] <- 'Question 2. Can we be confident that those who were exposed had developed the outcome of interest and unexposed had not?'
+    names(ROB_joint)[names(ROB_joint) == 'Selection bias'] <- 'Question 3. Were those who were exposed and developed the outcome of interest properly selected?'
+    names(ROB_joint)[names(ROB_joint) == 'Selection_bias 2'] <- 'Question 4. Were those who were exposed and did not develop the outcome of interest properly selected?'
+    names(ROB_joint)[names(ROB_joint) == 'Confounding'] <- 'Question 5. Was statistical adjustment carried out for important confounding variables?'
+    names(ROB_joint)[names(ROB_joint) == 'Selection bias_6'] <- 'Question 6. Was selection of exposed and non-exposed cohorts drawn from the same population?'
+    names(ROB_joint)[names(ROB_joint) == 'Differential information 2_6'] <- 'Question 7. Can we be confident that the outcome of interest was not present at start of study?'
+    names(ROB_joint)[names(ROB_joint) == 'Differential information 3_6'] <- 'Question 8. Can we be confident in the assessment of the presence or absence of prognostic factors?'
+    names(ROB_joint)[names(ROB_joint) == 'Differential information 4_6'] <- 'Question 9. Can we be confident in the assessment of outcome?'
+    names(ROB_joint)[names(ROB_joint) == 'Selection bias 2_6'] <- 'Question 10. Was the follow up of cohorts adequate?'
+    
+#    names(ROB_joint)[names(ROB_joint) == 'Question 1'] <- 'Question 1. Can we be confident in the assessment of exposure?'
+#    names(ROB_joint)[names(ROB_joint) == 'Question 2'] <- 'Question 2. Can we be confident that those who were exposed had developed the outcome of interest and unexposed had not?'
+#    names(ROB_joint)[names(ROB_joint) == 'Question 3'] <- 'Question 3. Were those who were exposed and developed the outcome of interest properly selected?'
+#    names(ROB_joint)[names(ROB_joint) == 'Question 4'] <- 'Question 4. Were those who were exposed and did not develop the outcome of interest properly selected?'
+#    names(ROB_joint)[names(ROB_joint) == 'Question 5'] <- 'Question 5. Was statistical adjustment carried out for important confounding variables?'
+    
+#    names(ROB_joint)[names(ROB_joint) == 'Differential information'] <- 'Question 1. Can we be confident in the assessment of exposure?'
+#    names(ROB_joint)[names(ROB_joint) == 'Differential information 2'] <- 'Question 2. Can we be confident that those who were exposed had developed the outcome of interest and unexposed had not?'
+#    names(ROB_joint)[names(ROB_joint) == 'Selection bias'] <- 'Question 3. Were those who were exposed and developed the outcome of interest properly selected?'
+#    names(ROB_joint)[names(ROB_joint) == 'Selection_bias 2'] <- 'Question 4. Were those who were exposed and did not develop the outcome of interest properly selected?'
+#    names(ROB_joint)[names(ROB_joint) == 'Confounding'] <- 'Question 5. Was statistical adjustment carried out for important confounding variables?'
+    
+    
+#    names(ROB_joint)[names(ROB_joint) == 'Question 6'] <- 'Question 6. Was selection of exposed and non-exposed cohorts drawn from the same population?'
+#    names(ROB_joint)[names(ROB_joint) == 'Question 7'] <- 'Question 7. Can we be confident that the outcome of interest was not present at start of study?'
+#    names(ROB_joint)[names(ROB_joint) == 'Question 8'] <- 'Question 8. Can we be confident in the assessment of the presence or absence of prognostic factors?'
+#    names(ROB_joint)[names(ROB_joint) == 'Question 9'] <- 'Question 9. Can we be confident in the assessment of outcome?'
+#    names(ROB_joint)[names(ROB_joint) == 'Question 10'] <- 'Question 10. Was the follow up of cohorts adequate?'
+    
+    
+    
+    
     gew1low <- ROB_joint[ROB_joint$IDD_2 %in% selected_state_low(), ]
     
-    if(is.na(gew1low$"Differential information 3")){gew1low <- gew1low[c(1,2, 3, 4, 5)]} else {gew1low <- gew1low[c(1,2, 3, 4, 5, 9, 10)]}    
+    if(is.na(gew1low$"Question 8. Can we be confident in the assessment of the presence or absence of prognostic factors?")){gew1low <- gew1low[c(1,2, 3, 4, 5)]} else {gew1low <- gew1low[c(1, 5, 9, 10, 11, 12, 13)]}    
     
     #gew1<- gew1[c(1,2, 3, 4, 5, 9,10)]
     t(gew1low[1,])
@@ -3344,6 +4050,11 @@ increases the potential for identification of false associations due to random e
   ####### traffic for lower
   output$alexander2 <- renderDataTable({
     
+    #names(ROB_joint_tl)[names(ROB_joint_tl) == 'Misclassification of exposure'] <- 'Question 1'
+    #names(ROB_joint_tl)[names(ROB_joint_tl) == 'Misclassification of outcome'] <- 'Question 2'
+    #names(ROB_joint_tl)[names(ROB_joint_tl) == 'Selection bias'] <- 'Question 3'
+    #names(ROB_joint_tl)[names(ROB_joint_tl) == 'Selection_bias 2'] <- 'Question 4'
+    #names(ROB_joint_tl)[names(ROB_joint_tl) == 'Confounding'] <- 'Question 5'
     
     out23low <- ROB_joint_tl[ROB_joint_tl$IDD_2 %in% selected_state_low(), ]
     if( nrow(out23low) < 1 ) return(NULL)
@@ -3351,7 +4062,7 @@ increases the potential for identification of false associations due to random e
     #datatable(out ,selection='single')
     #out
     
-    if(is.na(out23low$"Differential information 3")){out23low <- out23low[c(2, 1, 3, 4, 5)]} else {out23low <- out23low[c(2, 1, 3, 4, 5, 9, 10)]}
+    if(is.na(out23low$"Question 8")){out23low <- out23low[c(1, 2, 3, 4, 5)]} else {out23low <- out23low[c(1, 5, 10, 11, 12, 13, 14)]}
     
     #out23up <- out23up[c(2, 1, 3, 4, 5)]
     #newdata <- out[c(-1,-3, -4, -5,-6,-7,-15, -16, -17, -18)]
@@ -3360,7 +4071,7 @@ increases the potential for identification of false associations due to random e
       #CPOE = color_tile("white", "green"),
       #VERBAL = color_tile("white", "red"),
       #WRITTEN = color_tile("white", "red"),
-      "Misclassification of exposure" = formatter("span",
+      "Question 1" = formatter("span",
                                                   style = j ~ style(display  = "block",
                                                                     "border-radius" = "55%",
                                                                     height="55px",
@@ -3374,7 +4085,7 @@ increases the potential for identification of false associations due to random e
                                                                     "background-color" = sapply(j,bg.picker1))
                                                   
       ),
-      "Misclassification of outcome" = formatter("span",
+      "Question 2" = formatter("span",
                                                  style = j ~ style(display  = "block",
                                                                    "border-radius" = "55%",
                                                                    height="55px",
@@ -3388,7 +4099,7 @@ increases the potential for identification of false associations due to random e
                                                                    "background-color" = sapply(j,bg.picker1))
       ),
       
-      "Selection bias" = formatter("span",
+      "Question 3" = formatter("span",
                                    style = j ~ style(display  = "block",
                                                      "border-radius" = "55%",
                                                      height="55px",
@@ -3400,7 +4111,7 @@ increases the potential for identification of false associations due to random e
                                                      "padding-right" = "4px",
                                                      color = "black",
                                                      "background-color" = sapply(j,bg.picker1))),
-      "Selection_bias 2" = formatter("span",
+      "Question 4" = formatter("span",
                                      style = j ~ style(display  = "block",
                                                        "border-radius" = "55%",
                                                        height="55px",
@@ -3412,7 +4123,7 @@ increases the potential for identification of false associations due to random e
                                                        "padding-right" = "4px",
                                                        color = "black",
                                                        "background-color" = sapply(j,bg.picker1))),
-      "Confounding" = formatter("span",
+      "Question 5" = formatter("span",
                                 style = j ~ style(display  = "block",
                                                   "border-radius" = "55%",
                                                   height="55px",
@@ -3436,7 +4147,7 @@ increases the potential for identification of false associations due to random e
                                                    "padding-right" = "4px",
                                                    color = "black",
                                                    "background-color" = sapply(j,bg.picker1))),
-      "Differential information 3" = formatter("span",
+      "Question 6" = formatter("span",
                                                style = j ~ style(display  = "block",
                                                                  "border-radius" = "55%",
                                                                  height="55px",
@@ -3448,8 +4159,44 @@ increases the potential for identification of false associations due to random e
                                                                  "padding-right" = "4px",
                                                                  color = "black",
                                                                  "background-color" = sapply(j,bg.picker1))),
+      "Question 8" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1))),
+      "Question 9" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1))),
+      "Question 10" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1))),
       
-      "Differential information 4" = formatter("span",
+      "Question 7" = formatter("span",
                                                style = j ~ style(display  = "block",
                                                                  "border-radius" = "55%",
                                                                  height="55px",
@@ -4017,7 +4764,20 @@ increases the potential for identification of false associations due to random e
   output$exclusionF <- DT::renderDataTable({
     #datatable(df())
     #DT::datatable(ROB_joint_tl, escape = FALSE, options = list(ordering=F, bFilter=F, pageLength = 20))
-    DT::datatable(exclusionF, escape = FALSE, options = list(autoWidth = TRUE,ordering=F, bFilter=F, pageLength = 10))
+    DT::datatable(exclusionF, escape = FALSE, rownames = FALSE,options = list(autoWidth = TRUE,ordering=F, bFilter=T, pageLength = 20))
+  })
+  
+  output$confo <- DT::renderDataTable({
+    #datatable(df())
+    #DT::datatable(ROB_joint_tl, escape = FALSE, options = list(ordering=F, bFilter=F, pageLength = 20))
+    DT::datatable(ROB_confounding, escape = FALSE, options = list(autoWidth = TRUE,ordering=F, bFilter=T, pageLength = 20))
+  })
+  
+  
+  output$inclusionF <- DT::renderDataTable({
+    #datatable(df())
+    #DT::datatable(ROB_joint_tl, escape = FALSE, options = list(ordering=F, bFilter=F, pageLength = 20))
+    DT::datatable(inclusionF, rownames = FALSE, escape = FALSE, options = list(autoWidth = TRUE, bFilter=T, pageLength = 20, ordering=F))
   })
   
   output$mytable12345 <- DT::renderDataTable({
@@ -4029,16 +4789,30 @@ increases the potential for identification of false associations due to random e
   
   
   ## * risk of bias ####
-  output$bias <- renderPlotly({
+  output$bias <- renderPlot({
+    
+    r22_1$'Type of Bias' <- as.character(r22_1$'Type of Bias')
+    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of exposure'] <- "Question 1"
+    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of outcome'] <- "Question 2"
+    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection bias'] <- "Question 3"
+    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection_bias 2'] <- "Question 4"
+    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Confounding'] <- "Question 5"
     
     
     #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
-    gg <- r22_1 %>% filter(category==selected_class()) %>%
-      ggplot(aes(x = `Type of Bias`, fill = Bias)) + 
+    r22_1 %>% filter(category==selected_class()) %>%
+      ggplot(aes(x = factor(`Type of Bias`, level = c('Question 10', 'Question 9', 'Question 8', 'Question 7', 'Question 6', 'Question 5', 'Question 4', 'Question 3', 'Question 2', 'Question 1')), fill = Bias )) + 
       geom_bar(position = "fill") + coord_flip() + 
       scale_fill_manual(values = color_table$Color)  +
-      ylab("Proportion")
-    ggplotly(gg)
+      ylab("Proportion of Health Outcomes")+
+      xlab(" ")+
+
+      theme(
+        axis.text=element_text(size=13, face= "bold"),
+        plot.caption = element_text(hjust = 0, face= "italic", size=16),
+        plot.title.position  =  "panel"
+      )
+    
   })
   
 #  output$bias_up <- renderPlotly({
@@ -4058,56 +4832,163 @@ increases the potential for identification of false associations due to random e
 
   #######
   output$bias_up <- renderPlotly({
+
+    r22_1$'Type of Bias' <- as.character(r22_1$'Type of Bias')
+#    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of exposure'] <- "Question 1"
+#    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of outcome'] <- "Question 2"
+#    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection bias'] <- "Question 3"
+#    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection_bias 2'] <- "Question 4"
+#    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Confounding'] <- "Question 5"
     
-    
+
+    #levels(r22_1$`Type of Bias`) <- gsub(" ", "\n", levels(r22_1$`Type of Bias`))
     #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
     gg <- r22_1 %>% filter(category==selected_class()) %>%
-      ggplot(aes(x = `Type of Bias`, fill = Bias)) + 
-      geom_bar(position = "fill") + coord_flip() + 
+      ggplot(aes(x = factor(`Type of Bias`, level = c('Question 10', 'Question 9', 'Question 8', 'Question 7', 'Question 6', 'Question 5', 'Question 4', 'Question 3', 'Question 2', 'Question 1')), fill = Bias)) + 
+   
+      geom_bar(position = "fill") + 
+      scale_x_discrete(labels = label_wrap(50))+
+      scale_y_continuous(labels = scales::percent)+
+      coord_flip() + 
+      geom_text(aes(label = scales::percent(..count../tapply(..count.., ..x.. ,sum)[..x..])),
+                position = position_fill(vjust = 0.5),
+                stat = "count")+
+      
       scale_fill_manual(values = color_table$Color)  +
-      ylab("Proportion")
-    ggplotly(gg)
+      ylab("Percentage of Health Outcomes")+
+      xlab(" ")+
+      
+      theme(
+        axis.text=element_text(size=13, face= "bold"),
+        plot.caption = element_text(hjust = 0, face= "italic", size=16),
+        plot.title.position  =  "panel"
+       )
+    
+    ggplotly(gg, tooltip = c("fill")) %>% config(modeBarButtonsToRemove = c('zoom2d','pan2d', 'select2d', 'lasso2d', 'zoomIn', 'zoomOut', 'autoScale', 'resetScale', 'hoverClosestCartesian', 'hoverCompareCartesian'))
+      
+    #ggplot(gg)
   })
   
   ####
   #######
-  output$bias_ic <- renderPlotly({
+  output$bias_ic <- renderPlot({
+    r22_1$'Type of Bias' <- as.character(r22_1$'Type of Bias')
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of exposure'] <- "Question 1"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of outcome'] <- "Question 2"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection bias'] <- "Question 3"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection_bias 2'] <- "Question 4"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Confounding'] <- "Question 5"
     
     
+    #levels(r22_1$`Type of Bias`) <- gsub(" ", "\n", levels(r22_1$`Type of Bias`))
     #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
-    gg <- r22_1 %>% filter(category==selected_class()) %>%
-      ggplot(aes(x = `Type of Bias`, fill = Bias)) + 
-      geom_bar(position = "fill") + coord_flip() + 
+    r22_1 %>% filter(category==selected_class()) %>%
+      ggplot(aes(x = factor(`Type of Bias`, level = c('Question 10', 'Question 9', 'Question 8', 'Question 7', 'Question 6', 'Question 5', 'Question 4', 'Question 3', 'Question 2', 'Question 1')), fill = Bias)) + 
+      
+      geom_bar(position = "fill") + 
+      scale_x_discrete(labels = label_wrap(50))+
+      coord_flip() + 
+      
       scale_fill_manual(values = color_table$Color)  +
-      ylab("Proportion")
-    ggplotly(gg)
+      ylab("Proportion of Health Outcomes")+
+      xlab(" ")+
+      
+      theme(
+        axis.text=element_text(size=13, face= "bold"),
+        plot.caption = element_text(hjust = 0, face= "italic", size=16),
+        plot.title.position  =  "panel"
+      )
+    
+    
+    
+#    gg <- r22_1 %>% filter(category==selected_class()) %>%
+#      ggplot(aes(x = factor(`Type of Bias`, level = c('Question 10', 'Question 9', 'Question 8', 'Question 7', 'Question 6', 'Question 5', 'Question 4', 'Question 3', 'Question 2', 'Question 1')), fill = Bias)) + 
+#      geom_bar(position = "fill") + coord_flip() + 
+#      scale_fill_manual(values = color_table$Color)  +
+#      ylab("Proportion")+
+#      xlab(" ")
+#    ggplotly(gg)
   })
   
   
   ####
   
-  output$bias_ar <- renderPlotly({
+  output$bias_ar <- renderPlot({
+    r22_1$'Type of Bias' <- as.character(r22_1$'Type of Bias')
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of exposure'] <- "Question 1"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of outcome'] <- "Question 2"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection bias'] <- "Question 3"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection_bias 2'] <- "Question 4"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Confounding'] <- "Question 5"
     
     
+    #levels(r22_1$`Type of Bias`) <- gsub(" ", "\n", levels(r22_1$`Type of Bias`))
     #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
-    gg <- r22_1 %>% filter(category==selected_class()) %>%
-      ggplot(aes(x = `Type of Bias`, fill = Bias)) + 
-      geom_bar(position = "fill") + coord_flip() + 
+    r22_1 %>% filter(category==selected_class()) %>%
+      ggplot(aes(x = factor(`Type of Bias`, level = c('Question 10', 'Question 9', 'Question 8', 'Question 7', 'Question 6', 'Question 5', 'Question 4', 'Question 3', 'Question 2', 'Question 1')), fill = Bias)) + 
+      
+      geom_bar(position = "fill") + 
+      scale_x_discrete(labels = label_wrap(50))+
+      coord_flip() + 
+      
       scale_fill_manual(values = color_table$Color)  +
-      ylab("Proportion")
-    ggplotly(gg)
+      ylab("Proportion of Health Outcomes")+
+      xlab(" ")+
+      
+      theme(
+        axis.text=element_text(size=13, face= "bold"),
+        plot.caption = element_text(hjust = 0, face= "italic", size=16),
+        plot.title.position  =  "panel"
+      )
+    
+    
+    
+#    gg <- r22_1 %>% filter(category==selected_class()) %>%
+#      ggplot(aes(x = factor(`Type of Bias`, level = c('Question 10', 'Question 9', 'Question 8', 'Question 7', 'Question 6', 'Question 5', 'Question 4', 'Question 3', 'Question 2', 'Question 1')), fill = Bias)) + 
+#      geom_bar(position = "fill") + coord_flip() + 
+#      scale_fill_manual(values = color_table$Color)  +
+#      ylab("Proportion")+
+#      xlab(" ")
+#    ggplotly(gg)
   })
   
-  output$bias_gi <- renderPlotly({
+  output$bias_gi <- renderPlot({
+    r22_1$'Type of Bias' <- as.character(r22_1$'Type of Bias')
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of exposure'] <- "Question 1"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of outcome'] <- "Question 2"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection bias'] <- "Question 3"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection_bias 2'] <- "Question 4"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Confounding'] <- "Question 5"
     
     
+    #levels(r22_1$`Type of Bias`) <- gsub(" ", "\n", levels(r22_1$`Type of Bias`))
     #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
-    gg <- r22_1 %>% filter(category==selected_class()) %>%
-      ggplot(aes(x = `Type of Bias`, fill = Bias)) + 
-      geom_bar(position = "fill") + coord_flip() + 
+    r22_1 %>% filter(category==selected_class()) %>%
+      ggplot(aes(x = factor(`Type of Bias`, level = c('Question 10', 'Question 9', 'Question 8', 'Question 7', 'Question 6', 'Question 5', 'Question 4', 'Question 3', 'Question 2', 'Question 1')), fill = Bias)) + 
+      
+      geom_bar(position = "fill") + 
+      scale_x_discrete(labels = label_wrap(50))+
+      coord_flip() + 
+      
       scale_fill_manual(values = color_table$Color)  +
-      ylab("Proportion")
-    ggplotly(gg)
+      ylab("Proportion of Health Outcomes")+
+      xlab(" ")+
+      
+      theme(
+        axis.text=element_text(size=13, face= "bold"),
+        plot.caption = element_text(hjust = 0, face= "italic", size=16),
+        plot.title.position  =  "panel"
+      )
+    
+    
+     
+#    gg <- r22_1 %>% filter(category==selected_class()) %>%
+#      ggplot(aes(x = factor(`Type of Bias`, level = c('Question 10', 'Question 9', 'Question 8', 'Question 7', 'Question 6', 'Question 5', 'Question 4', 'Question 3', 'Question 2', 'Question 1')), fill = Bias)) + 
+#      geom_bar(position = "fill") + coord_flip() + 
+#      scale_fill_manual(values = color_table$Color)  +
+#      ylab("Proportion")+
+#      xlab(" ")
+#    ggplotly(gg)
   })
   
   
@@ -4205,7 +5086,11 @@ increases the potential for identification of false associations due to random e
   output$plot1 <- DiagrammeR::renderDiagrammeR({
     plot <- plot()
   })
+  ###########
+
+
   
+  ####  
   
   # Handle downloads ----
   output$PRISMAflowdiagramPDF <- downloadHandler(

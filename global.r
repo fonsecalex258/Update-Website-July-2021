@@ -13,8 +13,8 @@ library(tesseract)
 library(magick)
 
 ###
-img <- image_read("datasets/distiller1.png")
-des <- data.frame(image_ocr_data(img))
+
+
 
 #distiller <- readr::read_csv("www/PRISMA.csv")
 
@@ -53,7 +53,7 @@ dataset <- readr::read_csv("datasets/CAFO_All_data_new_Aug21.csv")
 rob <- readxl::read_xlsx("datasets/cafo.xlsx", sheet = "Risk of bias")
 forest <- read_excel("datasets/forest.xlsx")
 #### Exclusion data
-exclusion <- readxl::read_xlsx("datasets/exclusion_september.xlsx")
+exclusion <- readxl::read_xlsx("datasets/exclusion_jan_march_2022.xlsx")
 exclusion$count <- rowSums( !is.na( exclusion [,11:18]))
 exclusion <- exclusion %>%
   mutate(`Reason for exclusion` = ifelse(count==1, "The study is not written entirely in English",
@@ -66,16 +66,48 @@ exclusion <- exclusion %>%
                                               ))))))
 exclusionF <- exclusion[c(2, 3, 4, 5, 6, 7,8, 21)]
 
+#### Included data
+inclusion <- readxl::read_xlsx("datasets/Included_october.xlsx")
+
+colnames(inclusion)[13] <- "Country"
+colnames(inclusion)[22] <- "Population studied"
+
+inclusionF <- inclusion[c(2, 3, 4, 5, 6, 7,8, 13, 22)]
+
+
+
 ######### cration of a new dataset based on newest distiller form
 forest_cross <- read_excel("datasets/distiller_cross.xlsx")
 forest_cross1 <- read_excel("datasets/distiller_cross.xlsx")
-forest_cohort <- read_excel("datasets/distiller_cohort_lunes_2.xlsx")
+forest_cohort <- read_excel("datasets/distiller_cohort.xlsx")
 forest_case <- read_excel("datasets/distiller_casecontrol.xlsx")
 ######
-forest_cross <-  forest_cross %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
-forest_cross1 <-  forest_cross1 %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
-forest_cohort <-  forest_cohort %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
-forest_case <-  forest_case %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+#forest_cross <-  forest_cross %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+forest_cross$authors <- testtimeline$authors[match(forest_cross$Refid, testtimeline$Refid)]
+
+#forest_cross1 <-  forest_cross1 %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+forest_cross1$authors <- testtimeline$authors[match(forest_cross1$Refid, testtimeline$Refid)]
+
+#forest_cohort <-  forest_cohort %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+forest_cohort$authors <- testtimeline$authors[match(forest_cohort$Refid, testtimeline$Refid)]
+
+#forest_case <-  forest_case %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+forest_case$authors <- testtimeline$authors[match(forest_case$Refid, testtimeline$Refid)]
+######### to include country
+#forest_cross <-  forest_cross %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+forest_cross$Country <- testtimeline$country[match(forest_cross$Refid, testtimeline$Refid)]
+
+#forest_cross1 <-  forest_cross1 %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+forest_cross1$Country <- testtimeline$country[match(forest_cross1$Refid, testtimeline$Refid)]
+
+#forest_cohort <-  forest_cohort %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+forest_cohort$Country <- testtimeline$country[match(forest_cohort$Refid, testtimeline$Refid)]
+
+#forest_case <-  forest_case %>% mutate(authors = ifelse(Refid%in%testtimeline$Refid, testtimeline$authors, ""))
+forest_case$Country <- testtimeline$country[match(forest_case$Refid, testtimeline$Refid)]
+
+
+
 ###with this work only for cross
 forest_sabado <- read_excel("datasets/distiller_cross.xlsx")
 ################
@@ -89,7 +121,7 @@ mangosT <- bind_rows(mangos, mangos1, mangos2)
 reyes<- mangosT %>% distinct()
 reyes1 <- reyes%>% filter(category=="Lower Respiratory")
 reyes2 <- reyes%>% filter(category=="Upper Respiratory")
-reyes3 <- reyes%>% filter(category=="Gastrointestinal diseases")
+reyes3 <- reyes%>% filter(category=="Gastrointestinal condition")
 reyes4 <- reyes%>% filter(category=="Antimicrobial resistance")
 reyes5 <- reyes%>% filter(category=="Infectious conditions")
 
@@ -115,7 +147,14 @@ testtimeline <- testtimeline %>%
 forest_cross <- forest_cross %>% filter(rare_outcome == "Yes" | health_event=="Yes")
 forest_cross1 <- forest_cross1 %>% filter(is.na(Differential_information_bias)& is.na(Differential_information_bias_1_V2))
 
+################# Antimicrobial
+
+#ar_forest <- forest_data_ar() %>% filter(Categorized.class==selected_class())
+
+
+
 ########## fOR all cross-sectional
+
 
 
 rty <-(c("subcategory1","subcategory2", "subcategory3","subcategory4","subcategory5", "subcategory6") %in% names(forest_cross))
@@ -134,6 +173,7 @@ if (sum(rty)==6 ) {
   
   Outcome.variable <- rep(forest_cross$outcome, each = 6)
   authors <- rep(forest_cross$authors, each = 6)
+  Country <- rep(forest_cross$Country, each = 6)
   mm <- rep(forest_cross$effect_measure, each = 6)
   Exposure.measure <- rep(forest_cross$exposure, each = 6)
   Categorized.class <- rep(forest_cross$category, each = 6)
@@ -141,7 +181,7 @@ if (sum(rty)==6 ) {
   IDD_2 <- rep(forest_cross$IDD_2, each = 6)
   
   up_forest_melo <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }else if (sum(rty)==5){
   yis0 <- forest_cross[c(9,13,17,21,25)]
@@ -156,13 +196,14 @@ if (sum(rty)==6 ) {
   Outcome.variable <- rep(forest_cross$outcome, each = 5)
   authors <- rep(forest_cross$authors, each = 5)
   mm <- rep(forest_cross$effect_measure, each = 5)
+  Country <- rep(forest_cross$Country, each = 5)
   Exposure.measure <- rep(forest_cross$exposure, each = 5)
   Categorized.class <- rep(forest_cross$category, each = 5)
   IDD <- rep(forest_cross$IDD, each = 5)
   IDD_2 <- rep(forest_cross$IDD_2, each = 5)
   
   up_forest_melo <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }else if (sum(rty)==4){
   yis0 <- forest_cross[c(9,13,17,21)]
@@ -177,13 +218,14 @@ if (sum(rty)==6 ) {
   Outcome.variable <- rep(forest_cross$outcome, each = 4)
   authors <- rep(forest_cross$authors, each = 4)
   mm <- rep(forest_cross$effect_measure, each = 4)
+  Country <- rep(forest_cross$Country, each = 4)
   Exposure.measure <- rep(forest_cross$exposure, each = 4)
   Categorized.class <- rep(forest_cross$category, each = 4)
   IDD <- rep(forest_cross$IDD, each = 4)
   IDD_2 <- rep(forest_cross$IDD_2, each = 4)
   
   up_forest_melo <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2,authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2,authors, Country)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }else if (sum(rty)==3){
   yis0 <- forest_cross[c(9,13,17)]
@@ -198,13 +240,14 @@ if (sum(rty)==6 ) {
   Outcome.variable <- rep(forest_cross$outcome, each = 3)
   authors <- rep(forest_cross$authors, each = 3)
   mm <- rep(forest_cross$effect_measure, each = 3)
+  Country <- rep(forest_cross$Country, each = 3)
   Exposure.measure <- rep(forest_cross$exposure, each = 3)
   Categorized.class <- rep(forest_cross$category, each = 3)
   IDD <- rep(forest_cross$IDD, each = 3)
   IDD_2 <- rep(forest_cross$IDD_2, each = 3)
   
   up_forest_melo <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_melo1 <- up_forest_melo[complete.cases(up_forest_melo),]
 }
 ##############
@@ -229,13 +272,14 @@ if (sum(rty3)==6 ) {
   Outcome.variable <- rep(forest_cross_state$outcome, each = 6)
   authors <- rep(forest_cross_state$authors, each = 6)
   mm <- rep(forest_cross_state$effect_measure, each = 6)
+  Country <- rep(forest_cross_state$Country, each = 6)
   Exposure.measure <- rep(forest_cross_state$exposure, each = 6)
   Categorized.class <- rep(forest_cross_state$category, each = 6)
   IDD <- rep(forest_cross_state$IDD, each = 6)
   IDD_2 <- rep(forest_cross_state$IDD_2, each = 6)
   
   up_forest_state <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_state1 <- up_forest_state[complete.cases(up_forest_state),]
 }else if (sum(rty3)==5){
   yis0 <- forest_cross_state[c(9,13,17,21,25)]
@@ -250,13 +294,14 @@ if (sum(rty3)==6 ) {
   Outcome.variable <- rep(forest_cross_state$outcome, each = 5)
   authors <- rep(forest_cross_state$authors, each = 5)
   mm <- rep(forest_cross_state$effect_measure, each = 5)
+  Country <- rep(forest_cross_state$Country, each = 5)
   Exposure.measure <- rep(forest_cross_state$exposure, each = 5)
   Categorized.class <- rep(forest_cross_state$category, each = 5)
   IDD <- rep(forest_cross_state$IDD, each = 5)
   IDD_2 <- rep(forest_cross_state$IDD_2, each = 5)
   
   up_forest_state <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_state1 <- up_forest_state[complete.cases(up_forest_state),]
 }else if (sum(rty3)==4){
   yis0 <- forest_cross_state[c(9,13,17,21)]
@@ -271,13 +316,14 @@ if (sum(rty3)==6 ) {
   Outcome.variable <- rep(forest_cross_state$outcome, each = 4)
   authors <- rep(forest_cross_state$authors, each = 4)
   mm <- rep(forest_cross_state$effect_measure, each = 4)
+  Country <- rep(forest_cross_state$Country, each = 4)
   Exposure.measure <- rep(forest_cross_state$exposure, each = 4)
   Categorized.class <- rep(forest_cross_state$category, each = 4)
   IDD <- rep(forest_cross_state$IDD, each = 4)
   IDD_2 <- rep(forest_cross_state$IDD_2, each = 4)
   
   up_forest_state <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_state1 <- up_forest_state[complete.cases(up_forest_state),]
 }else if (sum(rty3)==3){
   yis0 <- forest_cross_state[c(9,13,17)]
@@ -292,13 +338,14 @@ if (sum(rty3)==6 ) {
   Outcome.variable <- rep(forest_cross_state$outcome, each = 3)
   authors <- rep(forest_cross_state$authors, each = 3)
   mm <- rep(forest_cross_state$effect_measure, each = 3)
+  Country <- rep(forest_cross_state$Country, each = 3)
   Exposure.measure <- rep(forest_cross_state$exposure, each = 3)
   Categorized.class <- rep(forest_cross_state$category, each = 3)
   IDD <- rep(forest_cross_state$IDD, each = 3)
   IDD_2 <- rep(forest_cross_state$IDD_2, each = 3)
   
   up_forest_state <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_state1 <- up_forest_state[complete.cases(up_forest_state),]
 }
 
@@ -320,13 +367,14 @@ if (sum(rty1)==6 ) {
   Outcome.variable <- rep(forest_case$outcome, each = 6)
   authors <- rep(forest_case$authors, each = 6)
   mm <- rep(forest_case$effect_measure, each = 6)
+  Country <- rep(forest_case$Country, each = 6)
   Exposure.measure <- rep(forest_case$exposure, each = 6)
   Categorized.class <- rep(forest_case$category, each = 6)
   IDD <- rep(forest_case$IDD, each = 6)
   IDD_2 <- rep(forest_case$IDD_2, each = 6)
   
   up_forest_case <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_case1 <- up_forest_case[complete.cases(up_forest_case),]
 }else if (sum(rty1)==5){
   yis0 <- forest_case[c(9,13,17,21,25)]
@@ -341,13 +389,14 @@ if (sum(rty1)==6 ) {
   Outcome.variable <- rep(forest_case$outcome, each = 5)
   authors <- rep(forest_case$authors, each = 5)
   mm <- rep(forest_case$effect_measure, each = 5)
+  Country <- rep(forest_case$Country, each = 5)
   Exposure.measure <- rep(forest_case$exposure, each = 5)
   Categorized.class <- rep(forest_case$category, each = 5)
   IDD <- rep(forest_case$IDD, each = 5)
   IDD_2 <- rep(forest_case$IDD_2, each = 5)
   
   up_forest_case <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_case1 <- up_forest_case[complete.cases(up_forest_case),]
 }else if (sum(rty1)==4){
   yis0 <- forest_case[c(9,13,17,21)]
@@ -362,13 +411,15 @@ if (sum(rty1)==6 ) {
   Outcome.variable <- rep(forest_case$outcome, each = 4)
   authors <- rep(forest_case$authors, each = 4)
   mm <- rep(forest_case$effect_measure, each = 4)
+  Country <- rep(forest_case$Country, each = 4)
+  
   Exposure.measure <- rep(forest_case$exposure, each = 4)
   Categorized.class <- rep(forest_case$category, each = 4)
   IDD <- rep(forest_case$IDD, each = 4)
   IDD_2 <- rep(forest_case$IDD_2, each = 4)
   
   up_forest_case <- data.frame(
-    IDD, IDD_2, Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2, Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_case1 <- up_forest_case[complete.cases(up_forest_case),]
 }else if (sum(rty1)==3){
   yis0 <- forest_case[c(9,13,17)]
@@ -383,13 +434,14 @@ if (sum(rty1)==6 ) {
   Outcome.variable <- rep(forest_case$outcome, each = 3)
   authors <- rep(forest_case$authors, each = 3)
   mm <- rep(forest_case$effect_measure, each = 3)
+  Country <- rep(forest_case$Country, each = 3)
   Exposure.measure <- rep(forest_case$exposure, each = 3)
   Categorized.class <- rep(forest_case$category, each = 3)
   IDD <- rep(forest_case$IDD, each = 3)
   IDD_2 <- rep(forest_case$IDD_2, each = 3)
   
   up_forest_case <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_case1 <- up_forest_case[complete.cases(up_forest_case),]
 }
 
@@ -400,10 +452,10 @@ rty2 <-(c("subcategory1","subcategory2", "subcategory3","subcategory4","subcateg
 forest_cohort <-  forest_cohort%>% mutate(IDD = c(1:nrow(forest_cohort)))
 forest_cohort <- forest_cohort %>% mutate( IDD_2 = paste(forest_cohort$IDD, "Cohort" ))
 if (sum(rty2)==6 ) {
-  yis0 <- forest_cohort[c(10,14,18,22,26,30)]
-  yis <- forest_cohort[c(11,15,19,23,27,31)]
-  yis1 <- forest_cohort[c(12,16,20,24,28,32)]
-  yis2 <- forest_cohort[c(13,17,21,25,29,33)]
+  yis0 <- forest_cohort[c(9,13, 17, 21, 25, 29)]
+  yis <- forest_cohort[c(10, 14, 18, 22, 26, 30)]
+  yis1 <- forest_cohort[c(11, 15, 19, 23, 27, 31)]
+  yis2 <- forest_cohort[c(12, 16, 20, 24,28, 32)]
   tinto0 <- data.frame(Subcategory=c(t((yis0))))
   tinto <- data.frame(yi=c(t((yis))))
   tinto1 <- data.frame(upperci=c(t((yis1))))
@@ -412,19 +464,20 @@ if (sum(rty2)==6 ) {
   Outcome.variable <- rep(forest_cohort$outcome, each = 6)
   authors <- rep(forest_cohort$authors, each = 6)
   mm <- rep(forest_cohort$effect_measure, each = 6)
+  Country <- rep(forest_cohort$Country, each = 6)
   Exposure.measure <- rep(forest_cohort$exposure, each = 6)
   Categorized.class <- rep(forest_cohort$category, each = 6)
   IDD <- rep(forest_cohort$IDD, each = 6)
   IDD_2 <- rep(forest_cohort$IDD_2, each = 6)
   
   up_forest_cohort <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_cohort1 <- up_forest_cohort[complete.cases(up_forest_cohort),]
 }else if (sum(rty2)==5){
-  yis0 <- forest_cohort[c(10,14,18,22,26)]
-  yis <- forest_cohort[c(11,15,19,23,27)]
-  yis1 <- forest_cohort[c(12,16,20,24,28)]
-  yis2 <- forest_cohort[c(13,17,21,25,29)]
+  yis0 <- forest_cohort[c(9, 13, 17, 21, 25)] 
+  yis <- forest_cohort[c(10, 14, 18, 22, 26)]  
+  yis1 <- forest_cohort[c(11, 15, 19, 23, 27)] 
+  yis2 <- forest_cohort[c(12, 16, 20, 24, 28)]  
   tinto0 <- data.frame(Subcategory=c(t((yis0))))
   tinto <- data.frame(yi=c(t((yis))))
   tinto1 <- data.frame(upperci=c(t((yis1))))
@@ -433,19 +486,20 @@ if (sum(rty2)==6 ) {
   Outcome.variable <- rep(forest_cohort$outcome, each = 5)
   authors <- rep(forest_cohort$authors, each = 5)
   mm <- rep(forest_cohort$effect_measure, each = 5)
+  Country <- rep(forest_cohort$Country, each = 5)
   Exposure.measure <- rep(forest_cohort$exposure, each = 5)
   Categorized.class <- rep(forest_cohort$category, each = 5)
   IDD <- rep(forest_cohort$IDD, each = 5)
   IDD_2 <- rep(forest_cohort$IDD_2, each = 5)
   
   up_forest_cohort <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_cohort1 <- up_forest_cohort[complete.cases(up_forest_cohort),]
 }else if (sum(rty2)==4){
-  yis0 <- forest_cohort[c(10,14,18,22)]
-  yis <- forest_cohort[c(11,15,19,23)]
-  yis1 <- forest_cohort[c(12,16,20,24)]
-  yis2 <- forest_cohort[c(13,17,21,25)]
+  yis0 <- forest_cohort[c(9, 13, 17, 21)]
+  yis <- forest_cohort[c(10, 14, 18, 22)]
+  yis1 <- forest_cohort[c(11, 15, 19, 23)]
+  yis2 <- forest_cohort[c(12, 16, 20, 24)]
   tinto0 <- data.frame(Subcategory=c(t((yis0))))
   tinto <- data.frame(yi=c(t((yis))))
   tinto1 <- data.frame(upperci=c(t((yis1))))
@@ -454,19 +508,20 @@ if (sum(rty2)==6 ) {
   Outcome.variable <- rep(forest_cohort$outcome, each = 4)
   authors <- rep(forest_cohort$authors, each = 4)
   mm <- rep(forest_cohort$effect_measure, each = 4)
+  Country <- rep(forest_cohort$Country, each = 4)
   Exposure.measure <- rep(forest_cohort$exposure, each = 4)
   Categorized.class <- rep(forest_cohort$category, each = 4)
   IDD <- rep(forest_cohort$IDD, each = 4)
   IDD_2 <- rep(forest_cohort$IDD_2, each = 4)
   
   up_forest_cohort <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_cohort1 <- up_forest_cohort[complete.cases(up_forest_cohort),]
 }else if (sum(rty2)==3){
-  yis0 <- forest_cohort[c(10,14,18)]
-  yis <- forest_cohort[c(11,15,19)]
-  yis1 <- forest_cohort[c(12,16,20)]
-  yis2 <- forest_cohort[c(13,17,21)]
+  yis0 <- forest_cohort[c(9, 13, 17)]
+  yis <- forest_cohort[c(10, 14, 18)]
+  yis1 <- forest_cohort[c(11, 15, 19)]
+  yis2 <- forest_cohort[c(12, 16, 20)]
   tinto0 <- data.frame(Subcategory=c(t((yis0))))
   tinto <- data.frame(yi=c(t((yis))))
   tinto1 <- data.frame(upperci=c(t((yis1))))
@@ -475,13 +530,14 @@ if (sum(rty2)==6 ) {
   Outcome.variable <- rep(forest_cohort$outcome, each = 3)
   authors <- rep(forest_cohort$authors, each = 3)
   mm <- rep(forest_cohort$effect_measure, each = 3)
+  Country <- rep(forest_cohort$Country, each = 3)
   Exposure.measure <- rep(forest_cohort$exposure, each = 3)
   Categorized.class <- rep(forest_cohort$category, each = 3)
   IDD <- rep(forest_cohort$IDD, each = 3)
   IDD_2 <- rep(forest_cohort$IDD_2, each = 3)
   
   up_forest_cohort <- data.frame(
-    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors)
+    IDD, IDD_2,Outcome.variable, Categorized.class,Exposure.measure,mm,tinto0, tinto, tinto1, tinto2, authors, Country)
   up_forest_cohort1 <- up_forest_cohort[complete.cases(up_forest_cohort),]
 }
 
@@ -500,7 +556,7 @@ up_forest_state1[,8]=as.numeric(up_forest_state1[,8])
 up_forest_state1[,9]=as.numeric(up_forest_state1[,9])
 up_forest_state1[,10]=as.numeric(up_forest_state1[,10])
 
-######
+###### Reduce label size on the forest plot
 forest_joint$short <- ifelse(is.na(word(forest_joint$Outcome.variable, 1, 4)), forest_joint$Outcome.variable, word(forest_joint$Outcome.variable, 1, 4))
 forest_joint$numberofwords <- sapply(strsplit(forest_joint$Outcome.variable, " "), length)
 forest_joint$short <- ifelse(forest_joint$numberofwords>=5, paste(forest_joint$short, "..." ), forest_joint$short)
@@ -510,11 +566,19 @@ forest_joint$shortexpo <- ifelse(is.na(word(forest_joint$Exposure.measure, 1, 5)
 forest_joint$numberofwordsexpo <- sapply(strsplit(forest_joint$Exposure.measure, " "), length)
 forest_joint$shortexpo <- ifelse(forest_joint$numberofwords>=6, paste(forest_joint$shortexpo, "..." ), forest_joint$shortexpo)
 
+forest_joint$shortsubcat <- ifelse(is.na(word(forest_joint$Subcategory, 1, 5)), forest_joint$Subcategory, word(forest_joint$Subcategory, 1, 5))
+forest_joint$numberofwordssubcat <- sapply(strsplit(forest_joint$Subcategory, " "), length)
+forest_joint$shortsubcat <- ifelse(forest_joint$numberofwordssubcat>=5, paste(forest_joint$shortsubcat, "..." ), forest_joint$shortsubcat)
+
 forest_joint <- forest_joint %>% mutate(inter_95 = ifelse(is.na(lowerci), paste(forest_joint$yi), paste(forest_joint$yi,"[",forest_joint$lowerci,",", forest_joint$upperci,"]")))
 ######
 up_forest_state1$short <- ifelse(is.na(word(up_forest_state1$Outcome.variable, 1, 4)), up_forest_state1$Outcome.variable, word(up_forest_state1$Outcome.variable, 1, 4))
 up_forest_state1$numberofwords <- sapply(strsplit(up_forest_state1$Outcome.variable, " "), length)
 up_forest_state1$short <- ifelse(up_forest_state1$numberofwords>=5, paste(up_forest_state1$short, "..." ), up_forest_state1$short)
+
+up_forest_state1$shortsubcat <- ifelse(is.na(word(up_forest_state1$Subcategory, 1, 4)), up_forest_state1$Subcategory, word(up_forest_state1$Subcategory, 1, 4))
+up_forest_state1$numberofwordssubcat <- sapply(strsplit(up_forest_state1$Subcategory, " "), length)
+up_forest_state1$shortsubcat <- ifelse(up_forest_state1$numberofwordssubcat>=4, paste(up_forest_state1$shortsubcat, "..." ), up_forest_state1$shortsubcat)
 
 
 up_forest_state1$shortexpo <- ifelse(is.na(word(up_forest_state1$Exposure.measure, 1, 5)), up_forest_state1$Exposure.measure, word(up_forest_state1$Exposure.measure, 1, 5))
@@ -522,7 +586,14 @@ up_forest_state1$numberofwordsexpo <- sapply(strsplit(up_forest_state1$Exposure.
 up_forest_state1$shortexpo <- ifelse(up_forest_state1$numberofwords>=6, paste(up_forest_state1$shortexpo, "..." ), up_forest_state1$shortexpo)
 
 up_forest_state1 <- up_forest_state1 %>% mutate(inter_95 = ifelse(is.na(lowerci), paste(up_forest_state1$yi), paste(up_forest_state1$yi,"[",up_forest_state1$lowerci,",", up_forest_state1$upperci,"]")))
+########
+RB_1 <-  forest_cross %>% filter(health_event== "Yes") %>% select(Refid,outcome, category,exposure,covariates ,confounding_V2, description_5_V2)
+RB_2 <-  forest_cross %>% filter(rare_outcome== "Yes") %>% select(Refid,outcome,category, exposure, covariates ,confounding, description_5)
 
+ROB_Cohort_1 <-  forest_cohort %>% select(Refid,outcome,category,exposure,`Covariates adjusted for (include in alphbetical order, separated by , ). If none - say none`, confounding,description_4)
+ROB_Case_1 <-  forest_case %>% select(Refid,outcome,category,exposure, covariates , confounding,description_5)
+
+ROB_confounding <-  bind_rows(RB_1,RB_2, ROB_Cohort_1, ROB_Case_1)
 
 ###### a dataset to ROB
 ROB_1 <-  forest_cross %>% filter(health_event== "Yes") %>% select(description_1_V2, description_2_V2, description_3_V2, description_4_V2, description_5_V2,overall_bias_V2,IDD,IDD_2)
@@ -531,10 +602,19 @@ ROB_2 <-  forest_cross %>% filter(rare_outcome== "Yes") %>% select(description_1
 colnames(ROB_1) <- c("Differential information", "Differential information 2", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
 colnames(ROB_2) <- c("Differential information", "Differential information 2", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
 
+#colnames(ROB_1) <- c("Question 1", "Question 2", "Question 3","Question 4","Question 5", "Overall bias", "IDD", "IDD_2")
+#colnames(ROB_2) <- c("Question 1", "Question 2", "Question 3","Question 4","Question 4", "Overall bias", "IDD", "IDD_2")
+
+
+
 ROB_Cohort <-  forest_cohort %>% select(description_1, description_2,description_3, description_4, description_5,description_6, description_7,overall_bias,IDD, IDD_2)
 ROB_Case <-  forest_case %>% select(description_1, description_2,description_3, description_4, description_5, overall_bias, IDD, IDD_2)
 colnames(ROB_Case) <- c("Differential information", "Differential information 2", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2")
-colnames(ROB_Cohort) <- c("Selection bias", "Differential information", "Differential information 2","Confounding","Differential information 3", "Differential information 4", "Selection bias 2", "Overall bias","IDD", "IDD_2")
+#colnames(ROB_Case) <- c("Question 1", "Question 2", "Question 3","Question 4","Question 5", "Overall bias", "IDD", "IDD_2")
+
+colnames(ROB_Cohort) <- c("Selection bias_6", "Differential information", "Differential information 2_6","Confounding","Differential information 3_6", "Differential information 4_6", "Selection bias 2_6", "Overall bias","IDD", "IDD_2")
+#colnames(ROB_Cohort) <- c("Question 6", "Question 1", "Question 7","Question 5","Question 8", "Question 9", "Question 10", "Overall bias","IDD", "IDD_2")
+
 ROB_joint <-  bind_rows(ROB_1,ROB_2, ROB_Cohort, ROB_Case)
 
 
@@ -542,50 +622,164 @@ ROB_joint <-  bind_rows(ROB_1,ROB_2, ROB_Cohort, ROB_Case)
 ###### a dataset to ROB for traffic light graphic
 ROB_1_event <-  forest_cross %>% filter(health_event== "Yes") %>% select(Differential_information_bias_1_V2, Differential_information_bias2_V2, selection_bias_1_V2, selection_bias_2_V2, confounding_V2,overall_bias_V2,IDD,IDD_2, category)
 ROB_2_event <-  forest_cross %>% filter(rare_outcome== "Yes") %>% select(Differential_information_bias, Differential_information_bias2,selection_bias_1, selection_bias_2, confounding, overall_bias, IDD, IDD_2, category)
-colnames(ROB_1_event) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2", "category")
-colnames(ROB_2_event) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2", "category")
+#colnames(ROB_1_event) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2",
+#                           "Confounding", 
+#                           "Overall bias", "IDD", "IDD_2", "category")
+colnames(ROB_1_event) <- c("Question 1", "Question 2", "Question 3","Question 4",
+                           "Question 5", 
+                           "Overall bias", "IDD", "IDD_2", "category")
+#colnames(ROB_2_event) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2",
+#                           "Confounding", 
+#                           "Overall bias", "IDD", "IDD_2", "category")
+colnames(ROB_2_event) <- c("Question 1", "Question 2", "Question 3","Question 4",
+                           "Question 5", 
+                           "Overall bias", "IDD", "IDD_2", "category")
 
 ROB_Cohort_tl <-  forest_cohort %>% select(selection_bias, information_bias,information_bias_2, confounding, information_bias_3,information_bias_4, selection_bias_2,overall_bias,IDD, IDD_2,category)
+
 ROB_Case_tl <-  forest_case %>% select(Differential_information_bias, Differential_information_bias2,selection_bias_1, selection_bias_2, confounding, overall_bias, IDD, IDD_2, category)
-colnames(ROB_Case_tl) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2","Confounding", "Overall bias", "IDD", "IDD_2", "category")
-colnames(ROB_Cohort_tl) <- c("Selection bias", "Misclassification of exposure", "Misclassification of outcome","Confounding","Differential information 3", "Differential information 4", "Selection_bias 2", "Overall bias","IDD", "IDD_2", "category")
+#colnames(ROB_Case_tl) <- c("Misclassification of exposure", "Misclassification of outcome", "Selection bias","Selection_bias 2",
+#                           "Confounding", 
+#                           "Overall bias", "IDD", "IDD_2", "category")
+colnames(ROB_Case_tl) <- c("Question 1", "Question 2", "Question 3","Question 4",
+                           "Question 5", 
+                           "Overall bias", "IDD", "IDD_2", "category")
+#
+#colnames(ROB_Cohort_tl) <- c("Selection bias", "Misclassification of exposure", "Misclassification of outcome",
+#                             "Confounding",
+#                             "Differential information 3", "Differential information 4", "Selection_bias 2", "Overall bias","IDD", "IDD_2", "category")
+colnames(ROB_Cohort_tl) <- c("Question 6", "Question 1", "Question 7",
+                             "Question 5",
+                             "Question 8", "Question 9", "Question 10", "Overall bias","IDD", "IDD_2", "category")
+
 ROB_joint_tl <-  bind_rows(ROB_1_event,ROB_2_event, ROB_Cohort_tl, ROB_Case_tl)
 
-ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Definitely yes (low risk of bias)'] <- 'Low'
-ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Definitely yes (low risk of bias)'] <- 'Low'
-ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Definitely yes (low risk of bias)'] <- 'Low'
-ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Definitely yes (low risk of bias)'] <- 'Low'
-ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Definitely yes (low risk of bias)'] <- 'Low'
-ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Definitely yes (low risk of bias)'] <- 'Low'
-ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Definitely yes (low risk of bias)'] <- 'Low'
+#ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Definitely yes (low risk of bias)'] <- 'Low'
+#ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Definitely yes (low risk of bias)'] <- 'Low'
+#ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Definitely yes (low risk of bias)'] <- 'Low'
+#ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Definitely yes (low risk of bias)'] <- 'Low'
+#ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Definitely yes (low risk of bias)'] <- 'Low'
+#ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Definitely yes (low risk of bias)'] <- 'Low'
+#ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Definitely yes (low risk of bias)'] <- 'Low'
 
-ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Probably yes'] <- 'Likely Low'
-ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Probably yes'] <- 'Likely Low'
-ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Probably yes'] <- 'Likely Low'
-ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Probably yes'] <- 'Likely Low'
-ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Probably yes'] <- 'Likely Low'
-ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Probably yes'] <- 'Likely Low'
-ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Question 1'[ROB_joint_tl$'Question 1' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Question 2'[ROB_joint_tl$'Question 2' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Question 3'[ROB_joint_tl$'Question 3' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Question 4'[ROB_joint_tl$'Question 4' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Question 5'[ROB_joint_tl$'Question 5' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Question 6'[ROB_joint_tl$'Question 6' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Question 7'[ROB_joint_tl$'Question 7' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Question 8'[ROB_joint_tl$'Question 8' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Question 9'[ROB_joint_tl$'Question 9' == 'Definitely yes (low risk of bias)'] <- 'Low'
+ROB_joint_tl$'Question 10'[ROB_joint_tl$'Question 10' == 'Definitely yes (low risk of bias)'] <- 'Low'
 
-ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Probably no'] <- 'Likely High'
-ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Probably no'] <- 'Likely High'
-ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Probably no'] <- 'Likely High'
-ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Probably no'] <- 'Likely High'
-ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Probably no'] <- 'Likely High'
-ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Probably no'] <- 'Likely High'
-ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Probably no'] <- 'Likely High'
 
-ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Definitely no (high risk of bias)'] <- 'High'
-ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Definitely no (high risk of bias)'] <- 'High'
-ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Definitely no (high risk of bias)'] <- 'High'
-ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Definitely no (high risk of bias)'] <- 'High'
-ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Definitely no (high risk of bias)'] <- 'High'
-ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Definitely no (high risk of bias)'] <- 'High'
-ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Definitely no (high risk of bias)'] <- 'High'
+#ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Probably yes'] <- 'Likely Low'
+#ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Probably yes'] <- 'Likely Low'
+#ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Probably yes'] <- 'Likely Low'
+#ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Probably yes'] <- 'Likely Low'
+#ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Probably yes'] <- 'Likely Low'
+#ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Probably yes'] <- 'Likely Low'
+#ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Probably yes'] <- 'Likely Low'
+
+ROB_joint_tl$'Question 1'[ROB_joint_tl$'Question 1' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Question 2'[ROB_joint_tl$'Question 2' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Question 3'[ROB_joint_tl$'Question 3' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Question 4'[ROB_joint_tl$'Question 4' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Question 5'[ROB_joint_tl$'Question 5' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Question 6'[ROB_joint_tl$'Question 6' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Question 7'[ROB_joint_tl$'Question 7' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Question 8'[ROB_joint_tl$'Question 8' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Question 9'[ROB_joint_tl$'Question 9' == 'Probably yes'] <- 'Likely Low'
+ROB_joint_tl$'Question 10'[ROB_joint_tl$'Question 10' == 'Probably yes'] <- 'Likely Low'
+
+
+#ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Probably no'] <- 'Likely High'
+#ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Probably no'] <- 'Likely High'
+#ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Probably no'] <- 'Likely High'
+#ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Probably no'] <- 'Likely High'
+#ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Probably no'] <- 'Likely High'
+#ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Probably no'] <- 'Likely High'
+#ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Probably no'] <- 'Likely High'
+
+ROB_joint_tl$'Question 1'[ROB_joint_tl$'Question 1' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Question 2'[ROB_joint_tl$'Question 2' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Question 3'[ROB_joint_tl$'Question 3' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Question 4'[ROB_joint_tl$'Question 4' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Question 5'[ROB_joint_tl$'Question 5' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Question 6'[ROB_joint_tl$'Question 6' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Question 7'[ROB_joint_tl$'Question 7' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Question 8'[ROB_joint_tl$'Question 8' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Question 9'[ROB_joint_tl$'Question 9' == 'Probably no'] <- 'Likely High'
+ROB_joint_tl$'Question 10'[ROB_joint_tl$'Question 10' == 'Probably no'] <- 'Likely High'
+
+
+
+
+#ROB_joint_tl$'Selection bias'[ROB_joint_tl$'Selection bias' == 'Definitely no (high risk of bias)'] <- 'High'
+#ROB_joint_tl$'Selection_bias 2'[ROB_joint_tl$'Selection_bias 2' == 'Definitely no (high risk of bias)'] <- 'High'
+#ROB_joint_tl$'Misclassification of exposure'[ROB_joint_tl$'Misclassification of exposure' == 'Definitely no (high risk of bias)'] <- 'High'
+#ROB_joint_tl$'Misclassification of outcome'[ROB_joint_tl$'Misclassification of outcome' == 'Definitely no (high risk of bias)'] <- 'High'
+#ROB_joint_tl$'Differential information 3'[ROB_joint_tl$'Differential information 3' == 'Definitely no (high risk of bias)'] <- 'High'
+#ROB_joint_tl$'Differential information 4'[ROB_joint_tl$'Differential information 4' == 'Definitely no (high risk of bias)'] <- 'High'
+#ROB_joint_tl$'Confounding'[ROB_joint_tl$'Confounding' == 'Definitely no (high risk of bias)'] <- 'High'
+
+ROB_joint_tl$'Question 1'[ROB_joint_tl$'Question 1' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Question 2'[ROB_joint_tl$'Question 2' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Question 3'[ROB_joint_tl$'Question 3' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Question 4'[ROB_joint_tl$'Question 4' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Question 5'[ROB_joint_tl$'Question 5' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Question 6'[ROB_joint_tl$'Question 6' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Question 7'[ROB_joint_tl$'Question 7' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Question 8'[ROB_joint_tl$'Question 8' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Question 9'[ROB_joint_tl$'Question 9' == 'Definitely no (high risk of bias)'] <- 'High'
+ROB_joint_tl$'Question 10'[ROB_joint_tl$'Question 10' == 'Definitely no (high risk of bias)'] <- 'High'
+
+
+
 
 ##########
+ar_forest <- forest_joint %>% filter(Categorized.class=="Antimicrobial resistance")
+ar_forest$effect_z <- ar_forest$mm
+ar_forest$effect_z[ar_forest$effect_z == 'PR'] <- 'Incidence Density Ratio (IDR)'
+ar_forest$effect_z[ar_forest$effect_z == 'OR'] <- 'Incidence Odds Ratio (OR)'
+ar_forest$effect_z[ar_forest$effect_z == 'PR - RR - HR'] <- 'Incidence Odds Ratio (OR)'
 
-#g <- nrow(up_forest_melo)
+# for lower respiratory
+low_forest <- forest_joint %>% filter(Categorized.class=="Lower Respiratory")
+low_forest$effect_z <- low_forest$mm
+low_forest$effect_z[low_forest$effect_z == 'PR'] <- 'Incidence Density Ratio (IDR)'
+low_forest$effect_z[low_forest$effect_z == 'OR'] <- 'Incidence Odds Ratio (OR)'
+low_forest$effect_z[low_forest$effect_z == 'PR - RR - HR'] <- 'Incidence Odds Ratio (OR)'
+
+# for lower respiratory states
+low_forest_state <- up_forest_state1 %>% filter(Categorized.class=="Lower Respiratory")
+low_forest_state$effect_z <- low_forest_state$mm
+low_forest_state$effect_z[low_forest_state$effect_z == 'PR'] <- 'Incidence Density Ratio (IDR)'
+low_forest_state$effect_z[low_forest_state$effect_z == 'OR'] <- 'Incidence Odds Ratio (OR)'
+low_forest_state$effect_z[low_forest_state$effect_z == 'PR - RR - HR'] <- 'Incidence Odds Ratio (OR)'
+
+# for upper respiratory
+up_forest <- forest_joint %>% filter(Categorized.class=="Upper Respiratory")
+up_forest$effect_z <- up_forest$mm
+up_forest$effect_z[up_forest$effect_z == 'PR'] <- 'Incidence Density Ratio (IDR)'
+up_forest$effect_z[up_forest$effect_z == 'OR'] <- 'Incidence Odds Ratio (OR)'
+up_forest$effect_z[up_forest$effect_z == 'PR - RR - HR'] <- 'Incidence Odds Ratio (OR)'
+
+# for IC respiratory
+ic_forest <- forest_joint %>% filter(Categorized.class=="Infectious conditions")
+ic_forest$effect_z <- ic_forest$mm
+ic_forest$effect_z[ic_forest$effect_z == 'PR'] <- 'Incidence Density Ratio (IDR)'
+ic_forest$effect_z[ic_forest$effect_z == 'OR'] <- 'Incidence Odds Ratio (OR)'
+ic_forest$effect_z[ic_forest$effect_z == 'PR - RR - HR'] <- 'Incidence Odds Ratio (OR)'
+
+# for GI respiratory
+gi_forest <- forest_joint %>% filter(Categorized.class=="Gastrointestinal condition")
+gi_forest$effect_z <- gi_forest$mm
+gi_forest$effect_z[gi_forest$effect_z == 'PR'] <- 'Incidence Density Ratio (IDR)'
+gi_forest$effect_z[gi_forest$effect_z == 'OR'] <- 'Incidence Odds Ratio (OR)'
+gi_forest$effect_z[gi_forest$effect_z == 'PR - RR - HR'] <- 'Incidence Odds Ratio (OR)'
+
 
 #up_forest_melo$id2 <- c(1:(nrow(up_forest_melo)))
 #up_forest_melo[nrow(up_forest_melo)+1,1] <- "OUTCOME"
@@ -615,7 +809,14 @@ forest$effect_z[forest$effect_z == 'OR p value'] <- 'p value of the Odds Ratio'
 
 forest_joint$effect_z <- forest_joint$mm
 up_forest_state1$effect_z_state <- up_forest_state1$mm
-forest_joint$effect_z[forest_joint$effect_z == 'PR'] <- 'IDR'
+forest_joint$effect_z[forest_joint$effect_z == 'PR'] <- 'Incidence Density Ratio (IDR)'
+forest_joint$effect_z[forest_joint$effect_z == 'OR'] <- 'Incidence Odds Ratio (OR)'
+
+
+up_forest_state1$effect_z_state[up_forest_state1$effect_z_state == 'PR'] <- 'Prevalence Ratio (PR)'
+up_forest_state1$effect_z_state[up_forest_state1$effect_z_state == 'OR'] <- 'Prevalence Odds Ratio (OR)'
+
+
 #forest_cross_event$effect_z[forest_cross_event$effect_z == 'OR'] <- 'Odds Ratio (OR)'
 #forest_cross_event$effect_z[forest_cross_event$effect_z == 'PR'] <- 'Prevalence Ratio (PR)'
 #forest_cross_event$effect_z[forest$effect_z == 'beta'] <- 'beta coefficient of the variable'
@@ -649,15 +850,32 @@ cafoo <- cafo %>%
   summarise(`Number of Studies` = n())
 
 ###### alternative dataset for map
-cafo_map <- readxl::read_xlsx("datasets/geoloction_cafos.xlsx")
+#cafo_map <- readxl::read_xlsx("datasets/geoloction_cafos.xlsx")
 
-names(cafo_map)[9] <- 'Country'
+#names(cafo_map)[9] <- 'Country'
+#cafoo_map <- cafo_map %>% group_by(Country) %>% 
+#  summarise(`Number_of_Studies` = n())%>%
+#  mutate(long = ifelse(Country == "Germany", 10.44768,
+#                       ifelse(Country == "Netherlands", 5.2913,ifelse(Country == "USA", -98.5795, ifelse(Country=="Norway", 8.468946, ifelse(Country=="Mexico", -102.552784, ifelse(Country=="Canada", -106.346771, ifelse(Country=="UK", -3.435973, 2.213749))) ))))) %>% 
+#  mutate(lat = ifelse(Country == "Germany", 51.165691,
+#                      ifelse(Country == "Netherlands", 52.132633,ifelse(Country == "USA", 37.09024, ifelse(Country=="Norway", 60.472024, ifelse(Country=="Mexico", 23.634501, ifelse(Country=="Canada", 56.130366, ifelse(Country=="UK", 55.378051, 46.227638))) )))))
+
+
+
+#
+cafo_map <- readxl::read_xlsx("datasets/Included_october.xlsx")
+
+names(cafo_map)[13] <- 'Country'
 cafoo_map <- cafo_map %>% group_by(Country) %>% 
   summarise(`Number_of_Studies` = n())%>%
   mutate(long = ifelse(Country == "Germany", 10.44768,
                        ifelse(Country == "Netherlands", 5.2913,ifelse(Country == "USA", -98.5795, ifelse(Country=="Norway", 8.468946, ifelse(Country=="Mexico", -102.552784, ifelse(Country=="Canada", -106.346771, ifelse(Country=="UK", -3.435973, 2.213749))) ))))) %>% 
   mutate(lat = ifelse(Country == "Germany", 51.165691,
                       ifelse(Country == "Netherlands", 52.132633,ifelse(Country == "USA", 37.09024, ifelse(Country=="Norway", 60.472024, ifelse(Country=="Mexico", 23.634501, ifelse(Country=="Canada", 56.130366, ifelse(Country=="UK", 55.378051, 46.227638))) )))))
+
+
+
+
 
 ####### alternative for each health category
 
@@ -746,11 +964,20 @@ ROB_cols <- grep("ROB_", names(dataset), value = TRUE)[c(1:7, 9:15)]
 r2 <- ROB_joint_tl# %>%
 #select('IDD', 'category','Selection bias' , 'Selection_bias 2', 'Misclassification of exposure', 'Misclassification of outcome' ,'Differential information 3' ,'Differential information 4', 'Confounding') %>% 
 #setNames(c("Refid", "categoy",bias_types))
-r22 <- r2 %>% gather(key = `Type of Bias`, value = Bias, c('Selection bias' , 'Selection_bias 2', 'Misclassification of exposure', 'Misclassification of outcome' ,'Differential information 3' ,'Differential information 4', 'Confounding')) %>% 
+#r22 <- r2 %>% gather(key = `Type of Bias`, value = Bias, c('Selection bias' , 'Selection_bias 2', 'Misclassification of exposure', 'Misclassification of outcome' ,'Differential information 3' ,'Differential information 4', 
+#                                                           'Confounding')) %>% 
+r22 <- r2 %>% gather(key = `Type of Bias`, value = Bias, c('Question 1' , 'Question 2', 'Question 3', 'Question 4' ,'Question 5' ,'Question 6', 
+                                                             'Question 7', 'Question 8', 'Question 9', 'Question 10')) %>%   
   mutate(Bias = forcats::fct_relevel(Bias, "Low","Likely Low", "Likely High", "High", "Uncertain"),
-         `Type of Bias` = forcats::fct_relevel(`Type of Bias`, 'Selection bias' , 'Selection_bias 2', 'Misclassification of exposure', 'Misclassification of outcome' ,'Differential information 3' ,'Differential information 4', 'Confounding')) #%>% 
+#         `Type of Bias` = forcats::fct_relevel(`Type of Bias`, 'Selection bias' , 'Selection_bias 2', 'Misclassification of exposure', 'Misclassification of outcome' ,'Differential information 3' ,'Differential information 4', 'Confounding')) #%>% 
+`Type of Bias` = forcats::fct_relevel(`Type of Bias`, 'Question 1' , 'Question 2', 'Question 3', 'Question 4' ,'Question 5' ,'Question 6', 
+                                      'Question 7', 'Question 8', 'Question 9', 'Question 10')) #%>% 
 
 r22_1 <- r22[complete.cases(r22), ]
+
+
+
+
 
 color_table <- tibble(
   Bias = c("High", "Likely High", "Likely Low", "Low", "Uncertain"),

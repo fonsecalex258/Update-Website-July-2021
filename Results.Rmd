@@ -1,0 +1,415 @@
+---
+title: "RCT Ketosis"
+author: "Prelim analysis"
+date: "11/05/2021"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=F}
+knitr::opts_chunk$set(echo = F)
+```
+
+
+
+## Analysis for animals under treatments 1,2, 3. 
+
+For this analysis animals labeled as controls were removed because they were not truly controls of the treatments. This analysis is focused on animals under treatment 1, 2, 3. First, Two descriptive tables show the distribution of BHB mean and standard deviation  for each treatment and day. The first table shows the results for BHB transformed to Log scale and the second one the mean for BHB in the original scale. 
+
+Second, a violin graph shows us the distribution of BHB across the days and treatments using the original scale for BHB. This graph allows us to see the extreme values as tails instead of outliers as a box plot does. Wider sections of the violin plot represent a higher probability that members of the population will take on the given value; the skinnier sections represent a lower probability. From these graphs, we see that Treatment 3 in Day 7 does not follow a similar distribution as the other graphs do. From this descriptive graph, we see that apparently there are no big differences between treatments, however, there are some differences between days.
+
+We tested if the interaction Day*Treatment is significant. The model shows that interaction is not significant. This means that the effect of the treatments is consistent over time and interaction will not be considered into the final model.
+
+
+```{r pressure6, message=FALSE}
+library(readxl)
+library(rstatix)
+library(tidyverse)
+library(lmerTest)
+library(ggpubr)
+library(ggplot2)
+library(lme4)
+library(ggbeeswarm)
+
+##Read dataset
+ketosis2 <- read_excel("datasets/BHB.xlsx")
+## crate nominal variables 
+ketosis2$Treatment <- as.factor(ketosis2$Treatment)
+ketosis2$Day <- as.factor(ketosis2$Day)
+ketosis2$Cow <- as.factor(ketosis2$Cow)
+
+ketosis2$LogBHB <- log(ketosis2$BHB)
+#bxp <- ggboxplot(
+#  ketosis2, x = "Day", y = "BHB",
+#  color = "Treatment", palette = "jco"
+#)
+#bxp
+
+
+t <- group_by(ketosis2, Day, Treatment ) %>% 
+  summarise(
+    count = n(), 
+    mean = mean(LogBHB, na.rm = TRUE),
+    sd = sd(LogBHB, na.rm = TRUE)
+  )
+
+data.frame(t)
+
+
+t1 <- group_by(ketosis2, Day, Treatment ) %>% 
+  summarise(
+    count = n(), 
+    mean = mean(BHB, na.rm = TRUE),
+    sd = sd(BHB, na.rm = TRUE)
+  )
+
+data.frame(t1)
+
+
+
+p <- ggplot(ketosis2, aes(x=Day, y=LogBHB, fill=Treatment)) + 
+  geom_violin(position="dodge", alpha=0.6, outlier.colour="transparent")+geom_boxplot( width=0.5, outlier.colour=NA, position = position_dodge(width = 0.9), alpha = 0.1)+
+  geom_quasirandom(dodge.width = 0.9, varwidth = TRUE)#+facet_wrap(~Treatment)
+p +scale_color_grey() + theme_pubr() 
+
+lme <- lmer(BHB ~   Treatment*Day + (1|Cow), data=ketosis2)
+summary(lme)
+anova(lme)
+
+
+
+```
+## Interpretation of the model transforming BHB to Log scale. 
+
+These are the results for the model without interaction. From the graphs, we noted a violation of the assumption of normal distribution of the errors. Then, we transform the variable NEFA using the Log transformation to avoid violating this assumption (). From the results, it is possible to infer that there are no significant differences in the BHB levels between treatments, holding Days remain constant (p = 0.175). However, there are significant differences in the BHB levels between days, holding Treatment constant (p = 2.405e-14 < 0.05).
+
+It can be inferred that Day 3 is significantly associated with an average decrease of  46.21% in BHB compared to Day 0, having the same value on the Treatment constant. 
+
+It can be inferred that Day 7 is significantly associated with an average decrease of  47.3% in BHB compared to Day 0, having the same value on the Treatment constant. 
+
+It can be inferred that Day 14 is significantly associated with an average decrease of  49.5% in BHB compared to Day 0, having the same value on the Treatment constant.
+
+On the other hand:
+
+It can be inferred that Treatment 2 is associated with an average decrease of  3% in BHB compared to Treatment 1, having the same value on Day constant. This association was not statistically significant.
+
+It can be inferred that Treatment 3 is associated with an average decrease of  20% in BHB compared to Treatment 1, having the same value on Day constant. This association was not statistically significant.
+
+From the random effects, we can infer that 32% of the variability observed in BHB is accounted for by the effect of the repeated measures. This indicates that account for the effect of repeated measures using a random intercept model was a good choice.  
+
+```{r pressure68, message=FALSE}
+library(readxl)
+library(rstatix)
+library(tidyverse)
+library(lmerTest)
+library(ggpubr)
+library(ggplot2)
+library(lme4)
+
+##Read dataset
+ketosis2 <- read_excel("datasets/BHB.xlsx")
+## crate nominal variables 
+ketosis2$Treatment <- as.factor(ketosis2$Treatment)
+ketosis2$Day <- as.factor(ketosis2$Day)
+ketosis2$Cow <- as.factor(ketosis2$Cow)
+
+## Untransformed BHB variable
+
+lme <- lmer(BHB ~   Treatment+Day + (1|Cow), data=ketosis2)
+summary(lme)
+anova(lme)
+
+qqnorm(resid(lme))
+qqline(resid(lme))
+plot(lme)
+
+
+## Transformed BHB variable
+
+lmeLog <- lmer(log(BHB) ~   Treatment+Day + (1|Cow), data=ketosis2)
+summary(lmeLog)
+anova(lmeLog)
+
+
+qqnorm(resid(lmeLog))
+qqline(resid(lmeLog))
+plot(lmeLog)
+
+
+```
+
+
+
+## NEFA outcome
+
+
+
+For this analysis animals labeled as controls were removed because they were not truly controls of the treatments. This analysis is focused on animals under treatment 1, 2, 3. First, Two descriptive tables show the distribution of NEFA mean and standard deviation  for each treatment and day. The first table shows the results for  transformed to Log scale and the second one the mean for NEFA in the original scale. 
+
+Second, a violin graph shows us the distribution of NEFA across the days and treatments using the original scale for NEFA. This graph allows us to see the extreme values as tails instead of outliers as a box plot does. From this descriptive graph, we see that apparently there are no big differences between treatments, however, there are some differences between days.
+
+We tested if the interaction Day*Treatment is significant. The model shows that interaction is not significant. This means that the effect of the treatments is consistent over time and interaction will not be considered into the final model. 
+
+
+```{r pressure65, message=FALSE}
+library(readxl)
+library(rstatix)
+library(tidyverse)
+library(lmerTest)
+library(ggpubr)
+library(ggplot2)
+library(lme4)
+library(ggbeeswarm)
+
+##Read dataset
+ketosis3 <- read_excel("datasets/NEFA.xlsx")
+## crate nominal variables 
+ketosis3$Treatment <- as.factor(ketosis3$Treatment)
+ketosis3$Day <- as.factor(ketosis3$Day)
+ketosis3$Cow <- as.factor(ketosis3$Cow)
+
+
+ketosis3$LogNEFA <- log(ketosis3$NEFA)
+#bxp <- ggboxplot(
+#  ketosis2, x = "Day", y = "BHB",
+#  color = "Treatment", palette = "jco"
+#)
+#bxp
+
+
+t <- group_by(ketosis3, Day, Treatment ) %>% 
+  summarise(
+    count = n(), 
+    mean = mean(LogNEFA, na.rm = TRUE),
+    sd = sd(LogNEFA, na.rm = TRUE)
+  )
+
+data.frame(t)
+
+
+t1 <- group_by(ketosis3, Day, Treatment ) %>% 
+  summarise(
+    count = n(), 
+    mean = mean(NEFA, na.rm = TRUE),
+    sd = sd(NEFA, na.rm = TRUE)
+  )
+
+data.frame(t1)
+
+
+
+p <- ggplot(ketosis3, aes(x=Day, y=NEFA, fill=Treatment)) + 
+  geom_violin(position="dodge", alpha=0.6, outlier.colour="transparent")+geom_boxplot( width=0.5, outlier.colour=NA, position = position_dodge(width = 0.9), alpha = 0.1)+
+  geom_quasirandom(dodge.width = 0.9, varwidth = TRUE)#+facet_wrap(~Day)
+p +scale_color_grey() + theme_pubr() 
+
+lmeN <- lmer(NEFA ~   Treatment*Day + (1|Cow), data=ketosis3)
+summary(lmeN)
+anova(lmeN)
+
+```
+
+
+## Interpretation of the model transforming NEFA to Log scale. 
+
+These are the results for the model without interaction. From the graphs, we noted a violation of the assumption of normal distribution of the errors. Then, we transform the variable NEFA using the Log transformation to avoid violating this assumption (). From the results, it is possible to infer that there are no significant differences in the NEFA levels between treatments, holding Days constant (p = 0.98). However, there are significant differences in the NEFA levels between days, holding Treatment constant (p = 0.0008 < 0.05).
+
+It can be inferred that Day 3 is significantly associated with an average decrease of  16.55% in NEFA compared to Day 0, having the same value on the Treatment constant. 
+
+It can be inferred that Day 7 is significantly associated with an average decrease of  21.24% in NEFA compared to Day 0, having the same value on the Treatment constant. 
+
+It can be inferred that Day 14 is significantly associated with an average decrease of  20.8% in NEFA compared to Day 0, having the same value on the Treatment constant.
+
+On the other hand:
+
+It can be inferred that Treatment 2 is associated with an average decrease of  1.2% in NEFA compared to Treatment 1, having the same value on Day constant. This association was not statistically significant.
+
+It can be inferred that Treatment 3 is associated with an average decrease of  2.1% in NEFA compared to Treatment 1, having the same value on Day constant. This association was not statistically significant.
+
+From the random effects, we can infer that 59% of the variability observed in NEFA is accounted for by the effect of the repeated measures. This indicates that account for the effect of repeated measures using a random intercept model was a good choice.  
+
+```{r pressure61, message=FALSE}
+library(readxl)
+library(rstatix)
+library(tidyverse)
+library(lmerTest)
+library(ggpubr)
+library(ggplot2)
+library(lme4)
+
+##Read dataset
+ketosis3 <- read_excel("datasets/NEFA.xlsx")
+## crate nominal variables 
+ketosis3$Treatment <- as.factor(ketosis3$Treatment)
+ketosis3$Day <- as.factor(ketosis3$Day)
+ketosis3$Cow <- as.factor(ketosis3$Cow)
+
+## Untransformed BHB variable
+
+lme <- lmer(NEFA ~   Treatment+Day + (1|Cow), data=ketosis3)
+summary(lme)
+anova(lme)
+
+qqnorm(resid(lme))
+qqline(resid(lme))
+plot(lme)
+
+
+## Transformed BHB variable
+
+lmeLog <- lmer(log(NEFA) ~   Treatment+Day + (1|Cow), data=ketosis3)
+summary(lmeLog)
+anova(lmeLog)
+
+
+qqnorm(resid(lmeLog))
+qqline(resid(lmeLog))
+plot(lmeLog)
+
+
+```
+
+
+
+
+
+## Calcium outcome
+
+
+
+For this analysis animals labeled as controls were removed because they were not truly controls of the treatments. This analysis is focused on animals under treatment 1, 2, 3. First, one descriptive table show the distribution of Calcium mean and standard deviation  for each treatment and day.
+
+Second, a violin graph shows us the distribution of Calcium across the days and treatments using the original scale for Calcium. This graph allows us to see the extreme values as tails instead of outliers as a box plot does. From this descriptive graph, we see that apparently there are no big differences between treatments and days. 
+
+From the model, we concluded that calcium levels are not significantly different for neither treatments (p= 0.744) nor days (p=0.32).
+
+
+
+```{r pressur, message=FALSE}
+library(readxl)
+library(rstatix)
+library(tidyverse)
+library(lmerTest)
+library(ggpubr)
+library(ggplot2)
+library(lme4)
+library(ggbeeswarm)
+
+##Read dataset
+ketosis4 <- read_excel("datasets/Trigli.xlsx")
+## crate nominal variables 
+ketosis4$Treatment <- as.factor(ketosis4$Treatment)
+ketosis4$Day <- as.factor(ketosis4$Day)
+ketosis4$Cow <- as.factor(ketosis4$Cow)
+
+
+#ketosis4$LogCalcium <- log(ketosis4$Calcium)
+#bxp <- ggboxplot(
+#  ketosis2, x = "Day", y = "BHB",
+#  color = "Treatment", palette = "jco"
+#)
+#bxp
+
+
+t1 <- group_by(ketosis4, Day, Treatment ) %>% 
+  summarise(
+    count = n(), 
+    mean = mean(Triglicerides, na.rm = TRUE),
+    sd = sd(Triglicerides, na.rm = TRUE)
+  )
+
+data.frame(t1)
+
+
+
+p <- ggplot(ketosis4, aes(x=Day, y=Triglicerides, fill=Treatment)) + 
+  geom_violin(position="dodge", alpha=0.6, outlier.colour="transparent")+geom_boxplot( width=0.5, outlier.colour=NA, position = position_dodge(width = 0.9), alpha = 0.1)+
+  geom_quasirandom(dodge.width = 0.9, varwidth = TRUE)#+facet_wrap(~Day)
+p +scale_color_grey() + theme_pubr() 
+
+lmeN <- lmer(Triglicerides ~   Treatment*Day + (1|Cow), data=ketosis4)
+summary(lmeN)
+anova(lmeN)
+
+```
+
+
+
+
+##### graph
+
+
+```{r pressurBRa, message=FALSE}
+library(readxl)
+library(rstatix)
+library(tidyverse)
+library(lmerTest)
+library(ggpubr)
+library(ggplot2)
+library(lme4)
+library(ggbeeswarm)
+library(DiagrammeR)
+library(DiagrammeRsvg)
+
+  # Define some sample data
+  data <- list(a=1000, b=800, c=600, d=400)
+  
+  
+x <-   DiagrammeR::grViz("
+digraph graph2 {
+
+graph [splines=ortho, layout = neato]
+
+# node definitions with substituted label text
+node [shape = box, width = 3.5, fillcolor = Biege];
+Y [label = '@@4', pos='-3,9!', style = 'rounded']
+
+node [shape = box, width = 2, fillcolor = Biege];
+Z [label = '@@4', pos='-5,5!']
+
+
+
+node [shape = box, width = 3, color = Biege];
+a [label = '@@1', pos='0,7!']
+
+node [shape = point, width = 0, height = 0]
+A [label = '', pos='-3,3!']
+
+node [shape = box, width = 3.5, fillcolor = Biege]
+b [label = '@@2', pos='0,5!']
+
+node [shape = box, width = 3.5, fillcolor = Biege]
+
+c [label = '@@3', pos='0,3!']
+
+node [shape = box, width = 3.5, fillcolor = Biege]
+d [label = '@@4', pos='-3,7!']
+
+
+
+
+
+a -> b -> c;
+edge [arrowhead = 'none', arrow_tail = 'none']
+d -> A;
+edge [arrowhead = 'normal']
+{rank=same ;  A -> c};
+
+
+
+
+
+
+}
+
+[1]:  paste0('Raw Data (n = ', data$a, ')')
+[2]: paste0('Remove Errors (n = ', data$b, ')')
+[3]: paste0('Identify Potential Customers (n = ', data$c, ')')
+[4]: paste0('Select Top Priorities (n = ', data$d, ')')
+")
+
+x
+
+```
