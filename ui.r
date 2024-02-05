@@ -19,35 +19,37 @@ dashboardPage(
                         menuItem("Overview", tabName = "low_rsp_intro"),
                         menuItem("Prevalence Forest Plot", tabName = "low_rsp_forest_state"),
                         menuItem("Incidence Forest Plot", tabName = "low_rsp_forest"),
-                        menuItem("Summary Risk of Bias", tabName = "low_rsp_risk_of_bias"),
-                        menuItem("Interpretation", tabName = "low_rsp_conclusion")),
+                        menuItem("Summary Risk of Bias", tabName = "low_rsp_risk_of_bias")),
+                        #menuItem("Interpreting New Findings", tabName = "low_rsp_conclusion")),
                menuItem("Upper Respiratory", tabName = "up_rsp",
                         menuItem("Overview", tabName = "up_rsp_intro"),
                         menuItem("Prevalence Forest Plot ", tabName = "up_rsp_forest_state"),
                         menuItem("Incidence Forest Plot", tabName = "up_rsp_forest"),
-                        menuItem("Summary Risk of Bias", tabName = "up_rsp_risk_of_bias"),
-                        menuItem("Interpretation", tabName = "up_rsp_conclusion")),
+                        menuItem("Summary Risk of Bias", tabName = "up_rsp_risk_of_bias")),
+                        
                menuItem("Antimicrobial resistance", tabName = "ar_rsp",
                         menuItem("Overview", tabName = "ar_rsp_intro"),
                         menuItem("Prevalence Forest Plot ", tabName = "ar_rsp_forest_state"),
                         menuItem("Incidence Forest Plot", tabName = "ar_rsp_forest"),
-                        menuItem("Summary Risk of Bias", tabName = "ar_rsp_risk_of_bias"),
-                        menuItem("Interpretation", tabName = "ar_rsp_conclusion")),
+                        menuItem("Summary Risk of Bias", tabName = "ar_rsp_risk_of_bias")),
+                        
                menuItem("Infectious conditions", tabName = "ic_rsp",
                         menuItem("Overview", tabName = "ic_rsp_intro"),
                         menuItem("Prevalence Forest Plot ", tabName = "ic_rsp_forest_state"),
                         menuItem("Incidence Forest Plot", tabName = "ic_rsp_forest"),
-                        menuItem("Summary Risk of Bias", tabName = "ic_rsp_risk_of_bias"),
-                        menuItem("Interpretation", tabName = "ic_rsp_conclusion")),
+                        menuItem("Summary Risk of Bias", tabName = "ic_rsp_risk_of_bias")),
+                        
                menuItem("Gastrointestinal diseases", tabName = "gi_rsp",
                         menuItem("Overview", tabName = "gi_rsp_intro"),
                         menuItem("Prevalence Forest Plot ", tabName = "gi_rsp_forest_state"),
                         menuItem("Incidence Forest Plot", tabName = "gi_rsp_forest"),
-                        menuItem("Summary Risk of Bias", tabName = "gi_rsp_risk_of_bias"),
-                        menuItem("Interpretation", tabName = "gi_rsp_conclusion"))),
+                        menuItem("Summary Risk of Bias", tabName = "gi_rsp_risk_of_bias"))),
+                        
       # ),
+      
       menuItem("Included Studies", tabName = "included", icon = icon("book")),
       menuItem("Excluded Studies", tabName = "excluded", icon = icon("fa-solid fa-filter")),
+      menuItem("Interpreting New Findings", tabName = "interpretation", icon = icon("fa-solid fa-key")),
       #menuItem("Confounding", tabName = "confounding", icon = icon("fa-solid fa-filter")),
       menuItem("Glossary of Terms", tabName = "glossary", icon = icon("fas fa-spell-check")),
       ##### exclude but with flags
@@ -181,9 +183,9 @@ dashboardPage(
                          p("There are three fundamental steps in the process of doing a systematic review:"),
                          tags$li("Records are identified through search on databases. "),
                          tags$li("Titles and abstracts of the records identified previously are screened to evaluate if they are relevant."),
-                         tags$li("We determine the eligibility of the records assessing the full-text article. Here, records are grouped in two sets, excluded an included. For a complete list of the records included and excluded, please go to the “Included Studies” and “Excluded Studies” tabs. "),
+                         tags$li("We determine the eligibility of the records assessing the full-text article. Here, records are grouped in two sets, excluded an included. For a complete list of the records included and excluded, please go to the", actionLink("link_to_tabpanel_b", "Included Studies"), "and", actionLink("link_to_tabpanel_a", "Excluded Studies"), "tabs." ),
                          br(),
-                         p("In the “Studies Flowchart” tab a flowchart illustrates the systematic review process."),
+                         p("In the ", actionLink("link_to_tabpanel_c", "Studies Flowchart"),"tab a diagram illustrates the systematic review process."),
                          br(),
                   ),
                   
@@ -192,9 +194,9 @@ dashboardPage(
                   
                   column(width = 11, h4("Information Sources"),
                          br(),
-                         p("Electronic searches are conducted in MEDLINE®(via Web of Science) (2014 – 2021), CABI Global Health (via Web of Science) (2014 –
-2021), Centre for Agricultural Biosciences (CAB) Abstracts (via Web of Science) (2014 – 2021), and Science Citation Index
-(via Web of Science) (2014 – 2021). Auto-alerts were set up for each database to conduct quarterly."),
+                         p("Electronic searches are conducted in MEDLINE®(via Web of Science) (2014 – 2023), CABI Global Health (via Web of Science) (2014 –
+2023), Centre for Agricultural Biosciences (CAB) Abstracts (via Web of Science) (2014 – 2023), and Science Citation Index
+(via Web of Science) (2014 – 2023). Auto-alerts were set up for each database to conduct quarterly."),
                            br(),
                   )
                   
@@ -236,11 +238,56 @@ dashboardPage(
                       )
                     )
                 ))),
+      ###Interpretation
+      ### 
+      tabItem(tabName = "interpretation",
+              fluidRow(
+                box(width = 12, solidHeader = T, status = "primary",
+                    
+                    fluidRow(
+                      column(width = 12,
+                             br(),
+                             p(" Our objective was to create a \"living\" systematic review of research reports examining the connection between residing near an animal feeding operation (AFO) and community health outcomes. A \"living\" systematic review is not a static publication in a peer-reviewed journal but a review that resides on a website,  allowing for more frequent updates and easier access to information. This project is accessible at https://livestock-lsr.shinyapps.io/LivingSR/. It is updated every three months, most recently in September 2023. The January 2024 update is pending. This web-based platform is designed to provide the latest summaries of available studies to producers, public health officers, community leaders, and community members.
+
+As part of this endeavor, we aimed to offer a balanced interpretation of the findings and their broader implications to better serve the community's needs. Our primary finding reveals that the published research in this field presents several limitations that hinder our ability to draw a conclusion regarding the association between exposure to AFOs and health outcomes. The major issues are:."),
+                             br(),
+                             h4("Studying prevalence instead of incidence"),
+                             p("Our project's central question is, \"Do emissions from AFOs cause diseases in individuals residing nearby?\" To answer this question effectively, we need to examine new disease cases emerging in the population (incidence), rather than cases that already exist (prevalence). Analyzing factors associated with existing cases can lead to inaccurate conclusions. A notable analogy is studying the causes of new HIV/AIDS cases. Suppose a research group investigates factors related to existing cases of HIV. In that case, they might find an association with \"higher incomes\" suggesting that those with higher incomes are more likely to be HIV positive. However, it would be incorrect to conclude that higher incomes cause people to contract HIV. In reality, higher incomes likely contribute to longer survival with HIV, resulting in a higher number of cases in people with higher incomes compared to people with lower incomes. This issue is known as prevalence bias. In the context of AFOs and community health, many studies (16 out of 30) measured disease prevalence, making it challenging to determine if the duration of an \"asthma diagnosis\" is the same for individuals exposed to AFOs compared to those who are not. This question differs from investigating whether exposure to AFOs causes asthma. Fewer recent studies have attempted to address this issue by focusing on the acute incidence of diseases, such as the number of hospitalizations due to asthma in the past year."),
+                             #p("Of a total of 34 observational studies identified as relevant to the review, 15 were cross-sectional studies and 7 were case-control studies (see", actionLink("link_to_tabpanel_c", "Included Studies"), "), constituting more than half of the articles identified. In both types of study, we identified that no author group discussed the population assumptions required to enable readers to interpret the effect size as estimates of comparative incidence between two groups. For 56% of the effect sizes extracted from cross-sectional studies and 39% of the effect sizes extracted from case-control studies, the effect measure reported, in our opinion, could not have been interpreted as a metric of incidence."),
+                             #p("Given the significant percentage of exposure-outcome effect sizes that, in our opinion, might be interpreted as providing estimates of incidence, authors should discuss the assumptions to support the causal interpretation of their results and help readers understand their study's contribution to a causal relationship in the body of work."),
+                             br(),
+                             h4("Inconsistency in measures of exposure to AFOs"),
+                             p("It's essential to understand that when we assert that factor A causes outcome B, we assume A always leads to B, much like turning on a light switch always illuminates a light bulb. However, in the case of AFOs and human disease, achieving a single consistent exposure has proven challenging in current studies. Current research employs four broad measures of exposure: distance of a person's residence from the AFO, density of AFOs in the area, odor from AFOs, and emissions from AFOs (e.g., sulfur, ammonia, and particulate matter), and imputed estimates based on a combination of distance, wind patterns, and emissions. This inconsistency in exposure measurement hinders our ability to conclude causation. For example, exposure to emissions at 5 kilometers upwind of a farm may differ from exposure at the same distance downwind. Consequently, we cannot accurately assess the magnitude of the impact of an AFO on community health, i.e., whether the association is strong, weak, or non-existent. Understanding the size of an effect is crucial for policy decisions, as they involve balancing benefits and harms. Currently, we have prepared manuscripts on this topic to raise awareness of this limitation, in hopes that future studies will address it, maximizing the value of investments in research on this subject. "),
+                             br(),
+                             h4("Inadequate reporting of the reason for controlling some variables"),
+                             p(" To determine whether exposure to emissions from AFOs leads to harmful human health outcomes, we must account for other factors that may be associated with both the presence of AFOs and poor health outcomes. Two such factors are the presence of medical deserts (regions with low access to health care) and income levels. Areas where AFOs can legally be located are often the same areas that lack medical facilities (hospitals, health clinics, etc.). Deciding which factors to account for can be complex. We used a method called a directed acyclic graph, which illustrates, based on the best available scientific knowledge, proposed linkages between various factors and both AFO exposure and human health. Interestingly, we discovered that the majority of studies did not adequately explain why they controlled for certain factors, and when compared to a previously published directed acyclic graph, they did not control for the correct factors. This lack of clarity in reporting makes it challenging to conclude that the results represent a true picture of the relationship between living near an AFO and community health. As for our previous points, we have published materials on this issue to raise awareness, aiming to encourage future studies to address this limitation and enhance the value of research investments in this area."),
+                             #p("Observational studies are traditionally considered to have potential limitations with respect to the ability to infer causal relations due to concerns about internal validity. Compared to randomized controlled trials, observational studies are more subject to three potential sources of bias: confounding, selection bias and information bias"),
+                             
+                             #p("Confounding is considered as the main bias of observational studies because without random assignment, exposure groups may differ with respect to factors other than exposure 37. Information bias, also called measurement bias, occurs when key information about exposure or outcome is either measured or collected mistakenly. Another key component where measurement is important is the assumption of consistency, a condition necessary along with exchangeability and positivity to establish causal inferences."),
+                             #p("To evaluate confounding and measurement bias, we limited the study population to studies that
+#estimated a metric of incidence. For confounding bias, we identify the type of effect estimated, the rationale for selecting confounders and the statistical methods used to control confounding. Similarly, we mapped on Directed acyclic graphs (DAGs) the set of variables reported in studies addressing lower airway outcomes to determine the type of effect estimated, remaining pathways of bias, and other biases. For information bias, we identified and extracted the metrics used to measure the exposure and the outcome and data sources used to derive these metrics. We evaluated the temporal relationship between measurement of the outcome and exposure. The consistency of the exposure measurement was analyzed in the extracted metrics.
+#"),
+                             #p("Seventeen relevant studies could have estimated metrics of incidence (see" , actionLink("link_to_tabpanel_c", "Included Studies"), ", column Incidence Estimates).Three studies included the rationale for the set of variables selected as confounders and the rationale for retention as confounders. Fifteen studies employed logistic regression suggesting they were investigating a causal relationship. No paper provided a DAG or causal pathway that supported the adjustment set included in the models. Among the studies addressing lower respiratory tract conditions, no study could estimate either the direct effect or the total effect of residential exposure to AFOs. For six studies, the major concern was the adjustment for a collider variable (smoking). For another four, failure to adjust for important confounding variables such as socioeconomic status or education meant biasing pathways remained open."),
+                             #p("Measurements of exposure based on AFOs density, measurement of direct emissions, distance from home to AFOs, dispersion models and perceived odor in the home were the measures used by the authors. Health outcomes were grouped based on the anatomical system affected. Lower respiratory conditions and gastrointestinal conditions were the most commonly investigated and the main sources of information were medical records, questionnaires, and mortality records. Findings regarding the temporal relationship between exposure and outcome were mixed, with studies where it was possible to infer measurement of exposure before the outcomes, studies that assessed exposure and outcome concurrently, and others where lack of reporting prevented temporality inferences. None of the measures of exposure captured an individual exposure to a metric of AFOs exposure such as personal exposure to ammonia levels. The authors did not discuss the consistency assumption."),
+                             #p("We conclude that confounding may prevent drawing causal conclusions in studies approaching lower respiratory outcomes, as the sole use of multivariate models, without exhaustive analysis for the selection, identification and retention of confounding variables using tools such as DAGs, might not capture the full spectrum of bias and on the contrary, it could generate biased estimates due to the adjustment of colliders, mediators and unnecessary adjustment of confounding variables."),
+                             #p("Accurately assessing exposure to AFOs represents a methodological challenge due to the nature of the environmental contaminants involved, the instability of the levels over time, and the multiple pathways through which AFOs could affect people's health. The extensive use of proxy measures, such as distance and density of farms, which are measured only once and without considering exposure time of the subjects, may not appropriately reflect cumulative and dynamic exposure to intensive farms, impacting the causal interpretation of the body of work. Lack of the consistency in exposure measures could make it difficult to synthetize the evidence and draw causal conclusions.")
+                             
+                      )
+                    ),
+                    br(),
+                    hr(),
+            
+                ))),
+      
+      
+      
+      ######
       
       tabItem(tabName = "glossary",
               fluidRow(
                 box(width = 12, solidHeader = TRUE, status = "primary", title = "Glossary",
                     br(),
+                    #actionLink("link_to_tabpanel_b", "Link to panel B_prueba perro"),
                     tags$li(tags$strong("Effect size:"), "A statistical concept that measures the strength of the relationship between two variables on a numeric scale.  For instance, if we have data on the height of men and women and we notice that, on average, men are taller than women, the difference between the height of men and the height of women is known as the effect size.  The greater the effect size, the greater the height difference between men and women."),
                     tags$li(tags$strong("Risk Ratio:"), "The risk ratio is the risk of the outcome among exposed
 subjects divided by the risk of the outcome among unexposed
@@ -1230,8 +1277,12 @@ p("For Effect size measures <1, there are less prevalent cases"),
       tabItem(tabName = "low_rsp_risk_of_bias",
               fluidRow(
                 box(width = 12, solidHeader = TRUE, status = "primary", title = "Risk of Bias for Lower Respiratory Diseases",
-                    p("Risk of Bias plot"),
-                    plotOutput("bias") %>% withSpinner(),
+                    #p("Risk of Bias plot"),
+                    br(),
+                    p(div(textOutput ("lower_rob_text"), style="font-size: 16px; font-family: Source Sans Pro")),
+                    br(),
+                    #plotOutput("bias") %>% withSpinner(),
+                    plotlyOutput("bias"),
                     br(),
                     div(img(src = "ROB_question_1.PNG", height = 330, width = 760), style="text-align: center;"),
                     br(),
@@ -1250,7 +1301,11 @@ p("For Effect size measures <1, there are less prevalent cases"),
       tabItem(tabName = "up_rsp_risk_of_bias",
               fluidRow(
                 box(width = 12, solidHeader = TRUE, status = "primary", title = "Risk of Bias for Upper Respiratory Diseases",
-                    p("Risk of Bias plot"),
+                    #p("Risk of Bias plot"),
+                    br(),
+                    p(div(textOutput ("upper_rob_text"), style="font-size: 16px; font-family: Source Sans Pro")),
+                    br(),
+                    p("The following graph summarizes the results of the bias assessment for the extracted exposure-outcome pairs, using questions designed to assess three sources of bias: confounding, selection bias, and information bias."),
                     #br(paste("Of the", nrow ((timedata2)),"studies reporting upper respiratory outcomes,")),
                     #div(textOutput ("upper_pairs"), style="font-size: 16px; font-family: Source Sans Pro"),
                     br(),
@@ -1355,12 +1410,12 @@ p("For Effect size measures <1, there are less prevalent cases"),
       tabItem(tabName = "low_rsp_conclusion",
               fluidRow(
                 box(width = 12, solidHeader = TRUE, status = "primary", title = "Interpretation Lower Respiratory Outcomes",
-                    p("The following interpretations correspond to those reported in the last systematic review developed by our group."),
-                    tags$li("Many studies reported outcomes associated with the lower respiratory tract. The reported effect measures were either prevalence ORs and prevalence ratios."),
-                    tags$li("There was no consistent evidence of an association between exposure (or higher levels of exposure) to animal facilities and higher odds of lower respiratory tract outcomes for the prevalence OR effect measure, except when the level of odor annoyance was used as the measure of exposure. The precision of the effect size estimates was low (i.e., the intervals were wide), and the 95% CIs extended across a range that included a protective effect, no effect, and a risk effect. . Mirabelli et al. reported 89 prevalence ratios (PR) and these are reported in Additional file 1, and the same inference applies. Most prevalence ratio intervals included one, and no consistent dose-response effect was observed."),
-                    tags$li("Many authors studied ordered levels of exposure (increasing or decreasing) to document a dose-response, which is important for investigation of causation. When the metric for goat exposure was a density indicator (i.e., number of goats within 5 km of the subject’s residence) and the outcome metric was pneumonia, there was evidence of an association between higher goat density and lower respiratory disease. The prevalence OR for the highest goat density (17,191–20,960) was 1.68, which indicated an increased prevalence of disease. Although the precision was moderate, all of the values within the 95% CI were associated with increased prevalence. These apparently inconsistent findings were reported by the same authors in the same study population. One explanation is that different mechanisms lead to the development of pneumonia versus asthma."),
-                    tags$li("Finding suggested that exposure to goats was strongly associated with Q fever risk. The authors used pneumonia as a potential Q fever-related outcome, because pneumonia was the most frequent diagnosis among the notified Q fever patients in the Netherlands epidemic. The authors also noted that exposure to poultry was associated with increased prevalence odds of pneumonia. This association between goats and pneumonia was likely due to Q fever, rather than particulate or gaseous emissions. The overall risk of bias was serious for all of the studies that reported prevalence ORs as measures of association."),
-                    tags$li("The overall risk of bias was serious for all of the studies that reported prevalence ORs as measures of association.")
+                    p("The following interpretations correspond to those findings in the last living systematic review developed by our group."),
+                    tags$li("Studies reporting on AFOs and human health have not been discussing important epidemiological assumptions necessary to interpret the measure of effect as IDR and CIR which would be important for causal inference. "),
+                    tags$li("Case-control studies might provide estimates of contrast incidences, and this could contribute more to elucidating a causal relationship in the body of work. However, currently it is very difficult for readers to assess these assumptions as many authors are not providing the information required. "),
+                    tags$li("Confounding can prevent drawing causal conclusions in this body of work, as the sole use of multivariate models, without exhaustive analysis for the selection, identification and retention of confounding variables using tools such as DAGs, might not capture the full spectrum of bias and the contrary, could generate biased estimates due to the adjustment of colliders and unnecessary adjustment."),#"Many authors studied ordered levels of exposure (increasing or decreasing) to document a dose-response, which is important for investigation of causation. When the metric for goat exposure was a density indicator (i.e., number of goats within 5 km of the subject’s residence) and the outcome metric was pneumonia, there was evidence of an association between higher goat density and lower respiratory disease. The prevalence OR for the highest goat density (17,191–20,960) was 1.68, which indicated an increased prevalence of disease. Although the precision was moderate, all of the values within the 95% CI were associated with increased prevalence. These apparently inconsistent findings were reported by the same authors in the same study population. One explanation is that different mechanisms lead to the development of pneumonia versus asthma."),
+                    #tags$li("Finding suggested that exposure to goats was strongly associated with Q fever risk. The authors used pneumonia as a potential Q fever-related outcome, because pneumonia was the most frequent diagnosis among the notified Q fever patients in the Netherlands epidemic. The authors also noted that exposure to poultry was associated with increased prevalence odds of pneumonia. This association between goats and pneumonia was likely due to Q fever, rather than particulate or gaseous emissions. The overall risk of bias was serious for all of the studies that reported prevalence ORs as measures of association."),
+                    tags$li("Because there is not a clear definition of residential exposure to AFOs, measurement error always needs to be carefully considered. Studying the effect of residing in AFO areas on the development of health conditions involves the fundamental fact of properly measuring and defining exposure to these operations. In fact, the mixed results observed could reflect the multiple ways that have been used to define and measure AFO exposure. It is reasonable to assume that the potential health outcomes addressed, mostly of a chronic respiratory nature, are due to cumulative and variable exposure to emissions from farms. ")#"The overall risk of bias was serious for all of the studies that reported prevalence ORs as measures of association.")
                 )
               )),
       

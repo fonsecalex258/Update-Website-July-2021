@@ -21,14 +21,20 @@ library(DiagrammeRsvg)
 library(DiagrammeR)
 library(shinyjs)
 library(tesseract)
-library(magick)
+#library(magick)
 library(gridExtra)
 library(grid)
 library(patchwork)
 library(cowplot)
-library(tableHTML)
+#library(tableHTML)
 
 
+results_test <- ocr_data("flowchart_01.PNG")
+#img <- image_read("flowchart_01.PNG")
+#text <- image_ocr(img)
+#lines <- strsplit(text, " ")[[1]]
+
+#df <- data.frame(line = lines, stringsAsFactors = FALSE)
 
 
 template <- read.csv("www/PRISMA.csv",stringsAsFactors = FALSE)
@@ -403,7 +409,7 @@ PRISMA_flowdiagram <- function (data,
   node [shape = box,
         fontname = ", font, ",
         color = ", main_colour, "]
-  4 [label = '", paste0('Records identified through March 31st, 2022:\n', 
+  4 [label = '", paste0('Records identified through September 30th, 2023:\n', 
                         cond_database, 
                         cond_register), "', width = 3.5, height = 0.5, height = 0.5, pos='",xstart+5,",",ystart+7,"!']
   
@@ -607,7 +613,8 @@ read_PRISMAdata <- function(data){
   ####
   #### Final studies in "Records identified through XXXXX" flowchart --------->
   #### 
-  database_results <- scales::comma(as.numeric(4694))
+  #database_results <- scales::comma(as.numeric(results_test[11,1]))
+  database_results <- scales::comma(as.numeric(5345))
   #database_results <- scales::comma(as.numeric(des[11,1]))
   website_results <- scales::comma(as.numeric(data[grep('website_results', data[,1]),]$n))
   organisation_results <- scales::comma(as.numeric(data[grep('organisation_results', data[,1]),]$n))
@@ -616,31 +623,35 @@ read_PRISMAdata <- function(data){
   ####
   #### Final studies in "Records removed before screening" flowchart --------->
   #### 
-  duplicates <- scales::comma(as.numeric(711))
+  duplicates <- scales::comma(as.numeric(827))
   
-  #duplicates <- scales::comma(as.numeric(as.numeric(des[11,1])-as.numeric(des[26,1])))
+  ##desactivated on 12_12_2023:## duplicates <- scales::comma(as.numeric(as.numeric(results_test[11,1])-as.numeric(results_test[26,1])))
   excluded_automatic <- scales::comma(as.numeric(data[grep('excluded_automatic', data[,1]),]$n))
   excluded_other <- scales::comma(as.numeric(data[grep('excluded_other', data[,1]),]$n))
   #records_screened <- scales::comma(as.numeric(data[grep('records_screened', data[,1]),]$n))
   ####
   #### Final studies in "Records screened" flowchart --------->
   #### 
-  records_screened <- scales::comma(as.numeric(1758))
+  records_screened <- scales::comma(as.numeric(4518))
+  ##desactivated on 12_12_2023:##records_screened <- scales::comma(as.numeric(results_test[33,1]))
   #records_excluded <- scales::comma(as.numeric(data[grep('records_excluded', data[,1]),]$n))
   ####
   #### Final studies in "Records excluded" flowchart --------->
   #### 
-  records_excluded <- scales::comma(as.numeric(1671))
+  records_excluded <- scales::comma(as.numeric(4427))
+  ##desactivated on 12_12_2023:##records_excluded <- scales::comma(as.numeric(results_test[40,1]))
   #dbr_sought_reports <- scales::comma(as.numeric(data[grep('dbr_sought_reports', data[,1]),]$n))
   ####
   #### Final studies in "Full-text articles assessed for elegibility" flowchart --------->
-  #### 
-  dbr_sought_reports <- scales::comma(as.numeric(nrow(exclusion)+nrow(inclusion)-15))
+  ####
+  dbr_sought_reports <- scales::comma(as.numeric(91))
+  ##desactivated on 12_12_2023:##dbr_sought_reports <- scales::comma(as.numeric(nrow(exclusion)+nrow(inclusion)-15))
   #dbr_notretrieved_reports <- scales::comma(as.numeric(data[grep('dbr_notretrieved_reports', data[,1]),]$n))
   ####
   #### Final studies in "Records excluded" flowchart --------->
-  #### 
-  dbr_notretrieved_reports <- scales::comma(as.numeric(nrow(exclusion)))
+  ####
+  dbr_notretrieved_reports <- scales::comma(as.numeric(72))
+  ##desactivated on 12_12_2023:##dbr_notretrieved_reports <- scales::comma(as.numeric(nrow(exclusion)))
   other_sought_reports <- scales::comma(as.numeric(data[grep('other_sought_reports', data[,1]),]$n))
   other_notretrieved_reports <- scales::comma(as.numeric(data[grep('other_notretrieved_reports', data[,1]),]$n))
   #dbr_assessed <- scales::comma(as.numeric(data[grep('dbr_assessed', data[,1]),]$n))
@@ -1686,13 +1697,15 @@ increases the potential for identification of false associations due to random e
     
     
     paste("This page provides basic descriptive information of studies included 
-    in the living systematic review. ","The last search was conducted on March 31 st, 2022."," A total of ", d, " studies have been included 
+    in the living systematic review. ","The last search was conducted on March 31 st, 2023."," A total of ", d, " studies have been included 
     to date.", "The geographical distribution and the date of publications of the studied 
           populations are visualized in the graphics provided.")
   })
   
   
   output$upper_pairs <- renderText({ 
+    
+    upper_rob_1 <- ROB_joint_tl %>% filter(category== 'Upper Respiratory')
     
     sat1 <- forest_cross %>% filter(category=="Upper Respiratory")%>%
       group_by(category, outcome) %>%summarise(Frequency = length(outcome))
@@ -1712,11 +1725,110 @@ increases the potential for identification of false associations due to random e
     d = nrow ((up_forest))
     s = nrow ((timedata2))
     u = nrow ((forest_joint_up))
+    k = nrow((upper_rob_1))
     
-    paste("Of the", s,"studies reporting upper respiratory outcomes,", u, " conditions (listed in the 'Outcomes Categorized as Upper Respiratory' tab) were identified, and", d, "exposure-outcome pairs were extracted.")
+    paste("Of the", s,"studies reporting upper respiratory outcomes,", u, " conditions (listed in the 'Outcomes Categorized as Upper Respiratory' tab) were identified,", k,"exposure-outcome pairs were identified as providing estimates of contrast incidences, and", d, "effect measures were extracted from them (listed in 'Incidence Forest Plot' section).")
   })
   
   
+  observeEvent(input$link_to_tabpanel_b, {
+    newvalue <- "included"
+    updateTabItems(getDefaultReactiveDomain(), "sidebar", newvalue)
+  }) 
+  
+  observeEvent(input$link_to_tabpanel_a, {
+    newvalue <- "excluded"
+    updateTabItems(getDefaultReactiveDomain(), "sidebar", newvalue)
+  }) 
+  
+  observeEvent(input$link_to_tabpanel_c, {
+    newvalue <- "roses"
+    updateTabItems(getDefaultReactiveDomain(), "sidebar", newvalue)
+  })  
+ 
+  output$upper_rob_text <- renderText({ 
+    upper_rob_1 <- ROB_joint_tl %>% filter(category== 'Upper Respiratory')
+    
+    a = length(which(upper_rob_1$`Question 1` != "NA"))
+    b = length(which(upper_rob_1$`Question 2` != "NA"))
+    c = length(which(upper_rob_1$`Question 3` != "NA"))
+    d = length(which(upper_rob_1$`Question 4` != "NA"))
+    e = length(which(upper_rob_1$`Question 5` != "NA"))
+    f = length(which(upper_rob_1$`Question 6` != "NA"))
+    g = length(which(upper_rob_1$`Question 7` != "NA"))
+    h = length(which(upper_rob_1$`Question 8` != "NA"))
+    i = length(which(upper_rob_1$`Question 9` != "NA"))
+    j = length(which(upper_rob_1$`Question 10` != "NA"))
+    
+    
+    #sat1 <- forest_cross %>% filter(category=="Upper Respiratory")%>%
+    #  group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    #  sat2 <- forest_cohort %>% filter(category=="Upper Respiratory")%>%
+    #   group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    # sat3 <- forest_case %>% filter(category=="Upper Respiratory")%>%
+    #    group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    
+    # forest_joint_up <-  bind_rows(sat1,sat2,sat3)
+    
+    
+    
+    timedata2 <- testtimeline  %>% filter(UR=="Yes")  
+    w = nrow ((upper_rob_1))
+    s = nrow ((timedata2))
+    #u = nrow ((forest_joint_up))
+    
+    #paste("Of the", s,"studies reporting upper respiratory outcomes,", u, " conditions (listed in the 'Outcomes Categorized as Upper Respiratory' tab) were identified, and", d, "exposure-outcome pairs were extracted.")
+    paste("Of the", s, "studies reporting upper airway outcomes,", w,"exposure-outcome pairs were extracted. Of these,", a, "pairs were evaluated with Question 1,", b, "pairs with Question 2,", c, "pairs with Question 3,", d, "pairs with Question 4,", e, "pairs pairs with Question 5,", f, "pairs with Question 6,", g, "pairs with Question 7,", h, "pairs with Question 8,", i, "pairs with Question 9, and", j, "pairs with Question 10.")
+    
+  })
+  
+  
+####### TExt for lower respiratory RofB section
+  
+  output$lower_rob_text <- renderText({ 
+    lower_rob_1 <- ROB_joint_tl %>% filter(category== 'Lower Respiratory')
+    
+    a = length(which(lower_rob_1$`Question 1` != "NA"))
+    b = length(which(lower_rob_1$`Question 2` != "NA"))
+    c = length(which(lower_rob_1$`Question 3` != "NA"))
+    d = length(which(lower_rob_1$`Question 4` != "NA"))
+    e = length(which(lower_rob_1$`Question 5` != "NA"))
+    f = length(which(lower_rob_1$`Question 6` != "NA"))
+    g = length(which(lower_rob_1$`Question 7` != "NA"))
+    h = length(which(lower_rob_1$`Question 8` != "NA"))
+    i = length(which(lower_rob_1$`Question 9` != "NA"))
+    j = length(which(lower_rob_1$`Question 10` != "NA"))
+    
+    
+    #sat1 <- forest_cross %>% filter(category=="Upper Respiratory")%>%
+    #  group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    #  sat2 <- forest_cohort %>% filter(category=="Upper Respiratory")%>%
+    #   group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    # sat3 <- forest_case %>% filter(category=="Upper Respiratory")%>%
+    #    group_by(category, outcome) %>%summarise(Frequency = length(outcome))
+    
+    
+    # forest_joint_up <-  bind_rows(sat1,sat2,sat3)
+    
+    
+    
+    timedata2 <- testtimeline  %>% filter(LR=="Yes")  
+    w = nrow ((lower_rob_1))
+    s = nrow ((timedata2))
+    #u = nrow ((forest_joint_up))
+    
+    #paste("Of the", s,"studies reporting upper respiratory outcomes,", u, " conditions (listed in the 'Outcomes Categorized as Upper Respiratory' tab) were identified, and", d, "exposure-outcome pairs were extracted.")
+    paste("Of the", s, "studies reporting lower airway outcomes,", w,"exposure-outcome pairs were extracted. Of these,", a, "pairs were evaluated with Question 1,", b, "pairs with Question 2,", c, "pairs with Question 3,", d, "pairs with Question 4,", e, "pairs pairs with Question 5,", f, "pairs with Question 6,", g, "pairs with Question 7,", h, "pairs with Question 8,", i, "pairs with Question 9, and", j, "pairs with Question 10.")
+    
+  })
+  
+  
+   
   ## flow chart ####
   ## * intro #####
   output$flow_intro_text <- renderUI({
@@ -2073,14 +2185,14 @@ increases the potential for identification of false associations due to random e
     ## Insert into a dataframe 
     newrecords <- data.frame(
       ## make it reactive
-      id = 1:5,   
+      id = 1:11,   
       content = c("Relevant records: 15", "Relevant records: 17", "Relevant records: 0",
-                  "Relevant records: 1", "Relevant records: 0"),
+                  "Relevant records: 1", "Relevant records: 0", "Relevant records: 1", "Relevant records: 0","Relevant records: 0","Relevant records: 0", "Relevant records: 0", "Relevant records: 0"),
       start = c("2021-03-30", "2021-06-30", "2021-09-30",
-                "2021-12-31", "2022-03-31"),
-      end = c(NA,NA, NA, NA, NA)
+                "2021-12-31", "2022-03-31", "2022-06-30", "2022-09-30", "2022-12-31", "2023-03-31", "2023-06-30", "2023-09-30"),
+      end = c(NA,NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
     )
-    timevis(newrecords)
+    timevis(newrecords, showZoom = F)
   })
   
   
@@ -3873,12 +3985,50 @@ increases the potential for identification of false associations due to random e
   
   #####
   tbl_reactive_up <- reactive({
-    gew1 <- ROB_joint[ROB_joint$IDD_2 %in% selected_state_up(), ]
+    #gew1 <- ROB_joint[ROB_joint$IDD_2 %in% selected_state_up(), ]
+    #if(is.na(gew1$"Differential information 3")){gew1 <- gew1[c(1,2, 3, 4, 5)]} else {gew1 <- gew1[c(1,2, 3, 4, 5, 9, 10)]}    
+            #gew1<- gew1[c(1,2, 3, 4, 5, 9,10)]
+    #t(gew1[1,])
+    names(ROB_joint)[names(ROB_joint) == 'Differential information'] <- 'Question 1. Can we be confident in the assessment of exposure?'
+    names(ROB_joint)[names(ROB_joint) == 'Differential information 2'] <- 'Question 2. Can we be confident that those who were exposed had developed the outcome of interest and unexposed had not?'
+    names(ROB_joint)[names(ROB_joint) == 'Selection bias'] <- 'Question 3. Were those who were exposed and developed the outcome of interest properly selected?'
+    names(ROB_joint)[names(ROB_joint) == 'Selection_bias 2'] <- 'Question 4. Were those who were exposed and did not develop the outcome of interest properly selected?'
+    names(ROB_joint)[names(ROB_joint) == 'Confounding'] <- 'Question 5. Was statistical adjustment carried out for important confounding variables?'
+    names(ROB_joint)[names(ROB_joint) == 'Selection bias_6'] <- 'Question 6. Was selection of exposed and non-exposed cohorts drawn from the same population?'
+    names(ROB_joint)[names(ROB_joint) == 'Differential information 2_6'] <- 'Question 7. Can we be confident that the outcome of interest was not present at start of study?'
+    names(ROB_joint)[names(ROB_joint) == 'Differential information 3_6'] <- 'Question 8. Can we be confident in the assessment of the presence or absence of prognostic factors?'
+    names(ROB_joint)[names(ROB_joint) == 'Differential information 4_6'] <- 'Question 9. Can we be confident in the assessment of outcome?'
+    names(ROB_joint)[names(ROB_joint) == 'Selection bias 2_6'] <- 'Question 10. Was the follow up of cohorts adequate?'
     
-    if(is.na(gew1$"Differential information 3")){gew1 <- gew1[c(1,2, 3, 4, 5)]} else {gew1 <- gew1[c(1,2, 3, 4, 5, 9, 10)]}    
+    #    names(ROB_joint)[names(ROB_joint) == 'Question 1'] <- 'Question 1. Can we be confident in the assessment of exposure?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Question 2'] <- 'Question 2. Can we be confident that those who were exposed had developed the outcome of interest and unexposed had not?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Question 3'] <- 'Question 3. Were those who were exposed and developed the outcome of interest properly selected?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Question 4'] <- 'Question 4. Were those who were exposed and did not develop the outcome of interest properly selected?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Question 5'] <- 'Question 5. Was statistical adjustment carried out for important confounding variables?'
+    
+    #    names(ROB_joint)[names(ROB_joint) == 'Differential information'] <- 'Question 1. Can we be confident in the assessment of exposure?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Differential information 2'] <- 'Question 2. Can we be confident that those who were exposed had developed the outcome of interest and unexposed had not?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Selection bias'] <- 'Question 3. Were those who were exposed and developed the outcome of interest properly selected?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Selection_bias 2'] <- 'Question 4. Were those who were exposed and did not develop the outcome of interest properly selected?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Confounding'] <- 'Question 5. Was statistical adjustment carried out for important confounding variables?'
+    
+    
+    #    names(ROB_joint)[names(ROB_joint) == 'Question 6'] <- 'Question 6. Was selection of exposed and non-exposed cohorts drawn from the same population?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Question 7'] <- 'Question 7. Can we be confident that the outcome of interest was not present at start of study?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Question 8'] <- 'Question 8. Can we be confident in the assessment of the presence or absence of prognostic factors?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Question 9'] <- 'Question 9. Can we be confident in the assessment of outcome?'
+    #    names(ROB_joint)[names(ROB_joint) == 'Question 10'] <- 'Question 10. Was the follow up of cohorts adequate?'
+    
+    
+    
+    
+    gew1up <- ROB_joint[ROB_joint$IDD_2 %in% selected_state_up(), ]
+    
+    if(is.na(gew1up$"Question 8. Can we be confident in the assessment of the presence or absence of prognostic factors?")){gew1up <- gew1up[c(1,2, 3, 4, 5)]} else {gew1up <- gew1up[c(1, 5, 9, 10, 11, 12, 13)]}    
     
     #gew1<- gew1[c(1,2, 3, 4, 5, 9,10)]
-    t(gew1[1,])
+    t(gew1up[1,])
+    
     
   })
   
@@ -3930,7 +4080,7 @@ increases the potential for identification of false associations due to random e
     #datatable(out ,selection='single')
     #out
     
-    if(is.na(out23up$"Differential information 3")){out23up <- out23up[c(2, 1, 3, 4, 5)]} else {out23up <- out23up[c(2, 1, 3, 4, 5, 9, 10)]}
+    if(is.na(out23up$"Question 8")){out23up <- out23up[c(1, 2, 3, 4, 5)]} else {out23up <- out23up[c(1, 5, 10, 11, 12, 13, 14)]}
     
     #out23up <- out23up[c(2, 1, 3, 4, 5)]
     #newdata <- out[c(-1,-3, -4, -5,-6,-7,-15, -16, -17, -18)]
@@ -3939,70 +4089,70 @@ increases the potential for identification of false associations due to random e
       #CPOE = color_tile("white", "green"),
       #VERBAL = color_tile("white", "red"),
       #WRITTEN = color_tile("white", "red"),
-      "Misclassification of exposure" = formatter("span",
-                                                  style = j ~ style(display  = "block",
-                                                                    "border-radius" = "55%",
-                                                                    height="55px",
-                                                                    margin="auto",
-                                                                    width="55px",
-                                                                    "font-size"="11px", 
-                                                                    "line-height"="55px",
-                                                                    "text-align"="center",
-                                                                    "padding-right" = "4px",
-                                                                    color = "black",
-                                                                    "background-color" = sapply(j,bg.picker1))
-                                                  
+      "Question 1" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1))
+                               
       ),
-      "Misclassification of outcome" = formatter("span",
-                                                 style = j ~ style(display  = "block",
-                                                                   "border-radius" = "55%",
-                                                                   height="55px",
-                                                                   margin="auto",
-                                                                   width="55px",
-                                                                   "font-size"="11px", 
-                                                                   "line-height"="55px",
-                                                                   "text-align"="center",
-                                                                   "padding-right" = "4px",
-                                                                   color = "black",
-                                                                   "background-color" = sapply(j,bg.picker1))
+      "Question 2" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1))
       ),
       
-      "Selection bias" = formatter("span",
-                                   style = j ~ style(display  = "block",
-                                                     "border-radius" = "55%",
-                                                     height="55px",
-                                                     margin="auto",
-                                                     width="55px",
-                                                     "font-size"="11px", 
-                                                     "line-height"="55px",
-                                                     "text-align"="center",
-                                                     "padding-right" = "4px",
-                                                     color = "black",
-                                                     "background-color" = sapply(j,bg.picker1))),
-      "Selection_bias 2" = formatter("span",
-                                     style = j ~ style(display  = "block",
-                                                       "border-radius" = "55%",
-                                                       height="55px",
-                                                       margin="auto",
-                                                       width="55px",
-                                                       "font-size"="11px", 
-                                                       "line-height"="55px",
-                                                       "text-align"="center",
-                                                       "padding-right" = "4px",
-                                                       color = "black",
-                                                       "background-color" = sapply(j,bg.picker1))),
-      "Confounding" = formatter("span",
-                                style = j ~ style(display  = "block",
-                                                  "border-radius" = "55%",
-                                                  height="55px",
-                                                  margin="auto",
-                                                  width="55px",
-                                                  "font-size"="11px", 
-                                                  "line-height"="55px",
-                                                  "text-align"="center",
-                                                  "padding-right" = "4px",
-                                                  color = "black",
-                                                  "background-color" = sapply(j,bg.picker1))),
+      "Question 3" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1))),
+      "Question 4" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1))),
+      "Question 5" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1))),
       "Overall bias" = formatter("span",
                                  style = j ~ style(display  = "block",
                                                    "border-radius" = "50%",
@@ -4015,37 +4165,74 @@ increases the potential for identification of false associations due to random e
                                                    "padding-right" = "4px",
                                                    color = "black",
                                                    "background-color" = sapply(j,bg.picker1))),
-      "Differential information 3" = formatter("span",
-                                               style = j ~ style(display  = "block",
-                                                                 "border-radius" = "55%",
-                                                                 height="55px",
-                                                                 margin="auto",
-                                                                 width="55px",
-                                                                 "font-size"="11px", 
-                                                                 "line-height"="55px",
-                                                                 "text-align"="center",
-                                                                 "padding-right" = "4px",
-                                                                 color = "black",
-                                                                 "background-color" = sapply(j,bg.picker1))),
+      "Question 6" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1))),
+      "Question 8" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1))),
+      "Question 9" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1))),
+      "Question 10" = formatter("span",
+                                style = j ~ style(display  = "block",
+                                                  "border-radius" = "55%",
+                                                  height="55px",
+                                                  margin="auto",
+                                                  width="55px",
+                                                  "font-size"="11px", 
+                                                  "line-height"="55px",
+                                                  "text-align"="center",
+                                                  "padding-right" = "4px",
+                                                  color = "black",
+                                                  "background-color" = sapply(j,bg.picker1))),
       
-      "Differential information 4" = formatter("span",
-                                               style = j ~ style(display  = "block",
-                                                                 "border-radius" = "55%",
-                                                                 height="55px",
-                                                                 margin="auto",
-                                                                 width="55px",
-                                                                 "font-size"="11px", 
-                                                                 "line-height"="55px",
-                                                                 "text-align"="center",
-                                                                 "padding-right" = "4px",
-                                                                 color = "black",
-                                                                 "background-color" = sapply(j,bg.picker1)))
+      "Question 7" = formatter("span",
+                               style = j ~ style(display  = "block",
+                                                 "border-radius" = "55%",
+                                                 height="55px",
+                                                 margin="auto",
+                                                 width="55px",
+                                                 "font-size"="11px", 
+                                                 "line-height"="55px",
+                                                 "text-align"="center",
+                                                 "padding-right" = "4px",
+                                                 color = "black",
+                                                 "background-color" = sapply(j,bg.picker1)))
       
       
     )), rownames = F, escape = F, selection = c("single"),class="compact",options = list(ordering=F, bFilter=F))
     
     
   })
+  
   
   ####### traffic for lower
   output$alexander2 <- renderDataTable({
@@ -4789,31 +4976,33 @@ increases the potential for identification of false associations due to random e
   
   
   ## * risk of bias ####
-  output$bias <- renderPlot({
+  ##### Remember that ## means that it was the original code that works prevously
+##  output$bias <- renderPlot({
+  
     
-    r22_1$'Type of Bias' <- as.character(r22_1$'Type of Bias')
-    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of exposure'] <- "Question 1"
-    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of outcome'] <- "Question 2"
-    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection bias'] <- "Question 3"
-    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection_bias 2'] <- "Question 4"
-    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Confounding'] <- "Question 5"
+  ##    r22_1$'Type of Bias' <- as.character(r22_1$'Type of Bias')
+  ##    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of exposure'] <- "Question 1"
+  ##   r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of outcome'] <- "Question 2"
+  ##   r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection bias'] <- "Question 3"
+  ##   r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection_bias 2'] <- "Question 4"
+  ##   r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Confounding'] <- "Question 5"
     
     
     #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
-    r22_1 %>% filter(category==selected_class()) %>%
-      ggplot(aes(x = factor(`Type of Bias`, level = c('Question 10', 'Question 9', 'Question 8', 'Question 7', 'Question 6', 'Question 5', 'Question 4', 'Question 3', 'Question 2', 'Question 1')), fill = Bias )) + 
-      geom_bar(position = "fill") + coord_flip() + 
-      scale_fill_manual(values = color_table$Color)  +
-      ylab("Proportion of Health Outcomes")+
-      xlab(" ")+
+  ##  r22_1 %>% filter(category==selected_class()) %>%
+  ##    ggplot(aes(x = factor(`Type of Bias`, level = c('Question 10', 'Question 9', 'Question 8', 'Question 7', 'Question 6', 'Question 5', 'Question 4', 'Question 3', 'Question 2', 'Question 1')), fill = Bias )) + 
+  ##    geom_bar(position = "fill") + coord_flip() + 
+  ##    scale_fill_manual(values = color_table$Color)  +
+  ##    ylab("Proportion of Health Outcomes")+
+  ##    xlab(" ")+
 
-      theme(
-        axis.text=element_text(size=13, face= "bold"),
-        plot.caption = element_text(hjust = 0, face= "italic", size=16),
-        plot.title.position  =  "panel"
-      )
+  ##    theme(
+  ##      axis.text=element_text(size=13, face= "bold"),
+  ##     plot.caption = element_text(hjust = 0, face= "italic", size=16),
+  ##     plot.title.position  =  "panel"
+  ##    )
     
-  })
+  ##})
   
 #  output$bias_up <- renderPlotly({
     #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
@@ -4828,7 +5017,46 @@ increases the potential for identification of false associations due to random e
 #    ggplotly(gg)
 #  })
   
-  ######
+  ###### Updated Rof B plot for lower
+  
+  output$bias <- renderPlotly({
+    
+    r22_1$'Type of Bias' <- as.character(r22_1$'Type of Bias')
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of exposure'] <- "Question 1"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Misclassification of outcome'] <- "Question 2"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection bias'] <- "Question 3"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Selection_bias 2'] <- "Question 4"
+    #    r22_1$'Type of Bias'[r22_1$'Type of Bias' == 'Confounding'] <- "Question 5"
+    
+    
+    #levels(r22_1$`Type of Bias`) <- gsub(" ", "\n", levels(r22_1$`Type of Bias`))
+    #gg <- r22 %>% filter(Refid %in% selected_id()) %>% 
+    gg <- r22_1 %>% filter(category==selected_class()) %>%
+      ggplot(aes(x = factor(`Type of Bias`, level = c('Question 10', 'Question 9', 'Question 8', 'Question 7', 'Question 6', 'Question 5', 'Question 4', 'Question 3', 'Question 2', 'Question 1')), fill = Bias)) + 
+      
+      geom_bar(position = "fill") + 
+      scale_x_discrete(labels = label_wrap(50))+
+      scale_y_continuous(labels = scales::percent)+
+      coord_flip() + 
+      geom_text(aes(label = scales::percent(..count../tapply(..count.., ..x.. ,sum)[..x..])),
+                position = position_fill(vjust = 0.5),
+                stat = "count")+
+      
+      scale_fill_manual(values = color_table$Color)  +
+      ylab("Percentage of Health Outcomes")+
+      xlab(" ")+
+      
+      theme(
+        axis.text=element_text(size=13, face= "bold"),
+        plot.caption = element_text(hjust = 0, face= "italic", size=16),
+        plot.title.position  =  "panel"
+      )
+    
+    ggplotly(gg, tooltip = c("fill")) %>% config(modeBarButtonsToRemove = c('zoom2d','pan2d', 'select2d', 'lasso2d', 'zoomIn', 'zoomOut', 'autoScale', 'resetScale', 'hoverClosestCartesian', 'hoverCompareCartesian'))
+    
+    #ggplot(gg)
+  })
+  
 
   #######
   output$bias_up <- renderPlotly({

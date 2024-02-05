@@ -5,9 +5,7 @@ account: cafo-project
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5464691
-bundleId: 5486082
+bundleId: 8219136
 url: https://cafo-project.shinyapps.io/Updated-LSR/
-when: 1642616791.20326
-lastSyncTime: 1642616791.20326
 asMultiple: FALSE
 asStatic: FALSE

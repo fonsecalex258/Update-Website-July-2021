@@ -10,7 +10,7 @@ library(tidyverse)
 library(DT)
 library(readxl)
 library(tesseract)
-library(magick)
+#library(magick)
 
 ###
 
@@ -35,6 +35,7 @@ mybib <- readr::read_file("datasets/bib.txt")
 
 ## read files ####
 #distiller <- readxl::read_xlsx("www/PRISMA.xlsx")
+
 mango <- readxl::read_xlsx("datasets/mango.xlsx")
 testtimeline <- readxl::read_xlsx("datasets/testtimeline.xlsx")
 cafo <- readxl::read_xlsx("datasets/cafo.xlsx", sheet = "Treatment-Outcome data")
@@ -53,7 +54,7 @@ dataset <- readr::read_csv("datasets/CAFO_All_data_new_Aug21.csv")
 rob <- readxl::read_xlsx("datasets/cafo.xlsx", sheet = "Risk of bias")
 forest <- read_excel("datasets/forest.xlsx")
 #### Exclusion data
-exclusion <- readxl::read_xlsx("datasets/exclusion_jan_march_2022.xlsx")
+exclusion <- readxl::read_xlsx("datasets/exclusion_oct_dec_2022.xlsx")
 exclusion$count <- rowSums( !is.na( exclusion [,11:18]))
 exclusion <- exclusion %>%
   mutate(`Reason for exclusion` = ifelse(count==1, "The study is not written entirely in English",
@@ -69,10 +70,10 @@ exclusionF <- exclusion[c(2, 3, 4, 5, 6, 7,8, 21)]
 #### Included data
 inclusion <- readxl::read_xlsx("datasets/Included_october.xlsx")
 
-colnames(inclusion)[13] <- "Country"
-colnames(inclusion)[22] <- "Population studied"
+colnames(inclusion)[14] <- "Country"
+colnames(inclusion)[11] <- "Study Design"
 
-inclusionF <- inclusion[c(2, 3, 4, 5, 6, 7,8, 13, 22)]
+inclusionF <- inclusion[c(2, 3, 4, 5, 7,8, 11, 14, 30)]
 
 
 
@@ -865,7 +866,7 @@ cafoo <- cafo %>%
 #
 cafo_map <- readxl::read_xlsx("datasets/Included_october.xlsx")
 
-names(cafo_map)[13] <- 'Country'
+names(cafo_map)[14] <- 'Country'
 cafoo_map <- cafo_map %>% group_by(Country) %>% 
   summarise(`Number_of_Studies` = n())%>%
   mutate(long = ifelse(Country == "Germany", 10.44768,

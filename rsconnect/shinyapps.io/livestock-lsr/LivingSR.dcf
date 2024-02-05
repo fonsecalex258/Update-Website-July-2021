@@ -5,10 +5,8 @@ account: livestock-lsr
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5472417
-bundleId: 5924705
+bundleId: 8219195
 url: https://livestock-lsr.shinyapps.io/LivingSR/
-when: 1652999014.36478
-lastSyncTime: 1652999014.36478
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: susuna.R
+ignoredFiles: alextest/Rplots.pdf|susuna.R
