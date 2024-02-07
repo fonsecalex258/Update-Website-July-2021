@@ -10,7 +10,7 @@ dashboardPage(
     sidebarMenu(
       menuItem("Background", tabName = "start", icon = icon("piggy-bank")),
       menuItem("Tutorial", tabName = "tutorial", icon = icon("chalkboard-teacher")),
-      
+      Scpecimens regulations
       menuItem("About the Studies", tabName = "eda", icon = icon("fa-solid fa-layer-group")),
       menuItem("Studies Flowchart", tabName = "roses", icon = icon("fas fa-project-diagram")),
       # menuItem("Forest Plot", tabName = "forest", icon = icon("tree")),
